@@ -1,6 +1,6 @@
 Arch Linux installation
 
-# Pre-installation
+# Pre-installation BIOS
 ### Update the system clock
 ```
   # timedatectl set-ntp true
@@ -30,7 +30,8 @@ Make file system
 ```
   # mount /dev/sda1 /mnt
 ```
-# Installation
+
+# Installation BIOS
 ### Setting up Arch repository mirrorlist
 Make backup
 ```
