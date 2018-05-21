@@ -1,28 +1,31 @@
 # ARCH Linux installation 
 
 ### 1. Update the system clock
-```bash
+```
   # timedatectl set-ntp true
 ```
 See `timedatectl status`
-```bash
+```
   # timedatectl status
 ```
 ### 2. Partition the disks 
 Using `cfdisk`
-```bash
-  cfdisk -z /dev/sda
 ```
-Select `gpt` for UEFI or 2TB or more disks, otherwise select`dos` 
+  # cfdisk -z /dev/sda
+```
+Select `dos` 
 Create only one partition, select
   `[ New ]` > select full size > `[ Primary ]`
   Create main martition bootable `[ Bootable ]`
   Write settings `[ Write ]` > type `yes`
-### 3. 
-```bash
+  Now you can quit `[ Quit ]`
   
+### 3. Format the partitions
+Make file system
 ```
-### 4. 
-```bash
-  
+  # mkfs.ext4 /dev/sda1
+```
+### 4. Mount the file systems
+```
+  # mount /dev/sda1 /mnt
 ```
