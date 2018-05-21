@@ -172,3 +172,12 @@ sudoers
   # nano /etc/sudoers
 ```
 Uncomment  `%wheel ALL=(ALL) ALL`
+# Network Set up
+Show connections
+```
+  # ip addr show
+```
+Use `dhcpcd` client
+```
+  # dhcpcp enp4s0
+```
