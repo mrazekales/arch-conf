@@ -89,9 +89,7 @@ Set it as your language with
 ### 5. Hostname
 Set computer hostname
 ```
-  # nano /etc/hostname
----------------------------------
-    myhostname
+  # echo myhostname > /etc/hostname
 ```
 Add matching entries to hosts
 ```
@@ -114,5 +112,62 @@ Install the `grub` package to replace `grub-legacy`
 ```
 Install grub bootloader
 ```
-  # grub-install --target=i386-pc /dev/sdX
+  # grub-install --target=i386-pc /dev/sda
 ```
+Generate the main configuration file
+```
+  # grub-mkconfig -o /boot/grub/grub.cfg
+```
+
+## Swap File
+### Create Swap File
+Empty 4G swapfile
+```
+  # fallocate -l 4G /swapfile
+```
+Set rights to the swapfile
+```
+  # chmod 600 /swapfile
+```
+After creating the correctly sized file, format it to swap
+```
+  # mkswap /swapfile
+```
+Activate the swap file:
+```
+  # swapon /swapfile
+```
+Edit `fstab` to add an entry for the swap file
+```
+  # nano /etc/fstab
+-------------------------------------------------
+  /swapfile none swap defaults 0 0
+```
+### Remove Swap File
+To remove a swap file, it must be turned off first and then can be removed
+```
+  # swapoff -a
+  # rm -f /swapfile
+```
+Finally remove the relevant entry from `/etc/fstab`
+
+## Users
+### Add new user
+Add a home user
+```
+  # useradd -m -g users -G wheel,audio,video,storage,power -s /bin/bash newusername
+```
+Set a pass for that user:
+```
+  # passwd newusername
+```
+### Setting up sudoers
+Install `sudo` package
+```
+  # pacman -S sudo
+```
+sudoers
+```
+  # nano /etc/sudoers
+```
+Uncomment  `%wheel ALL=(ALL) ALL`
