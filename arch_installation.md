@@ -1,5 +1,6 @@
 # ARCH Linux installation 
 
+## Pre-installation
 ### 1. Update the system clock
 ```
   # timedatectl set-ntp true
@@ -28,4 +29,25 @@ Make file system
 ### 4. Mount the file systems
 ```
   # mount /dev/sda1 /mnt
+```
+## Installation
+### 5. Setting up Arch repository mirrorlist
+Make backup
+```
+  # cp /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.backup
+```
+Sort backup
+```
+  # sed -i 's/^#Server/Server/' /etc/pacman.d/mirrorlist.backup
+  # rankmirrors -n 6 /etc/pacman.d/mirrorlist.backup > /etc/pacman.d/mirrorlist
+```
+### 6. Installing the Arch base files
+This command will install base Arch linux system
+```
+  # pacstrap /mnt base 
+```
+Other options are `base-devel` for developer packages or parameter `-i` afte pacstrap
+### 7. 
+```
+  # 
 ```
