@@ -1,4 +1,4 @@
-# ARCH Linux installation 
+Arch Linux installation
 
 # Pre-installation
 ### Update the system clock
