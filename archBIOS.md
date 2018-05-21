@@ -169,9 +169,10 @@ Install `sudo` package
 ```
 sudoers
 ```
-  # nano /etc/sudoers
+  # EDITOR=nano visudo
 ```
 Uncomment  `%wheel ALL=(ALL) ALL`
+Add `Defaults rootpw`
 # Network Set up
 Show connections
 ```
