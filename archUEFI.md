@@ -21,6 +21,10 @@ See `timedatectl status`
 ```
 # Partition the disks 
 ### Create partitions
+List disks
+```
+  # fdisk -l
+```
 Create EFI partition
 ```
   # fdisk /dev/sda
