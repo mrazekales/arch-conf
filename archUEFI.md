@@ -10,27 +10,39 @@ See `timedatectl status`
   # timedatectl status
 ```
 ### Partition the disks 
-Using `cfdisk`
+Create EFI partition
 ```
-  # cfdisk -z /dev/sda
+  # # fdisk /dev/sda
+--------------------------------------
+ * g (to create an empty GPT partition table)
+ * n
+ * 1
+ * enter
+ * +300M
+ * t
+ * 1 (For EFI)
+ * w
 ```
-Select `dos` 
-Create only one partition, select
-  `[ New ]` > select full size > `[ Primary ]`
-  Create main martition bootable `[ Bootable ]`
-  Write settings `[ Write ]` > type `yes`
-  Now you can quit `[ Quit ]`
-  
+Create root/home partition
+```
+  # # fdisk /dev/sda
+--------------------------------------
+ * n
+ * 2
+ * enter
+ * enter
+ * w
+```
 ### Format the partitions
-Make file system
+Format efi partition as fat32 and root/home partition as ext4
 ```
-  # mkfs.ext4 /dev/sda1
+  # # mkfs.fat -F32 /dev/sda1
+  # mkfs.ext4 /dev/sda2 
 ```
 ### Mount the file systems
 ```
-  # mount /dev/sda1 /mnt
+  # mount /dev/sda2 /mnt
 ```
-
 # Installation 
 ### Setting up Arch repository mirrorlist
 Make backup
@@ -64,6 +76,8 @@ Change root into the new system
 ```
   # arch-chroot /mnt
 ```
+
+
 ### Time-zone
 Set the time zone
 ```
@@ -106,14 +120,27 @@ Create roo password
 ```
   # passwd
 ```
-# Grub bootloader
+# EFI Grub bootloader
+#### EFI
+Create dir
+```
+  # mkdir /boot/EFI
+```
+Mount EFI partition to that directory
+```
+  # mount /dev/sda1 /boot/EFI
+```
+### Grub
 Install the `grub` package to replace `grub-legacy`
 ```
   # pacman -S grub
 ```
-Install grub bootloader
+Install grub bootloader to disk
 ```
-  # grub-install --target=i386-pc /dev/sda
+  # grub-install --target=x86_64-efi --bootloader-id=grub_uefi --recheck
+```
+```
+  # cp /usr/share/locale/en\@quot/LC_MESSAGES/grub.mo /boot/grub/locale/en.mo
 ```
 Generate the main configuration file
 ```
