@@ -131,6 +131,15 @@ Create roo password
 ```
   # passwd
 ```
+# Intel processors
+Install `intel-ucode`
+```
+  # pacman -S intel-ucode
+```
+Edit the main grub configuration file, if grub installe
+```
+  # grub-mkconfig -o /boot/grub/grub.cfg
+```
 # EFI Grub bootloader
 #### EFI
 Create dir
