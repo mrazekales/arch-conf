@@ -16,9 +16,13 @@ Using `cfdisk`
 ```
 Select `dos` 
 Create only one partition, select
+
   `[ New ]` > select full size > `[ Primary ]`
+  
   Create main martition bootable `[ Bootable ]`
+  
   Write settings `[ Write ]` > type `yes`
+  
   Now you can quit `[ Quit ]`
   
 ### Format the partitions
