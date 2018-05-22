@@ -245,15 +245,6 @@ IP=dhcp
 ## for IPv6 autoconfiguration
 #IP6=stateless
 ```
-# Wireless network configuration
-Install `dialog` package
-```
-  # pacman -S dialog
-```
-Use wifi-menu
-```
- # wifi-menu
-```
 Enable and start `dhcpcd` service
 ```
   # systemctl enable dhcpcd
@@ -262,6 +253,15 @@ Enable and start `dhcpcd` service
 Reboot your system. Verify IP address using the following command
 ```
   # ip addr
+```
+# Wireless network configuration
+Install `dialog` package
+```
+  # pacman -S dialog
+```
+Use wifi-menu
+```
+ # wifi-menu
 ```
 # Firewall
 
