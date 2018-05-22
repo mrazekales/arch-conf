@@ -265,14 +265,14 @@ Reboot your system. Verify IP address using the following command
 # Wireless network configuration
 Install `dialog` package
 ```
-  # pacman -S dialog
+  # pacman -S dialog wpa_supplicant
 ```
 Use wifi-menu
 ```
  # wifi-menu
 ```
 # Firewall
-Install `nftablec` [package](https://wiki.archlinux.org/index.php/Nftables#Usage)
+Install `nftables` [package](https://wiki.archlinux.org/index.php/Nftables#Usage)
 ```
   # pacman -S nftables
 ```
@@ -298,4 +298,16 @@ Instatall `nvidia` package for Nvidia GPU
 ```
   # pacman -S nvidia
 ```
-
+# Exiting liveiso
+Exit chroot
+```
+  # exit
+```
+Umount /mnt
+```
+  # umount -R /mnt
+```
+Reboot
+```
+  # reboot
+```
