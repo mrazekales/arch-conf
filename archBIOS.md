@@ -106,6 +106,15 @@ Create roo password
 ```
   # passwd
 ```
+# Intel processors
+Install `intel-ucode`
+```
+  # pacman -S intel-ucode
+```
+Edit the main grub configuration file, if grub installe
+```
+  # grub-mkconfig -o /boot/grub/grub.cfg
+```
 # Grub bootloader
 Install the `grub` package to replace `grub-legacy`
 ```
@@ -162,6 +171,48 @@ Set a pass for that user:
 ```
   # passwd newusername
 ```
+# Swap File
+### Create Swap File
+Empty 4G swapfile
+```
+  # fallocate -l 4G /swapfile
+```
+Set rights to the swapfile
+```
+  # chmod 600 /swapfile
+```
+After creating the correctly sized file, format it to swap
+```
+  # mkswap /swapfile
+```
+Activate the swap file:
+```
+  # swapon /swapfile
+```
+Edit `fstab` to add an entry for the swap file
+```
+  # nano /etc/fstab
+-------------------------------------------------
+  /swapfile none swap defaults 0 0
+```
+### Remove Swap File
+To remove a swap file, it must be turned off first and then can be removed
+```
+  # swapoff -a
+  # rm -f /swapfile
+```
+Finally remove the relevant entry from `/etc/fstab`
+
+# Users
+### Add new user
+Add a home user
+```
+  # useradd -m -g users -G wheel,audio,video,storage,power -s /bin/bash newusername
+```
+Set a pass for that user:
+```
+  # passwd newusername
+```
 ### Setting up sudoers
 Install `sudo` package
 ```
@@ -173,12 +224,90 @@ sudoers
 ```
 Uncomment  `%wheel ALL=(ALL) ALL`
 Add `Defaults rootpw`
-# Network Set up
-Show connections
+# [Network configuration](https://wiki.archlinux.org/index.php/Network_configuration) 
+Install `nectl` if not installed
 ```
-  # ip addr show
+  # pacman -S nectl
 ```
-Use `dhcpcd` client
+List network adapters
 ```
-  # dhcpcp enp4s0
+  # ip link
+```
+Copy ethernet-dhcp example profile
+```
+  # cp /etc/netctl/examples/ethernet-dhcp /etc/netctl/enp4s0
+```
+Edit profile
+```
+nano /etc/netctl/enp4s0
+------------------------------------------------
+Description='A basic dhcp ethernet connection'
+Interface=enp4s0
+Connection=ethernet
+IP=dhcp
+#DHCPClient=dhcpcd
+#DHCPReleaseOnStop=no
+## for DHCPv6
+#IP6=dhcp
+#DHCP6Client=dhclient
+## for IPv6 autoconfiguration
+#IP6=stateless
+```
+Enable and start `dhcpcd` service
+```
+  # systemctl enable dhcpcd
+  # systemctl start dhcpcd
+```
+Reboot your system. Verify IP address using the following command
+```
+  # ip addr
+```
+# Wireless network configuration
+Install `dialog` package
+```
+  # pacman -S dialog wpa_supplicant
+```
+Use wifi-menu
+```
+ # wifi-menu
+```
+# Firewall
+Install `nftables` [package](https://wiki.archlinux.org/index.php/Nftables#Usage)
+```
+  # pacman -S nftables
+```
+Defaul configuration is in `/etc/nftables.conf` file
+
+Enable nftables service
+```
+  # systemctl enable nftables.service
+```
+Check rulese
+```
+  # nft list ruleset
+```
+Add rules to config file `/etc/nftables.conf`
+```
+  # nft list ruleset > /etc/nftables.conf
+```
+See how to configure on [wiki](https://wiki.archlinux.org/index.php/Nftables#Usage)
+
+# Drivers
+### [Nvidia package](https://wiki.archlinux.org/index.php/NVIDIA)
+Instatall `nvidia` package for Nvidia GPU
+```
+  # pacman -S nvidia
+```
+# Exiting liveiso
+Exit chroot
+```
+  # exit
+```
+Umount /mnt
+```
+  # umount -R /mnt
+```
+Reboot
+```
+  # reboot
 ```
