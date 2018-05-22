@@ -221,11 +221,15 @@ sudoers
 Uncomment  `%wheel ALL=(ALL) ALL`
 Add `Defaults rootpw`
 # [Network configuration](https://wiki.archlinux.org/index.php/Network_configuration) 
-Use `dhcpcd` client if connection not working try
+Install `nectl` if not installed
 ```
-  # dhcpcp enp4s0
+  # pacman -S nectl
 ```
-Copy ethernet-dhcp profile from /etc/netctl/examples/ directory to /etc/netctl/ directory
+List network adapters
+```
+  # ip link
+```
+Copy ethernet-dhcp example profile
 ```
   # cp /etc/netctl/examples/ethernet-dhcp /etc/netctl/enp4s0
 ```
