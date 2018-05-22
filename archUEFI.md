@@ -1,6 +1,12 @@
 Arch Linux installation UEFI
 
 # Pre-installation 
+### Verify the boot mode
+If UEFI mode is enabled on an UEFI motherboard, Archiso will boot Arch Linux accordingly via systemd-boot. 
+To verify this, list the efivars directory:
+```
+  # ls /sys/firmware/efi/efivars
+```
 ### Update the system clock
 ```
   # timedatectl set-ntp true
@@ -9,7 +15,12 @@ See `timedatectl status`
 ```
   # timedatectl status
 ```
-### Partition the disks 
+### Try ping to internet
+```
+  # ping archlinux.org
+```
+# Partition the disks 
+### Create partitions
 Create EFI partition
 ```
   # fdisk /dev/sda
