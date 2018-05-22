@@ -12,7 +12,7 @@ See `timedatectl status`
 ### Partition the disks 
 Create EFI partition
 ```
-  # # fdisk /dev/sda
+  # fdisk /dev/sda
 --------------------------------------
  * g (to create an empty GPT partition table)
  * n
@@ -25,7 +25,7 @@ Create EFI partition
 ```
 Create root/home partition
 ```
-  # # fdisk /dev/sda
+  # fdisk /dev/sda
 --------------------------------------
  * n
  * 2
