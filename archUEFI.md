@@ -264,6 +264,25 @@ Use wifi-menu
  # wifi-menu
 ```
 # Firewall
+Install `nftablec` [package](https://wiki.archlinux.org/index.php/Nftables#Usage)
+```
+  # pacman -S nftables
+```
+Defaul configuration is in `/etc/nftables.conf` file
+
+Enable nftables service
+```
+  # systemctl enable nftables.service
+```
+Check rulese
+```
+  # nft list ruleset
+```
+Add rules to config file `/etc/nftables.conf`
+```
+  # nft list ruleset > /etc/nftables.conf
+```
+See how to configure on [wiki](https://wiki.archlinux.org/index.php/Nftables#Usage)
 
 # Drivers
 ### [Nvidia package](https://wiki.archlinux.org/index.php/NVIDIA)
