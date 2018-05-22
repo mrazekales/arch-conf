@@ -1,1 +1,1 @@
-# My personal notes and guides for installing a configuring Arch Linux 
+# My personal notes and guides for installing and configuring Arch Linux 
