@@ -242,7 +242,7 @@ Edit profile
 nano /etc/netctl/enp4s0
 ------------------------------------------------
 Description='A basic dhcp ethernet connection'
-Interface=<b>enp4s0<b>
+Interface=enp4s0
 Connection=ethernet
 IP=dhcp
 #DHCPClient=dhcpcd
