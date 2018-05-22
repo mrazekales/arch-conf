@@ -155,9 +155,9 @@ Mount EFI partition to that directory
   # mount /dev/sda1 /boot/EFI
 ```
 ### Grub
-Install the `grub` package to replace `grub-legacy`
+Install the `grub` and `efibootmgr` packages to replace `grub-legacy`
 ```
-  # pacman -S grub
+  # pacman -S grub efibootmgr
 ```
 Install grub bootloader to disk
 ```
