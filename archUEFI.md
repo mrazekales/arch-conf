@@ -220,12 +220,55 @@ sudoers
 ```
 Uncomment  `%wheel ALL=(ALL) ALL`
 Add `Defaults rootpw`
-# Network Set up
-Show connections
-```
-  # ip addr show
-```
-Use `dhcpcd` client
+# [Network configuration](https://wiki.archlinux.org/index.php/Network_configuration) 
+Use `dhcpcd` client if connection not working try
 ```
   # dhcpcp enp4s0
 ```
+Copy ethernet-dhcp profile from /etc/netctl/examples/ directory to /etc/netctl/ directory
+```
+  # cp /etc/netctl/examples/ethernet-dhcp /etc/netctl/enp4s0
+```
+Edit profile
+```
+nano /etc/netctl/enp4s0
+------------------------------------------------
+Description='A basic dhcp ethernet connection'
+Interface=<b>enp4s0<b>
+Connection=ethernet
+IP=dhcp
+#DHCPClient=dhcpcd
+#DHCPReleaseOnStop=no
+## for DHCPv6
+#IP6=dhcp
+#DHCP6Client=dhclient
+## for IPv6 autoconfiguration
+#IP6=stateless
+```
+# Wireless network configuration
+Install `dialog` package
+```
+  # pacman -S dialog
+```
+Use wifi-menu
+```
+ # wifi-menu
+```
+Enable and start `dhcpcd` service
+```
+  # systemctl enable dhcpcd
+  # systemctl start dhcpcd
+```
+Reboot your system. Verify IP address using the following command
+```
+  # ip addr
+```
+# Firewall
+
+# Drivers
+### [Nvidia package](https://wiki.archlinux.org/index.php/NVIDIA)
+Instatall `nvidia` package for Nvidia GPU
+```
+  # pacman -S nvidia
+```
+
