@@ -23,10 +23,28 @@ i3 window manager
 ```
   # pacman -S i3 xorg-xinit
 ```
-### Start i3
+### [Start i3](https://wiki.archlinux.org/index.php/Xinit#Autostart_X_at_login~)
 Start `i3` using `xinit`
+If `.xinitrc` is present in a user's home directory, startx and xinit execute it
+Copy one to home direstory
 ```
-  # 
+  # cp /etc/X11/xinit/xinitrc ~/.xinitrc
+```
+Edit it to execute `i3`
+```
+ # nano ~/.xinitrc
+---------------------------------
+
+exec i3
+```
+Autostart at login
+If the file does not exist, copy a skeleton version from `/etc/skel/.bash_profile`
+```
+  # nano ~/.bash_profile
+--------------------------------------
+if [[ ! $DISPLAY && $XDG_VTNR -eq 1 ]]; then
+  exec startx
+fi
 ```
 # [LightDM](https://wiki.archlinux.org/index.php/LightDM#Installation) Configuration
 Display/login manager
