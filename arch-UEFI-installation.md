@@ -271,6 +271,15 @@ Use wifi-menu
 ```
  # wifi-menu
 ```
+# [Bluetooth](https://wiki.archlinux.org/index.php/bluetooth#Installation)
+Install the `bluez` and `bluez-utils` packages
+```
+  # pacman -S bluez bluez-utils
+```
+Use wifi-menu
+```
+ # wifi-menu
+```
 # Firewall
 Install `nftables` [package](https://wiki.archlinux.org/index.php/Nftables#Usage)
 ```
