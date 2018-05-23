@@ -23,3 +23,41 @@ i3 window manager
 ```
   # pacman -S i3 xorg-xinit
 ```
+### Start i3
+Start `i3` using `xinit`
+```
+  # 
+```
+# [LightDM](https://wiki.archlinux.org/index.php/LightDM#Installation) Configuration
+Display/login manager
+### Installation
+`i3` package installation and `xinit` for then manualy start i3
+```
+  # pacman -S lightdm
+```
+Dependencies
+```
+   # pacman -S xorg-server lightdm-gtk-greeter
+```
+### Configuration
+You can set the default greeter by changing the `[Seat:*]` section of the LightDM configuration file
+```
+  # /etc/lightdm/lightdm.conf
+---------------------------------------------------------
+[Seat:*]
+...
+greeter-session=lightdm-yourgreeter-greeter
+...
+```
+Enable `lightdm.service` so LightDM will be started at boot
+```
+  # sudo systemctl enable lightdm.service
+```
+Greeter config file `/etc/lightdm/lightdm-gtk-greeter.conf`
+```
+  # nano /etc/lightdm/lightdm-gtk-greeter.conf
+```
+LightDM config file `/etc/lightdm/lightdm-gtk-greeter.conf`
+```
+  # nano /etc/lightdm/lightdm.conf
+```
