@@ -9,4 +9,9 @@ Bash Screenshot Information Tool
 ```
   # pacman -S screenfetch
 ```
-# Configuration
+# [i3](https://wiki.archlinux.org/index.php/i3) Configuration
+### Installation
+`i3` package installation and `xinit` for then manualy start i3
+```
+  # pacman -S i3 xorg-xinit
+```
