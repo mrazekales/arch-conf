@@ -20,13 +20,17 @@ Install `chrome` or lightweight `chromium`
 # [i3](https://wiki.archlinux.org/index.php/i3) Configuration
 i3 window manager
 ### Installation
-`i3` package installation and `xinit` for then manualy start i3
+`i3` package installation 
 ```
-  # pacman -S i3 xorg-xinit
+  # pacman -S i3 
 ```
 ### [Start i3](https://wiki.archlinux.org/index.php/Xinit#Autostart_X_at_login~)
 Start `i3` using `xinit`
 
+Dependencies
+```
+  # pacman -S  xorg-xinit xorg-xclock xorg-twm xterm  xorg-server
+```
 If `.xinitrc` is present in a user's home directory, startx and xinit execute it
 
 Copy one to home direstory
@@ -39,6 +43,10 @@ Edit it to execute `i3`
 ---------------------------------
 
 exec i3
+```
+Xserver
+```
+
 ```
 Autostart at login
 
