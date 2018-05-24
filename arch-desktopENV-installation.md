@@ -46,7 +46,12 @@ exec i3
 ```
 Xserver
 ```
+  # cp /etc/X11/xinit/xserverrc ~/.xserverrc
+  # nano ~/.xserverrc
+---------------------------------------------------------
+#!/bin/sh
 
+exec /usr/bin/Xorg -nolisten tcp "$@" vt$XDG_VTNR
 ```
 Autostart at login
 
