@@ -1,4 +1,4 @@
-# My personal notes and guides for installing and configuring Arch Linux
+# Manjaro-i3 installation and settings 
 ```
  ████████████████████  █████████     mrazekales@nostromo
  ████████████████████  █████████     OS: Manjaro 17.1.10 Hakoila
