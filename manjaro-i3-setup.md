@@ -34,7 +34,7 @@ Create somewhere new script
 ```
 $ nano my_script.sh
 ```
-The contents of my_script.sh
+The contents of `my_script.sh` for `us` layout, colors are editable
 ```bash
 #!/bin/bash
 
