@@ -7,7 +7,7 @@ $ sudo pacman -S base-devel
 #### Programs
  * [Google Chrome](https://wiki.archlinux.org/index.php/Chromium) - default `google-chrome-stable` or lightweight `chromium`
  * [Mozzila ThunderBird](https://wiki.archlinux.org/index.php/thunderbird#Installation) - `thunderbird`
- * [Spotify](https://wiki.archlinux.org/index.php/spotify)- `spotify-stable` If you wish to play local files you will need to install `zenity` and `ffmpeg-compat-54AUR` as well.
+ * [Spotify](https://wiki.archlinux.org/index.php/spotify)- `spotify-stable` If you wish to play local files you will need to install `zenity` and `ffmpeg-compat-54AUR`
  * [Atom](https://wiki.archlinux.org/index.php/atom) - `atom`
  * [Visual Studio Code](https://wiki.archlinux.org/index.php/Visual_Studio_Code) - `visual-studio-code-bin`
  * []() - ``
@@ -25,8 +25,8 @@ $ nano ~/.i3/config
 ```
 Add the following
 ```
-setxkbmap -layout de,gb
-setxkbmap -option 'grp:ctrl_alt_toggle'
+exec "setxkbmap -layout us,cz"
+exec "setxkbmap -option 'grp:alt_shift_toggle'"
 ```
 ### Displaying the Active Layout in the Panel 
 Unfortunately, the current keyboard layout is not build in i3. 
