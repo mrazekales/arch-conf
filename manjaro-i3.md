@@ -9,12 +9,12 @@
 * Select ISO
 * **Start** - and select `Write in DD Image mode`
 
-![](https://techfuzz.net/wp-content/uploads/2017/07/Manjaro-Linux-Bootable-Rufus.png)
-
 # Boot up USB stick with Manjaro
 #### 1. Check if BIOS (delete) is in UEFI mode and Secure boot is disabled
 #### 2. Plug in USB stick and restart computer to boot options (F11)
 #### 3. Select USB stick in boot options
+#### 4. Choose `Boot: Manjarox.86_64_i3`
+- Manjaro live iso will start.
 
 # Installation
 #### 1. 
