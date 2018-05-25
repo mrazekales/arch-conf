@@ -42,7 +42,7 @@ i3status --config ~/.i3status.conf | while :
 do
     read line
     LG=$(setxkbmap -query | awk '/layout/{print $2}')
-    if [ $LG == "br" ]
+    if [ $LG == "us" ]
     then
         dat="[{ \"full_text\": \"LANG: $LG\", \"color\":\"#009E00\" },"
     else
@@ -51,7 +51,7 @@ do
     echo "${line/[/$dat}" || exit 1
 done
 ```
-Add `status_commandto` bar property to `~/.i3/config`
+Add `status_command` property to `~/.i3/config`
 ```bash
 bar {
     status_command /path/to/your/my_script.sh
@@ -65,8 +65,9 @@ $ sudo cp /etc/i3status.conf ~/.i3status.conf
 ```
 Add the following property in your `.i3status.conf`
 ```
-$ nano ~/.i3status.conf
+$ sudo nano ~/.i3status.conf
 ```
+Add `output_format` property to `~/.i3status.conf`
 ```bash
 general {
     output_format = i3bar
