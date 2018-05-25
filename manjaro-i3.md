@@ -1,7 +1,9 @@
 # Create UEFI bootable USB
-#### 1. Download [ISO](https://manjaro.org/community-editions/)
+#### 1. Download [minimal or normal ISO](https://manjaro.org/community-editions/)
 #### 2. Download [Rufus](https://rufus.akeo.ie/)
 #### 3. Create bootable USB stick
+![alt text](https://techfuzz.net/wp-content/uploads/2017/07/Manjaro-Linux-Bootable-Rufus.png)
+
 
 # Boot up USB stick with Manjaro
 #### 1. Check if BIOS (delete) is in UEFI mode and Secure boot is disabled
@@ -9,7 +11,9 @@
 #### 3. Select USB stick in boot options
 
 # Installation
-
+#### 1. 
+#### 2. 
+#### 3. 
 
 
 
