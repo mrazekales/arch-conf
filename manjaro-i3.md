@@ -8,7 +8,8 @@
 #### 2. Plug in USB stick and restart computer to boot options (F11)
 #### 3. Select USB stick in boot options
 
-# 
+# Installation
+
 
 
 
