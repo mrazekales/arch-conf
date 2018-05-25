@@ -13,7 +13,7 @@ $ sudo pacman -S base-devel
 $ sudo pacman -S google-chrome-stable thunderbird spotify-stable
 ```
 
-# Keyboard Layouts
+# Keyboard Layouts [url](http://docs.slackware.com/howtos:window_managers:keyboard_layout_in_i3)
 ### Changing the Keyboard Layout
 If you need to switch between different layouts, you can map some keybindings to perform those functions.
 
@@ -26,7 +26,7 @@ Add the following
 setxkbmap -layout de,gb
 setxkbmap -option 'grp:ctrl_alt_toggle'
 ```
-### Displaying the Active Layout in the Panel
+### Displaying the Active Layout in the Panel 
 Unfortunately, the current keyboard layout is not build in i3. 
 For that reason, you need to write a short script to display the layout in the panel. 
 
@@ -38,24 +38,37 @@ The contents of my_script.sh
 ```bash
 #!/bin/bash
 
-# shell scipt to prepend i3status with more stuff
-
 i3status --config ~/.i3status.conf | while :
 do
-        read line
-        LG=$(setxkbmap -query | awk '/layout/{print $2}') 
-        echo "LG: $LG | $line" || exit 1
+    read line
+    LG=$(setxkbmap -query | awk '/layout/{print $2}')
+    if [ $LG == "br" ]
+    then
+        dat="[{ \"full_text\": \"LANG: $LG\", \"color\":\"#009E00\" },"
+    else
+        dat="[{ \"full_text\": \"LANG: $LG\", \"color\":\"#C60101\" },"
+    fi
+    echo "${line/[/$dat}" || exit 1
 done
 ```
-Add `status_commandto` bar property
+Add `status_commandto` bar property to `~/.i3/config`
 ```bash
 bar {
-    status_command /path/to/your/i3script.sh
+    status_command /path/to/your/my_script.sh
 }
 ```
-
+**Using JSON output format (colors)**
 
 To start customising `i3status`, copy `/etc/i3status.conf` to `~/.i3status.conf` where you can place your changes. 
 ```
 $ sudo cp /etc/i3status.conf ~/.i3status.conf
+```
+Add the following property in your `.i3status.conf`
+```
+$ nano ~/.i3status.conf
+```
+```bash
+general {
+    output_format = i3bar
+}
 ```
