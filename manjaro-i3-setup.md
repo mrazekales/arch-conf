@@ -2,7 +2,7 @@
 # Programs Installation
 Devel package is needed for install packages from `AUR` repository
 ```
-  $ sudo pacman -S base-devel
+$ sudo pacman -S base-devel
 ```
 #### Programs
  * [Google Chrome](https://wiki.archlinux.org/index.php/Chromium) - default `google-chrome-stable` or lightweight `chromium`
@@ -10,7 +10,7 @@ Devel package is needed for install packages from `AUR` repository
  *  - ``
  *  - ``
 ```
- $ sudo pacman -S google-chrome-stable thunderbird 
+$ sudo pacman -S google-chrome-stable thunderbird 
 ```
 
 # Keyboard Layouts
@@ -19,7 +19,7 @@ If you need to switch between different layouts, you can map some keybindings to
 
 Open the i3 config file
 ```
-  $ nano ~/.i3/config
+$ nano ~/.i3/config
 ```
 Add the following
 ```
