@@ -5,3 +5,6 @@ Edit `/etc/X11/xorg.conf.d/00-keyboard.conf` file
 ```
   This set `us` layout as default and `cz` as secondary, change with alt+shift
   For win+space type `win_space_toggle` insted of `alt_shift_toggle`
+
+
+http://docs.slackware.com/howtos:window_managers:keyboard_layout_in_i3
