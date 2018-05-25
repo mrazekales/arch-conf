@@ -2,8 +2,14 @@
 #### 1. Download [minimal or normal ISO](https://manjaro.org/community-editions/)
 #### 2. Download [Rufus](https://rufus.akeo.ie/)
 #### 3. Create bootable USB stick
-![alt text](https://techfuzz.net/wp-content/uploads/2017/07/Manjaro-Linux-Bootable-Rufus.png)
+* Select device
+* Partition scheme: GPT
+* Filesystem: FAT32
+* Cluster size: Default
+* Select ISO
+* **Start** - and select `Write in DD Image mode`
 
+![](https://techfuzz.net/wp-content/uploads/2017/07/Manjaro-Linux-Bootable-Rufus.png)
 
 # Boot up USB stick with Manjaro
 #### 1. Check if BIOS (delete) is in UEFI mode and Secure boot is disabled
