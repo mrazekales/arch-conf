@@ -26,6 +26,11 @@ $ nano ~/.i3/config
 Add the following
 ```
 exec --no-startup-id "setxkbmap -model pc105 -layout us,cz -option grp:alt_shift_toggle"
+
+or
+
+exec --no-startup-id "setxkbmap -layout us,cz"
+exec --no-startup-id "setxkbmap -option grp:alt_shift_toggle"
 ```
 ### Displaying the Active Layout in the Panel 
 Display active layout with `xkblayout-state` and `i3blocks`
