@@ -51,7 +51,10 @@ do
     echo "${line/[/$dat}" || exit 1
 done
 ```
-Replace `status_command i3status` property in `~/.i3/config` with `status_command /path/to/your/my_script.sh`
+Add the following property to your `~/.i3/config` 
+```
+$ nano ~/.i3/config
+```
 ```bash
 bar {
     status_command /path/to/your/my_script.sh
@@ -63,11 +66,10 @@ To start customising `i3status`, copy `/etc/i3status.conf` to `~/.i3status.conf`
 ```
 $ sudo cp /etc/i3status.conf ~/.i3status.conf
 ```
-Add the following property in your `.i3status.conf`
+Add the following property to your `.i3status.conf`
 ```
 $ sudo nano ~/.i3status.conf
 ```
-Add `output_format` property to `~/.i3status.conf`
 ```bash
 general {
     output_format = i3bar
