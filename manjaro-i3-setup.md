@@ -1,3 +1,14 @@
+# Audio setup
+Install `Pulseaudio` by command in terminal
+```
+$ sudo install_pulse
+```
+If you want remove
+```
+$ rm_pulse
+```
+
+
 
 # Programs Installation
 Devel package is needed for install packages from `AUR` repository
