@@ -10,9 +10,12 @@ $ sudo pacman -S base-devel
  * [Spotify](https://wiki.archlinux.org/index.php/spotify)- `spotify-stable` If you wish to play local files you will need to install `zenity` and `ffmpeg-compat-54AUR`
  * [Atom](https://wiki.archlinux.org/index.php/atom) - `atom`
  * [Visual Studio Code](https://wiki.archlinux.org/index.php/Visual_Studio_Code) - `visual-studio-code-bin`
+ * [InkScape](https://wiki.archlinux.org/index.php/Inkscape) - `inkscape`
+ * []() - ``
+ * []() - ``
  * []() - ``
 ```
-$ sudo pacman -S google-chrome-stable thunderbird spotify-stable
+$ sudo pacman -S google-chrome-stable thunderbird spotify-stable inkscape
 ```
 
 # [Keyboard Layouts](http://docs.slackware.com/howtos:window_managers:keyboard_layout_in_i3)
