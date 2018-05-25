@@ -75,3 +75,31 @@ interval=once
 signal=1
 ```
 Reboot
+
+# [LightDM]() login manager
+
+LightDM gui manager
+```
+lightdm-settings
+```
+
+#### NumLock on by default
+Install `numlockx`
+```
+$ sudo pacman -S numlockx 
+```
+Edit `/etc/lightdm/lightdm.conf` with
+```
+[Seat:*]
+greeter-setup-script=/usr/bin/numlockx on
+```
+#### Hiding system and services users
+To prevent system users from showing-up in the login, install the optional dependency `accountsservice`, or add the user names to `/etc/lightdm/users.conf` under `hidden-users`. The first option has the advantage of not needing to update the list when more users are added or removed.
+
+#### [slick-greeter.conf](https://github.com/linuxmint/slick-greeter)
+theme-name=              
+themes shoud be in `/usr/share/themes/`
+icon-theme-name         
+themes shoud be in `/usr/share/icons/`
+
+
