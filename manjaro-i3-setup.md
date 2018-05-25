@@ -30,9 +30,13 @@ setxkbmap -option 'grp:ctrl_alt_toggle'
 Unfortunately, the current keyboard layout is not build in i3. 
 For that reason, you need to write a short script to display the layout in the panel. 
 
-Create somewhere new script
+Create somewhere new **script**
 ```
 $ nano my_script.sh
+```
+Make it executable
+```
+$ chmod +x my_script.sh
 ```
 The contents of `my_script.sh` for `us` layout, colors are editable
 ```bash
