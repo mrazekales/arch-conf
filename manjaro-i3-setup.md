@@ -8,6 +8,8 @@ $ sudo pacman -S base-devel
  * [Google Chrome](https://wiki.archlinux.org/index.php/Chromium) - default `google-chrome-stable` or lightweight `chromium`
  * [Mozzila ThunderBird](https://wiki.archlinux.org/index.php/thunderbird#Installation) - `thunderbird`
  * [Spotify](https://wiki.archlinux.org/index.php/spotify)- `spotify-stable` If you wish to play local files you will need to install `zenity` and `ffmpeg-compat-54AUR` as well.
+ * [Atom](https://wiki.archlinux.org/index.php/atom) - `atom`
+ * [Visual Studio Code](https://wiki.archlinux.org/index.php/Visual_Studio_Code) - `visual-studio-code-bin`
  * []() - ``
 ```
 $ sudo pacman -S google-chrome-stable thunderbird spotify-stable
