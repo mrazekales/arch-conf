@@ -25,59 +25,45 @@ $ nano ~/.i3/config
 ```
 Add the following
 ```
-exec "setxkbmap -layout us,cz"
-exec "setxkbmap -option 'grp:alt_shift_toggle'"
+exec --no-startup-id "setxkbmap -model pc105 -layout us,cz -option grp:alt_shift_toggle"
 ```
 ### Displaying the Active Layout in the Panel 
-Unfortunately, the current keyboard layout is not build in i3. 
-For that reason, you need to write a short script to display the layout in the panel. 
-
-Create somewhere new **script**
+Display active layout with `xkblayout-state` and `i3blocks`
+**xkblayout-state**
+Installing `xkblayout-state` using `git`
 ```
-$ nano my_script.sh
+$ git clone https://github.com/nonpop/xkblayout-state.git
+$ cd xkblayout-state
+$ make
 ```
-Make it executable
+Copy compiled `xkblayout-state` somwhere in `PATH` for example
 ```
-$ chmod +x my_script.sh
+$ sudo cp xkblayout-state /usr/local/bin/
 ```
-The contents of `my_script.sh` for `us` layout, colors are editable
-```bash
-#!/bin/bash
-
-i3status --config ~/.i3status.conf | while :
-do
-    read line
-    LG=$(setxkbmap -query | awk '/layout/{print $2}')
-    if [ $LG == "us" ]
-    then
-        dat="[{ \"full_text\": \"LANG: $LG\", \"color\":\"#009E00\" },"
-    else
-        dat="[{ \"full_text\": \"LANG: $LG\", \"color\":\"#C60101\" },"
-    fi
-    echo "${line/[/$dat}" || exit 1
-done
+**i3blocks**
 ```
-Add the following property to your `~/.i3/config` 
+$ sudo pacman -S i3blocks
 ```
-$ nano ~/.i3/config
+Copy default conf file 
 ```
-```bash
+$ sudo cp /etc/i3blocks.conf ~/.i3blocks.conf
+```
+In `~/.config/i3/config` replace i3status with i3blocks
+```
 bar {
-    status_command /path/to/your/my_script.sh
+        status_command i3blocks
+        tray_output primary                                               
 }
+# in case of layout change event - send signal to i3blocks
+bindsym ISO_Next_Group exec pkill -RTMIN+1 i3blocks
 ```
-**Using JSON output format (colors)**
-
-To start customising `i3status`, copy `/etc/i3status.conf` to `~/.i3status.conf` where you can place your changes. 
+Open `~/.i3blocks.conf` and add 
 ```
-$ sudo cp /etc/i3status.conf ~/.i3status.conf
+#Language indicator
+[language]
+#label=LNG
+command=xkblayout-state print %s | awk '{print toupper($0)}'
+interval=once
+signal=1
 ```
-Add the following property to your `.i3status.conf`
-```
-$ sudo nano ~/.i3status.conf
-```
-```bash
-general {
-    output_format = i3bar
-}
-```
+Reboot
