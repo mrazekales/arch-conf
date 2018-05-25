@@ -1,3 +1,15 @@
+# Create UEFI bootable USB
+### 1. Download [ISO](https://manjaro.org/community-editions/)
+### 2. Download [Rufus](https://rufus.akeo.ie/)
+### 3. 
+### 4. 
+### 5. 
+
+# 
+
+
+
+
 ### [Keyboard layouts](https://wiki.manjaro.org/index.php?title=Openbox:_Switch_languages_using_the_keyboard_and_xxkb)
 Edit `/etc/X11/xorg.conf.d/00-keyboard.conf` file
 ```
