@@ -51,7 +51,7 @@ do
     echo "${line/[/$dat}" || exit 1
 done
 ```
-Add `status_command` property to `~/.i3/config`
+Replace `status_command i3status` property in `~/.i3/config` with `status_command /path/to/your/my_script.sh`
 ```bash
 bar {
     status_command /path/to/your/my_script.sh
