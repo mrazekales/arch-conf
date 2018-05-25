@@ -13,7 +13,7 @@ $ sudo pacman -S base-devel
 $ sudo pacman -S google-chrome-stable thunderbird spotify-stable
 ```
 
-# Keyboard Layouts [url](http://docs.slackware.com/howtos:window_managers:keyboard_layout_in_i3)
+# [Keyboard Layouts](http://docs.slackware.com/howtos:window_managers:keyboard_layout_in_i3)
 ### Changing the Keyboard Layout
 If you need to switch between different layouts, you can map some keybindings to perform those functions.
 
