@@ -114,7 +114,7 @@ icon-theme-name
 themes shoud be in `/usr/share/icons/`
 
 # [Fancy dualmonitors](https://github.com/meskarune/i3lock-fancy/tree/dualmonitors) Lock Screen - [i3lock](https://github.com/i3/i3lock)
-**Install dependencies **
+**Install dependencies**
 ```
 $ sudo pacman -S i3lock-color-git imagemagick scrot bash awk utils-linux
 ```
@@ -122,6 +122,7 @@ $ sudo pacman -S i3lock-color-git imagemagick scrot bash awk utils-linux
 **Installation**, copy `lock`, `lock.png` and `lockdark.png` to `etc/bin`
 ```
 $ git clone https://github.com/meskarune/i3lock-fancy/tree/dualmonitors
+$ git clone -b dualmonitors --single-branch https://github.com/meskarune/i3lock-fancy/tree/dualmonitors --depth 1
 ```
 **i3 config file** `~/.i3/config`
 Lock screen when shortcut mod+9 is pressed
