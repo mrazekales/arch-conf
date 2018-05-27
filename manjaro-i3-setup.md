@@ -114,6 +114,11 @@ icon-theme-name
 themes shoud be in `/usr/share/icons/`
 
 # [Gaussian Blur](https://github.com/Ema0/i3lock-fancy) Lock Screen - [i3lock](https://github.com/i3/i3lock)
+Install dependencies `ffmpeg` and `i3lock-color-git` or `i3lock-fancy-git`
+for dualmonitors `i3lock-fancy-dualmonitors-git`
+```
+$ sudo pacman -S ffmpeg i3lock-color-git
+```
 Launch setup is in `~/.i3/config`
 ```
 $ nano ~/.i3/config
@@ -126,7 +131,7 @@ Autolock
 ```
 exec --no-startup-id xautolock -time 10 -locker blurlock
 ```
-Configuration file 
-```
-```
+Configuration file `/bin/blurlock` or `/usr/bin/blurlock`
+
+
 
