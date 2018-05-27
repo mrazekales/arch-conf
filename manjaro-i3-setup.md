@@ -8,16 +8,14 @@ If you want remove
 $ rm_pulse
 ```
 
-
-
 # Programs Installation
 Devel package is needed for install packages from `AUR` repository
 ```
 $ sudo pacman -S base-devel
 ```
 #### Programs
- * [Google Chrome](https://wiki.archlinux.org/index.php/Chromium) - default `google-chrome-stable` or lightweight `chromium`
- * [Mozzila ThunderBird](https://wiki.archlinux.org/index.php/thunderbird#Installation) - `thunderbird`
+ * [Chrome](https://wiki.archlinux.org/index.php/Chromium) - default `google-chrome-stable` or lightweight `chromium`
+ * [ThunderBird](https://wiki.archlinux.org/index.php/thunderbird#Installation) - `thunderbird`
  * [Spotify](https://wiki.archlinux.org/index.php/spotify)- `spotify-stable` If you wish to play local files you will need to install `zenity` and `ffmpeg-compat-54AUR`
  * [Atom](https://wiki.archlinux.org/index.php/atom) - `atom`
  * [Visual Studio Code](https://wiki.archlinux.org/index.php/Visual_Studio_Code) - `visual-studio-code-bin`
@@ -86,6 +84,29 @@ interval=once
 signal=1
 ```
 Reboot
+
+# Enabling multimedia keys
+Install
+``
+$ sudo pacman -S xorg-backlight playerctl pulseaudio-ctl 
+``
+To `i3/conf` add
+```
+# Pulse Audio controls
+bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume 0 +5% #increase sound volume
+bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume 0 -5% #decrease sound volume
+bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute 0 toggle # mute sound
+
+# Sreen brightness controls
+bindsym XF86MonBrightnessUp exec xbacklight -inc 10 # increase screen brightness
+bindsym XF86MonBrightnessDown exec xbacklight -dec 10 # decrease screen brightness
+
+# Media player controls
+bindsym XF86AudioPlay exec playerctl play
+bindsym XF86AudioPause exec playerctl pause
+bindsym XF86AudioNext exec playerctl next
+bindsym XF86AudioPrev exec playerctl previous
+```
 
 # [LightDM]() login manager
 
