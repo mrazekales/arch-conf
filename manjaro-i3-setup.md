@@ -86,15 +86,15 @@ signal=1
 Reboot
 
 # Enabling multimedia keys
-Install
+Install controls
 ``
 $ sudo pacman -S xorg-backlight playerctl pulseaudio-ctl 
 ``
-To `i3/conf` add
+To `~/i3/conf` add
 ```
 # Pulse Audio controls
-bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume 0 +5% #increase sound volume
-bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume 0 -5% #decrease sound volume
+bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume 0 +10% #increase sound volume
+bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume 0 -10% #decrease sound volume
 bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute 0 toggle # mute sound
 
 # Sreen brightness controls
