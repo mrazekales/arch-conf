@@ -113,25 +113,21 @@ themes shoud be in `/usr/share/themes/`
 icon-theme-name         
 themes shoud be in `/usr/share/icons/`
 
-# [Gaussian Blur](https://github.com/Ema0/i3lock-fancy) Lock Screen - [i3lock](https://github.com/i3/i3lock)
-Install dependencies `ffmpeg` and `i3lock-color-git` or `i3lock-fancy-git`
-for dualmonitors `i3lock-fancy-dualmonitors-git`
+# [Fancy dualmonitors](https://github.com/meskarune/i3lock-fancy/tree/dualmonitors) Lock Screen - [i3lock](https://github.com/i3/i3lock)
+Install dependencies 
 ```
-$ sudo pacman -S ffmpeg i3lock-color-git
+$ sudo pacman -S i3lock-color-git imagemagick scrot bash awk utils-linux
 ```
-Launch setup is in `~/.i3/config`
-```
-$ nano ~/.i3/config
-```
+i3 config file `~/.i3/config`
+
 Lock screen when shortcut mod+9 is pressed
 ```
-bindsym $mod+9 exec --no-startup-id blurlock
+bindsym $mod+9 exec --no-startup-id script_name
 ```
 Autolock
 ```
-exec --no-startup-id xautolock -time 10 -locker blurlock
+exec --no-startup-id xautolock -time 10 -locker script_name
 ```
-Configuration file `/bin/blurlock` or `/usr/bin/blurlock`
 
 
 
