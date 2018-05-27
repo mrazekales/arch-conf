@@ -113,4 +113,5 @@ themes shoud be in `/usr/share/themes/`
 icon-theme-name         
 themes shoud be in `/usr/share/icons/`
 
+# [Gaussian Blur](https://github.com/Ema0/i3lock-fancy) Lock Screen - [i3lock](https://github.com/i3/i3lock)
 
