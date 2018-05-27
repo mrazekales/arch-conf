@@ -137,5 +137,6 @@ Autolock
 exec --no-startup-id xautolock -time 10 -locker lock -g -detectsleep
 ```
 
+# [morc menu](https://github.com/Boruch-Baum/morc_menu)
 
 
