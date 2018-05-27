@@ -94,7 +94,7 @@ LightDM gui manager
 lightdm-settings
 ```
 
-#### NumLock on by default
+#### NumLock ON by default
 Install `numlockx`
 ```
 $ sudo pacman -S numlockx 
@@ -114,4 +114,19 @@ icon-theme-name
 themes shoud be in `/usr/share/icons/`
 
 # [Gaussian Blur](https://github.com/Ema0/i3lock-fancy) Lock Screen - [i3lock](https://github.com/i3/i3lock)
+Launch setup is in `~/.i3/config`
+```
+$ nano ~/.i3/config
+```
+Lock screen when shortcut mod+9 is pressed
+```
+bindsym $mod+9 exec --no-startup-id blurlock
+```
+Autolock
+```
+exec --no-startup-id xautolock -time 10 -locker blurlock
+```
+Configuration file 
+```
+```
 
