@@ -121,8 +121,11 @@ $ sudo pacman -S i3lock-color-git imagemagick scrot bash awk utils-linux
 
 **Installation**, copy `lock`, `lock.png` and `lockdark.png` to `etc/bin`
 ```
-$ git clone https://github.com/meskarune/i3lock-fancy/tree/dualmonitors
-$ git clone -b dualmonitors --single-branch https://github.com/meskarune/i3lock-fancy/tree/dualmonitors --depth 1
+$ git clone https://github.com/meskarune/i3lock-fancy
+```
+For only `dualmonitors` branch
+```
+$ git clone -b dualmonitors --single-branch https://github.com/meskarune/i3lock-fancy --depth 1
 ```
 **i3 config file** `~/.i3/config`
 Lock screen when shortcut mod+9 is pressed
