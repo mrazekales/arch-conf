@@ -93,13 +93,13 @@ $ sudo pacman -S xorg-backlight playerctl pulseaudio-ctl
 To `~/i3/conf` add
 ```
 # Pulse Audio controls
-bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume 0 +10% #increase sound volume
-bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume 0 -10% #decrease sound volume
+bindsym XF86AudioRaiseVolume exec --no-startup-id "pactl set-sink-volume 0 +10%; notify-send 'volume UP'" #increase sound volume
+bindsym XF86AudioLowerVolume exec --no-startup-id "pactl set-sink-volume 0 -10%; notify-send 'volume DOWN'" #decrease sound volume
 bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute 0 toggle # mute sound
 
 # Sreen brightness controls
-bindsym XF86MonBrightnessUp exec xbacklight -inc 10 # increase screen brightness
-bindsym XF86MonBrightnessDown exec xbacklight -dec 10 # decrease screen brightness
+bindsym XF86MonBrightnessUp exec "xbacklight -inc 10; notify-send 'brightness UP'" # increase screen brightness
+bindsym XF86MonBrightnessDown exec "xbacklight -dec 10; notify-send 'brightness DOWN'" # decrease screen brightness
 
 # Media player controls
 bindsym XF86AudioPlay exec playerctl play
