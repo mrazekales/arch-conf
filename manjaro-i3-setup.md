@@ -122,11 +122,11 @@ i3 config file `~/.i3/config`
 
 Lock screen when shortcut mod+9 is pressed
 ```
-bindsym $mod+9 exec --no-startup-id script_name
+bindsym $mod+9 exec --no-startup-id lock -g
 ```
 Autolock
 ```
-exec --no-startup-id xautolock -time 10 -locker script_name
+exec --no-startup-id xautolock -time 10 -locker lock-g
 ```
 
 
