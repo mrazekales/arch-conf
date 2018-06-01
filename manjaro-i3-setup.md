@@ -24,7 +24,17 @@ $ sudo pacman -S base-devel
  * []() - ``
  * []() - ``
 ```
-$ sudo pacman -S google-chrome-stable thunderbird spotify-stable inkscape
+$ sudo pacman -S chromium thunderbird spotify-stable inkscape
+```
+
+# LateX install/setup
+Install `TeX Live` distribution of Tex
+```
+$ sudo pacman -S texlive-most texlive-lang
+```
+Install [TeXstudio](https://www.texstudio.org/)
+```
+$ sudo pacman -S texstudio
 ```
 
 # [Keyboard Layouts](http://docs.slackware.com/howtos:window_managers:keyboard_layout_in_i3)
