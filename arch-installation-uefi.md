@@ -207,15 +207,15 @@ Finally remove the relevant entry from `/etc/fstab`
 ### Add new user
 Add a home user
 ```
-  # useradd -m -g users -G wheel,audio,video,storage,power -s /bin/bash newusername
+  # useradd -m -s /bin/bash newusername
 ```
-List users groups
+List users `groups`
 ```
 # groups username
 ```
-Adding additional groups
+Adding additional `groups` to `user`
 ```
-# usermod -aG wheel,storage username
+# usermod -aG wheel,storage,audio,video, username
 ```
 Set a pass for that user:
 ```
