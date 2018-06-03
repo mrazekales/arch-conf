@@ -209,6 +209,14 @@ Add a home user
 ```
   # useradd -m -g users -G wheel,audio,video,storage,power -s /bin/bash newusername
 ```
+List users groups
+```
+# groups username
+```
+Adding additional groups
+```
+# usermod -aG wheel,storage username
+```
 Set a pass for that user:
 ```
   # passwd newusername
@@ -223,6 +231,7 @@ sudoers
   # EDITOR=nano visudo
 ```
 Uncomment  `%wheel ALL=(ALL) ALL`
+
 Add `Defaults rootpw`
 # [Network configuration](https://wiki.archlinux.org/index.php/Network_configuration) 
 Install `nectl` if not installed
