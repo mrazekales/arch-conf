@@ -24,8 +24,9 @@ I do not want to create swap partition, so select "Manual partitioning"
 * Create GPT table
 * Create EFI partition 
   - size: 300M
+  - file system: fat32
   - mount `/boot/EFI`
-  - select `esi`
+  - select `esp`
 * Create root partition
   - size: rest of the disk
   - mount `/`
