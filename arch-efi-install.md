@@ -1,4 +1,4 @@
-Arch Linux installation UEFI
+Arch Linux UEFI installation 
 
 # Pre-installation 
 ### Verify the boot mode
