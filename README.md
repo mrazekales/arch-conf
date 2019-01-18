@@ -1,4 +1,4 @@
-# Arch Linux Notes
+# i3wm Arch Linux
 
 ### Display Manager
 - LightDM
