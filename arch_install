@@ -905,18 +905,24 @@ rankmirrors(){
   clear
   pacman -Sy pacman-contrib
 
-  if [ -e /mnt/etc/pacman.d/mirrorlist.backup ]
-  then
-    cp /etc/pacman.d/mirrorlist /mnt/etc/pacman.d/mirrorlist.backup
-    awk '/^## Country Name$/{f=1}f==0{next}/^$/{exit}{print substr($0, 2)}' /mnt/etc/pacman.d/mirrorlist.backup
-    sed -i 's/^#Server/Server/' /mnt/etc/pacman.d/mirrorlist.backup
+  if [ -e /etc/pacman.d/mirrorlist.backup ]; then
+    
+    awk '/^## Country Name$/{f=1}f==0{next}/^$/{exit}{print substr($0, 2)}' /etc/pacman.d/mirrorlist.backup
+    sed -i 's/^#Server/Server/' /etc/pacman.d/mirrorlist.backup
+    rankmirrors -n 6 /etc/pacman.d/mirrorlist.backup > /etc/pacman.d/mirrorlist
+
+  else
+
+    cp /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.backup
+    awk '/^## Country Name$/{f=1}f==0{next}/^$/{exit}{print substr($0, 2)}' /etc/pacman.d/mirrorlist.backup
+    sed -i 's/^#Server/Server/' /etc/pacman.d/mirrorlist.backup
+    rankmirrors -n 6 /etc/pacman.d/mirrorlist.backup > /etc/pacman.d/mirrorlist
+
   fi 
 
-  rankmirrors /mnt/etc/pacman.d/mirrorlist.backup > /mnt/etc/pacman.d/mirrorlist
-
   # allow global read access (required for non-root yaourt execution)
-  chmod +r /mnt/etc/pacman.d/mirrorlist
-  cat /mnt/etc/pacman.d/mirrorlist
+  chmod +r /etc/pacman.d/mirrorlist
+  cat /etc/pacman.d/mirrorlist
 
   pressanykey
 }
@@ -924,11 +930,15 @@ rankmirrors(){
 # install base arch linux system
 installbase(){
   if (whiptail --backtitle "$apptitle" --title "$txtbasedev" --yesno "$txtinstalldev" --defaultno 0 0) then
-        $installtype="base base-devel"
-        echo "pacstrap /mnt " $installtype
+    clear
+    echo "pacstrap /mnt base base-dev"        
+    pacstrap /mnt base
+  else
+    clear
+    echo "pacstrap /mnt base"        
+    pacstrap /mnt base
   fi
-  clear
-  pacstrap /mnt $installtype
+  
   pressanykey
 }
 
@@ -1818,7 +1828,7 @@ loadstrings(){
   txtselectpartsmenu="Select Partitions and Install"
   txthelp="Help"
   txtchangelog="Changelog"
-  txtreboot="                 Reboot"
+  txtreboot="                   Reboot"
 
   txtautoparts="Auto Partitions"
   txteditparts="Edit Partitions"
