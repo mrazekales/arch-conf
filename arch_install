@@ -635,7 +635,7 @@ formatdevices(){
     if [ ! "$homedev" = "" ]; then
       formatdevice home $homedev
     fi
-    mountmenu "$nextitem"
+    mountmenu "$txtmount"
   fi
 }
 formatbootdevice(){
@@ -863,8 +863,10 @@ installmenu(){
   fi
   options=()
   options+=("$txteditmirrorlist" "($txtoptional)")
+  options+=("" "")
   options+=("$txtinstallarchlinux" "(pacstrap)")
   options+=("$txtbootloader" "")
+  options+=("" "")
   options+=("$txtconfigarchlinux" "")
   sel=$(whiptail --backtitle "$apptitle" --title "$txtinstallmenu" --menu "" --cancel-button "$txtunmount" --default-item "$nextitem" 0 0 0 \
     "${options[@]}" \
@@ -872,7 +874,7 @@ installmenu(){
   if [ "$?" = "0" ]; then
     case $sel in
       "$txteditmirrorlist")
-        $EDITOR /etc/pacman.d/mirrorlist
+        rankmirrors
         nextitem="$txtinstallarchlinux"
       ;;
       "$txtinstallarchlinux")
@@ -880,7 +882,7 @@ installmenu(){
         nextitem="$txtbootloader"
       ;;
       "$txtbootloader")
-        
+        archbootloadermenu
         nextitem="$txtconfigarchlinux"
       ;;
       "$txtconfigarchlinux")
@@ -892,6 +894,26 @@ installmenu(){
   else
     unmountdevices
   fi
+}
+
+rankmirrors(){
+
+  pacman -Sy pacman-contrib
+
+  if [ -e /etc/pacman.d/mirrorlist.backup ]
+  then
+    cp /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.backup
+    awk '/^## Country Name$/{f=1}f==0{next}/^$/{exit}{print substr($0, 2)}' /etc/pacman.d/mirrorlist.backup
+    sed -i 's/^#Server/Server/' /etc/pacman.d/mirrorlist.backup
+  fi 
+
+  rankmirrors /etc/pacman.d/mirrorlist.backup > /etc/pacman.d/mirrorlist
+
+  # allow global read access (required for non-root yaourt execution)
+  chmod +r /etc/pacman.d/mirrorlist
+  cat /etc/pacman.d/mirrorlist
+
+  pressanykey
 }
 
 # install base arch linux system
@@ -929,10 +951,10 @@ archconfmenu(){
   options=()
   options+=("$txtsethostname" "/etc/hostname")
   options+=("$txtsetkeymap" "/etc/vconsole.conf")
-  options+=("$txtsetfont" "/etc/vconsole.conf ($txtoptional)")
   options+=("$txtsetlocale" "/etc/locale.conf, /etc/locale.gen")
   options+=("$txtsettime" "/etc/localtime")
   options+=("$txtsetrootpassword" "")
+  options+=("$txtcreatenewuser" "install sudo")
   options+=("${txtgenerate//%1/fstab}" "")
   if [ "$luksdrive" = "1" ]; then
     options+=("${txtgenerate//%1/crypttab}" "")
@@ -943,12 +965,14 @@ archconfmenu(){
   if [ "$isnvme" = "1" ]; then
     options+=("${txtgenerate//%1/mkinitcpio.conf-nvme}" "(nvme module)")
   fi
+  options+=("${txtenable//%1/dhcpcd}" "systemctl enable dhcpd")
+  options+=("" "")
+  options+=("$txtsetfont" "/etc/vconsole.conf ($txtoptional)")
   options+=("${txtedit//%1/fstab}" "($txtoptional)")
   options+=("${txtedit//%1/crypttab}" "($txtoptional)")
   options+=("${txtedit//%1/mkinitcpio.conf}" "($txtoptional)")
   options+=("${txtedit//%1/mirrorlist}" "($txtoptional)")
-  options+=("${txtenable//%1/dhcpcd}" "systemctl enable dhcpd")
-  sel=$(whiptail --backtitle "$apptitle" --title "$txtarchinstallmenu" --menu "" --cancel-button "$txtback" --default-item "$nextitem" 0 0 0 \
+  sel=$(whiptail --backtitle "$apptitle" --title "$txtarchconfmenu" --menu "" --cancel-button "$txtback" --default-item "$nextitem" 0 0 0 \
     "${options[@]}" \
     3>&1 1>&2 2>&3)
   if [ "$?" = "0" ]; then
@@ -972,6 +996,10 @@ archconfmenu(){
       "$txtsettime")
         archsettime
         nextitem="$txtsetrootpassword"
+      ;;
+      "$txtcreatenewuser")
+        createuser
+        nextitem="$txtcreatenewuser"
       ;;
       "$txtsetrootpassword")
         archsetrootpassword
@@ -1038,7 +1066,7 @@ archconfmenu(){
         nextitem="${txtenable//%1/dhcpcd}"
       ;;
     esac
-    archmenu "$nextitem"
+    archconfmenu "$nextitem"
   fi
 }
 
@@ -1059,6 +1087,15 @@ archsethostname(){
     clear
     echo "echo \"$hostname\" > /mnt/etc/hostname"
     echo "$hostname" > /mnt/etc/hostname
+
+    echo "echo '127.0.0.1     localhost' > /mnt/etc/hosts"
+    echo "127.0.0.1     localhost" > /mnt/etc/hosts
+
+    echo "echo '::1	        localhost' > /mnt/etc/hosts"
+    echo "::1	        localhost" > /mnt/etc/hosts
+
+    echo "echo '127.0.1.1     $hostname.localdomain   $hostname' > /mnt/etc/hosts"
+    echo "127.0.1.1     $hostname.localdomain   $hostname" > /mnt/etc/hosts
     pressanykey
   fi
 }
@@ -1200,10 +1237,27 @@ archsetrootpassword(){
   archchroot setrootpassword
   pressanykey
 }
+
 archsetrootpasswordchroot(){
   echo "passwd root"
   passwd root
   exit
+}
+
+createuser(){
+  newusername=$(whiptail --backtitle "$apptitle" --title "$txtcreatenewuser" --inputbox "" 0 0 "newhomeuser" 3>&1 1>&2 2>&3)
+  if [ "$?" = "0" ]; then
+    clear
+    useradd -m -s /bin/bash $newusername
+    usermod -aG wheel,storage,audio,video $newusername
+    passwd $newusername
+
+    pacman -S sudo
+    echo '%wheel ALL=(ALL) ALL' >> /etc/sudoers
+    echo 'Defaults rootpw' >> /etc/sudoers
+
+    pressanykey
+  fi
 }
 
 archgenfstabmenu(){
@@ -1745,15 +1799,14 @@ loadstrings(){
   txtbasedev="Devel Packages"
   txtinstalldev="Do you want to instal 'base-devel' packages?"
   txtinstallarch="Install Arch"
+  txtarchconfmenu="Arch Config Menu"
+  txtcreatenewuser="Create User"
   
   txtexit="Exit"
   txtback="Back"
   txtignore="Ignore"
-  
-  txtselectserver="Select source server :"
-  
+    
   txtmainmenu="Main Menu"
-  txtlanguage="Language"
   txtsetkeymap="Set Keyboard Layout"
   txteditor="Editor"
   txtdiskpartmenu="Disk Partitions"
@@ -1775,7 +1828,7 @@ loadstrings(){
   txtselectdevice="Select %1 device :"
   txtselecteddevices="Selected devices :"
 
-  txtformatmountmenu="Frmat and Mount"
+  txtformatmountmenu="Format and Mount"
   txtformatdevices="Format Devices"
   txtformatdevice="Format Device"
   txtmount="Mount "
@@ -1794,7 +1847,7 @@ loadstrings(){
   
   txtarchinstallmenu="Arch Install Menu"
   
-  txteditmirrorlist="Edit mirrorlist"
+  txteditmirrorlist="Rank mirrors"
   txtinstallarchlinux="Install Arch"
   txtconfigarchlinux="Config Arch"
 
