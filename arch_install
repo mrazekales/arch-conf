@@ -897,7 +897,7 @@ installmenu(){
 }
 
 rankmirrors(){
-
+  clear
   pacman -Sy pacman-contrib
 
   if [ -e /etc/pacman.d/mirrorlist.backup ]
@@ -1813,7 +1813,7 @@ loadstrings(){
   txtselectpartsmenu="Select Partitions and Install"
   txthelp="Help"
   txtchangelog="Changelog"
-  txtreboot="Reboot"
+  txtreboot="            Reboot"
 
   txtautoparts="Auto Partitions"
   txteditparts="Edit Partitions"
