@@ -1,5 +1,23 @@
 # i3wm Arch Linux
 
+## Arch Base Installation
+
+```bash
+$ ./arch_install
+```
+
+## Desktop Environment Installation 
+
+```bash
+$ ./de_install
+```
+
+## Apps installation
+
+```bash
+$ ./apps_install
+```
+
 ### Display Manager
 - LightDM
 - SLiM
