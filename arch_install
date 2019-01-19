@@ -900,24 +900,18 @@ rankmirrors(){
   clear
   pacman -Sy pacman-contrib
 
-  if [ -e /etc/pacman.d/mirrorlist.backup ]; then
-    
-    awk '/^## Country Name$/{f=1}f==0{next}/^$/{exit}{print substr($0, 2)}' /etc/pacman.d/mirrorlist.backup
+  if [ -e /etc/pacman.d/mirrorlist.backup ]; then  
+    #awk '/^## Country Name$/{f=1}f==0{next}/^$/{exit}{print substr($0, 2)}' /etc/pacman.d/mirrorlist.backup
     sed -i 's/^#Server/Server/' /etc/pacman.d/mirrorlist.backup
     rankmirrors -n 6 /etc/pacman.d/mirrorlist.backup > /etc/pacman.d/mirrorlist
-
+      chmod +r /etc/pacman.d/mirrorlist
   else
-
     cp /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.backup
-    awk '/^## Country Name$/{f=1}f==0{next}/^$/{exit}{print substr($0, 2)}' /etc/pacman.d/mirrorlist.backup
+    #awk '/^## Country Name$/{f=1}f==0{next}/^$/{exit}{print substr($0, 2)}' /etc/pacman.d/mirrorlist.backup
     sed -i 's/^#Server/Server/' /etc/pacman.d/mirrorlist.backup
     rankmirrors -n 6 /etc/pacman.d/mirrorlist.backup > /etc/pacman.d/mirrorlist
-
+    chmod +r /etc/pacman.d/mirrorlist
   fi 
-
-  # allow global read access (required for non-root yaourt execution)
-  chmod +r /etc/pacman.d/mirrorlist
-  cat /etc/pacman.d/mirrorlist
 
   pressanykey
 }
