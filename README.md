@@ -1,29 +1,14 @@
 # myArch Installer
-**Run script on booted Arch liveiso**
+#### Install and config base Arch system
 ```bash
 $ pacman -Sy git
 $ git clone git://github.com/mrazekales/myarch-installer.git
 $ cd myarch-installer
-$ sh arch_install
-$ sh 
+$ sh arch_install 
 ```
-
-## Arch Base Installation
-
+#### Install and config i3wm+LightDM
 ```bash
-$ ./arch_install
-```
-
-## Desktop Environment Installation 
-
-```bash
-$ ./de_install
-```
-
-## Apps installation
-
-```bash
-$ ./apps_install
+$ sh i3wm_install
 ```
 
 ### Display Manager
