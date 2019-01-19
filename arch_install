@@ -30,6 +30,7 @@ mainmenu(){
   options=()
   options+=("$txtsetkeymap" "(loadkeys ...)")
   options+=("$txteditor" "($txtoptional)")
+  options+=("$txteditmirrorlist" "($txtoptional)")  
   options+=("" "")
   options+=("$txtdiskpartmenu" "")
   options+=("$txtformatdevices" "")
@@ -49,6 +50,10 @@ mainmenu(){
         chooseeditor
         nextitem="$txtdiskpartmenu"
       ;;
+      "$txteditmirrorlist")
+        rankmirrors
+        nextitem="$txtdiskpartmenu"
+      ;;
       "$txtdiskpartmenu")
         diskpartmenu
         nextitem="$txtformatdevices"
@@ -59,10 +64,6 @@ mainmenu(){
       ;;
       "$txtmount")
         mountparts
-        nextitem="$txtreboot"
-      ;;
-      "$txthelp")
-        help
         nextitem="$txtreboot"
       ;;
       "$txtchangelog")
@@ -867,8 +868,6 @@ installmenu(){
     nextitem=$1
   fi
   options=()
-  options+=("$txteditmirrorlist" "($txtoptional)")
-  options+=("" "")
   options+=("$txtinstallarchlinux" "(pacstrap)")
   options+=("$txtbootloader" "")
   options+=("" "")
@@ -878,10 +877,6 @@ installmenu(){
     3>&1 1>&2 2>&3)
   if [ "$?" = "0" ]; then
     case $sel in
-      "$txteditmirrorlist")
-        rankmirrors
-        nextitem="$txtinstallarchlinux"
-      ;;
       "$txtinstallarchlinux")
         installbase
         nextitem="$txtbootloader"
