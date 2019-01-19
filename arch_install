@@ -31,6 +31,7 @@ mainmenu(){
   options+=("$txtsetkeymap" "(loadkeys ...)")
   options+=("$txteditor" "($txtoptional)")
   options+=("$txtdiskpartmenu" "")
+  options+=("" "")
   options+=("$txtinstallarch" "")
   options+=("" "")
   options+=("$txtreboot" "")
@@ -51,7 +52,7 @@ mainmenu(){
         diskpartmenu
         nextitem="$txtinstall"
       ;;
-      "$txtinstall")
+      "$txtinstallarch")
         installbasesystem
         nextitem="$txtreboot"
       ;;
