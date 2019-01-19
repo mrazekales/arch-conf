@@ -15,6 +15,10 @@
 - Xterm
 - Tilix
 
+### Text Editor
+- gedit
+- vsCode
+
 ### Web Browser
 - Chromium
 - Chrome
