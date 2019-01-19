@@ -11,20 +11,21 @@ $ sh arch_install
 ```bash
 $ sh i3wm_install
 ```
+**Window Manager:**   i3
 
-- **Display Manager:**  LightDM
-- **Window Manager:**   i3
-- **File Manager:**     PcmanFM, Ranger
-- **Terminal:**         Termite, Xterm
-- **Text Editor:**      Gedit, vsCode
-- **Web Browser:**      Chromium
-- **Gui Package Manager:**  Pamac
+**Display Manager:**  LightDM
 
-- **Other apps:**  
-  - Htop
-  - Lxapperance
-  - Nitrogen
+**File Manager:**     PcmanFM, Ranger
 
+**Terminal:**         Termite, Xterm
+
+**Text Editor:**      Gedit, vsCode
+
+**Web Browser:**      Chromium
+
+**Gui Package Manager:**  Pamac
+
+**Other apps:** Htop, Lxapperance, Nitrogen
 
 
 ### Display Manager
