@@ -15,7 +15,7 @@
 # --------------------------------------------------------
 
 
-apptitle="Arch Linux Base Install - Version: 0.1 (LGPLv3)"
+apptitle="Arch Linux Installer - Version: 0.1 (LGPLv3)"
 skipfont="0"
 
 # --------------------------------------------------------
@@ -31,7 +31,7 @@ mainmenu(){
   options+=("$txtsetkeymap" "(loadkeys ...)")
   options+=("$txteditor" "($txtoptional)")
   options+=("$txtdiskpartmenu" "")
-  options+=("$txtinstall" "")
+  options+=("$txtinstallarch" "")
   options+=("" "")
   options+=("$txtreboot" "")
   sel=$(whiptail --backtitle "$apptitle" --title "$txtmainmenu" --menu "" --cancel-button "$txtexit" --default-item "$nextitem" 0 0 0 \
@@ -129,12 +129,12 @@ diskpartmenu(){
   
   options+=("$txtautoparts (gpt)" "")
   options+=("$txtautoparts (dos)" "")
-  options+=("$txtautoparts (gpt,noswap)" "swapfile")
-  options+=("$txtautoparts (dos,noswap)" "swapfile")
+  options+=("$txtautoparts (gpt,noswap)" "")
+  options+=("$txtautoparts (dos,noswap)" "")
   if [ "$eficomputer" != "0" ]; then
     options+=("$txtautoparts (gpt,efi)" "")
-    options+=("$txtautoparts (gpt,efi,noswap)" "swapfile")
-    options+=("$txtautoparts (gpt,bios+efi,noswap)" "swapfile")
+    options+=("$txtautoparts (gpt,efi,noswap)" "")
+    options+=("$txtautoparts (gpt,bios+efi,noswap)" "")
   fi
   options+=("$txteditparts (fdisk)" "")
   options+=("$txteditparts (cfdisk)" "")
@@ -634,6 +634,7 @@ formatdevices(){
     if [ ! "$homedev" = "" ]; then
       formatdevice home $homedev
     fi
+    mountmenu "$nextitem"
   fi
 }
 formatbootdevice(){
@@ -861,7 +862,8 @@ installmenu(){
   fi
   options=()
   options+=("$txteditmirrorlist" "($txtoptional)")
-  options+=("$txtinstallarchlinux" "base system (pacstrap)")
+  options+=("$txtinstallarchlinux" "(pacstrap)")
+  options+=("$txtbootloader" "")
   options+=("$txtconfigarchlinux" "")
   sel=$(whiptail --backtitle "$apptitle" --title "$txtinstallmenu" --menu "" --cancel-button "$txtunmount" --default-item "$nextitem" 0 0 0 \
     "${options[@]}" \
@@ -874,10 +876,14 @@ installmenu(){
       ;;
       "$txtinstallarchlinux")
         installbase
+        nextitem="$txtbootloader"
+      ;;
+      "$txtbootloader")
+        
         nextitem="$txtconfigarchlinux"
       ;;
       "$txtconfigarchlinux")
-        archmenu
+        archconfmenu
         nextitem="$txtconfigarchlinux"
       ;;
     esac
@@ -887,18 +893,13 @@ installmenu(){
   fi
 }
 
-# base, base-devel
-installdevel(){
-    if (whiptail --backtitle "$apptitle" --title "$txtbasedev" --yesno "$txtefibootmgr" --defaultno 0 0) then
-        $installtype="base base-devel"
-      fi
-}
-
 # install base arch linux system
 installbase(){
-  installdevel
+  if (whiptail --backtitle "$apptitle" --title "$txtbasedev" --yesno "$txtinstalldev" --defaultno 0 0) then
+        $installtype="base base-devel"
+        echo "pacstrap /mnt " $installtype
+  fi
   clear
-  echo "pacstrap /mnt $installtype"
   pacstrap /mnt $installtype
   pressanykey
 }
@@ -918,7 +919,7 @@ unmountdevices(){
 # --------------------------------------------------------
 # Arch Config Menu
 # --------------------------------------------------------
-archmenu(){
+archconfmenu(){
   if [ "$1" = "" ]; then
     nextitem="."
   else
@@ -945,7 +946,6 @@ archmenu(){
   options+=("${txtedit//%1/crypttab}" "($txtoptional)")
   options+=("${txtedit//%1/mkinitcpio.conf}" "($txtoptional)")
   options+=("${txtedit//%1/mirrorlist}" "($txtoptional)")
-  options+=("$txtbootloader" "")
   options+=("${txtenable//%1/dhcpcd}" "systemctl enable dhcpd")
   sel=$(whiptail --backtitle "$apptitle" --title "$txtarchinstallmenu" --menu "" --cancel-button "$txtback" --default-item "$nextitem" 0 0 0 \
     "${options[@]}" \
@@ -987,7 +987,7 @@ archmenu(){
             if [ "$isnvme" = "1" ]; then
               nextitem="${txtgenerate//%1/mkinitcpio.conf-nvme}"
             else
-              nextitem="$txtbootloader"
+              nextitem="${txtenable//%1/dhcpcd}"
             fi
           fi
         fi
@@ -1000,7 +1000,7 @@ archmenu(){
           if [ "$isnvme" = "1" ]; then
             nextitem="${txtgenerate//%1/mkinitcpio.conf-nvme}"
           else
-            nextitem="$txtbootloader"
+            nextitem="${txtenable//%1/dhcpcd}"
           fi
         fi
       ;;
@@ -1009,12 +1009,12 @@ archmenu(){
         if [ "$isnvme" = "1" ]; then
           nextitem="${txtgenerate//%1/mkinitcpio.conf-nvme}"
         else
-          nextitem="$txtbootloader"
+          nextitem="${txtenable//%1/dhcpcd}"
         fi
       ;;
       "${txtgenerate//%1/mkinitcpio.conf-nvme}")
         archgenmkinitcpionvme
-        nextitem="$txtbootloader"
+        nextitem="${txtenable//%1/dhcpcd}"
       ;;
       "${txtedit//%1/fstab}")
         $EDITOR /mnt/etc/fstab
@@ -1031,10 +1031,6 @@ archmenu(){
       "${txtedit//%1/mirrorlist}")
         $EDITOR /mnt/etc/pacman.d/mirrorlist
         nextitem="${txtedit//%1/mirrorlist}"
-      ;;
-      "$txtbootloader")
-        archbootloadermenu
-        nextitem="${txtenable//%1/dhcpcd}"
       ;;
       "${txtenable//%1/dhcpcd}")
         archenabledhcpcd
@@ -1745,9 +1741,9 @@ loadstrings(){
   locale=en_US.UTF-8
   #font=
 
-  txtbasedev="Devel package?"
+  txtbasedev="Devel Packages"
   txtinstalldev="Do you want to instal 'base-devel' packages?"
-  txtinstall="Install Arch"
+  txtinstallarch="Install Arch"
   
   txtexit="Exit"
   txtback="Back"
@@ -1778,10 +1774,10 @@ loadstrings(){
   txtselectdevice="Select %1 device :"
   txtselecteddevices="Selected devices :"
 
-  txtformatmountmenu="Format and Mount"
+  txtformatmountmenu="Frmat and Mount"
   txtformatdevices="Format Devices"
   txtformatdevice="Format Device"
-  txtmount="Mount"
+  txtmount="Mount "
   txtunmount="Unmount"
   txtmountdesc="Install or Config"
 
@@ -1798,8 +1794,8 @@ loadstrings(){
   txtarchinstallmenu="Arch Install Menu"
   
   txteditmirrorlist="Edit mirrorlist"
-  txtinstallarchlinux="Install Arch Linux"
-  txtconfigarchlinux="Config Arch Linux"
+  txtinstallarchlinux="Install Arch"
+  txtconfigarchlinux="Config Arch"
 
   txtsethostname="Set Computer Name"
   txtsetfont="Set Font"
