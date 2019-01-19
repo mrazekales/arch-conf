@@ -1,4 +1,12 @@
-# i3wm Arch Linux
+# myArch Installer
+**Run script on booted Arch liveiso**
+```bash
+$ pacman -Sy git
+$ git clone git://github.com/mrazekales/myarch-installer.git
+$ cd myarch-installer
+$ sh arch_install
+$ sh 
+```
 
 ## Arch Base Installation
 
