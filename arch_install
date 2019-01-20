@@ -1861,8 +1861,8 @@ loadstrings(){
 # Start of Script
 # --------------------------------------------------------
 
-pacman -S --needed arch-install-scripts wget libnewt
-dmesg |grep efi: > /dev/null
+#pacman -S --needed arch-install-scripts wget libnewt
+#dmesg |grep efi: > /dev/null
 if [ "$?" == "1" ]; then
     if [ "$eficomputer" != "1" ]; then
         eficomputer=0
@@ -1875,7 +1875,7 @@ else
 fi
 loadstrings
 EDITOR=nano
-loadkeys $keymap
+#loadkeys $keymap
 mainmenu
 
 
