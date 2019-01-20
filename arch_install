@@ -320,7 +320,6 @@ diskpartautogpt(){
       efimode="0"
     fi
   fi
-  selectparts
 }
 
 diskpartautogptnoswap(){
@@ -358,7 +357,6 @@ diskpartautogptnoswap(){
       efimode="0"
     fi
   fi
-  selectparts
 }
 
 diskpartautoefi(){
@@ -397,7 +395,6 @@ diskpartautoefi(){
       efimode="1"
     fi
   fi
-  selectparts
 }
 
 diskpartautoefinoswap(){
@@ -433,7 +430,6 @@ diskpartautoefinoswap(){
       efimode="1"
     fi
   fi
-  selectparts
 }
 
 diskpartautoefiusb(){
@@ -472,7 +468,6 @@ diskpartautoefiusb(){
       efimode="2"
     fi
   fi
-  selectparts
 }
 
 diskpartfdisk(){
@@ -488,7 +483,6 @@ diskpartfdisk(){
     clear
     fdisk $device
   fi
-  selectparts
 }
 
 diskpartcfdisk(){
@@ -504,7 +498,6 @@ diskpartcfdisk(){
     clear
     cfdisk $device
   fi
-  selectparts
 }
 
 diskpartcgdisk(){
@@ -520,7 +513,6 @@ diskpartcgdisk(){
     clear
     cgdisk $device
   fi
-  selectparts
 }
 
 # --------------------------------------------------------
@@ -867,17 +859,7 @@ installmenu(){
 
 rankmirrors(){
   clear
-  echo "Downloading mirrorlist"
-  curl -s "https://www.archlinux.org/mirrorlist/all&use_mirror_status=on" | sed -e 's/^#Server/Server/' -e '/^#/d' | rankmirrors -n 5 -
-
-  echo "Creating backup"
-  cp /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.backup
-  echo "Sorting by country"
-  awk '/^## Country Name$/{f=1}f==0{next}/^$/{exit}{print substr($0, 2)}' /etc/pacman.d/mirrorlist.backup
-  sed -i 's/^#Server/Server/' /etc/pacman.d/mirrorlist.backup
-  echo "Start ranking mirrors"
-  rankmirrors -n 6 /etc/pacman.d/mirrorlist.backup > /etc/pacman.d/mirrorlist
-  echo "Ranking mirrors DONE"
+  
   pressanykey
 }
 
@@ -1766,8 +1748,7 @@ pressanykey(){
 loadstrings(){
   
   locale=en_US.UTF-8
-  #font=
-  keymap="usa"
+  keymap="us"
 
   txtbasedev="Devel Packages"
   txtinstalldev="Do you want to instal 'base-devel' packages?"
