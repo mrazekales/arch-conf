@@ -22,7 +22,6 @@ skipfont="0"
 # MAIN MENU
 # --------------------------------------------------------
 mainmenu(){
-  loadkeys $keymap
   if [ "$1" = "" ]; then
     nextitem="."
   else
@@ -1768,6 +1767,7 @@ loadstrings(){
   
   locale=en_US.UTF-8
   #font=
+  keymap="usa"
 
   txtbasedev="Devel Packages"
   txtinstalldev="Do you want to instal 'base-devel' packages?"
@@ -1880,6 +1880,7 @@ else
 fi
 loadstrings
 EDITOR=nano
+loadkeys $keymap
 mainmenu
 
 
