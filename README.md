@@ -1,11 +1,18 @@
 # myArch Installer
 ### Install and config base Arch system
+
+1. Boot with [Arch live ISO](https://www.archlinux.org/download/)
+2. Clone script repository
 ```bash
 $ pacman -Sy git
 $ git clone git://github.com/mrazekales/myarch-installer.git
+```
+3. Run `arch_install` script
+```bash
 $ cd myarch-installer
 $ sh arch_install 
 ```
+
 ### Install and config Desktop Environment
 
 ```bash
