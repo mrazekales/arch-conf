@@ -28,7 +28,7 @@ mainmenu(){
     nextitem=$1
   fi
   options=()
-  options+=("$txtsetkeymap" "(loadkeys ...)")
+  options+=("$txtsetkeymap" "(default: $keymap)")
   options+=("$txteditor" "($txtoptional)")
   options+=("$txteditmirrorlist" "($txtoptional)")  
   options+=("" "")
@@ -592,39 +592,6 @@ selectparts(){
     fi
   fi
 }
-# --------------------------------------------------------
-
-
-
-# --------------------------------------------------------
-# Arch Base Install Menu
-# --------------------------------------------------------
-installbasesystem(){
-  if [ "$1" = "" ]; then
-    nextitem="."
-  else
-    nextitem=$1
-  fi
-  options=()
-  options+=("$txtformatdevices" "")
-  options+=("$txtmount" "$txtmountdesc")
-  sel=$(whiptail --backtitle "$apptitle" --title "$txtformatmountmenu" --menu "" --cancel-button "$txtback" --default-item "$nextitem" 0 0 0 \
-    "${options[@]}" \
-    3>&1 1>&2 2>&3)
-  if [ "$?" = "0" ]; then
-    case $sel in
-      "$txtformatdevices")
-        formatdevices
-        nextitem="$txtmount"
-      ;;
-      "$txtmount")
-        mountparts
-        nextitem="$txtmount"
-      ;;
-    esac
-    mountmenu "$nextitem"
-  fi
-}
 
 # --------------------------------------------------------
 # Format Devices
@@ -836,6 +803,8 @@ formatdevice(){
 # Mount Partitions 
 # --------------------------------------------------------
 mountparts(){
+
+  selectparts
   clear
   echo "mount $rootdev /mnt"
   mount $rootdev /mnt
@@ -898,54 +867,13 @@ installmenu(){
 
 rankmirrors(){
   clear
-  local countries_code=("AU" "AT" "BY" "BE" "BR" "BG" "CA" "CL" "CN" "CO" "CZ" "DK" "EE" "FI" "FR" "DE" "GR" "HK" "HU" "ID" "IN" "IR" "IE" "IL" "IT" "JP" "KZ" "KR" "LV" "LU" "MK" "NL" "NC" "NZ" "NO" "PL" "PT" "RO" "RU" "RS" "SG" "SK" "ZA" "ES" "LK" "SE" "CH" "TW" "TR" "UA" "GB" "US" "UZ" "VN")
-  local countries_name=("Australia" "Austria" "Belarus" "Belgium" "Brazil" "Bulgaria" "Canada" "Chile" "China" "Colombia" "Czech Republic" "Denmark" "Estonia" "Finland" "France" "Germany" "Greece" "Hong Kong" "Hungary" "Indonesia" "India" "Iran" "Ireland" "Israel" "Italy" "Japan" "Kazakhstan" "Korea" "Latvia" "Luxembourg" "Macedonia" "Netherlands" "New Caledonia" "New Zealand" "Norway" "Poland" "Portugal" "Romania" "Russia" "Serbia" "Singapore" "Slovakia" "South Africa" "Spain" "Sri Lanka" "Sweden" "Switzerland" "Taiwan" "Turkey" "Ukraine" "United Kingdom" "United States" "Uzbekistan" "Viet Nam")
-  country_list(){
-    #`reflector --list-countries | sed 's/[0-9]//g' | sed 's/^/"/g' | sed 's/,.*//g' | sed 's/ *$//g'  | sed 's/$/"/g' | sed -e :a -e '$!N; s/\n/ /; ta'`
-    PS3="$prompt1"
-    echo "Select your country:"
-    select country_name in "${countries_name[@]}"; do
-      if contains_element "$country_name" "${countries_name[@]}"; then
-        country_code=${countries_code[$(( $REPLY - 1 ))]}
-        break
-      else
-        invalid_option
-      fi
-    done
-  }
-  print_title "MIRRORLIST - https://wiki.archlinux.org/index.php/Mirrors"
-  print_info "This option is a guide to selecting and configuring your mirrors, and a listing of current available mirrors."
-  OPTION=n
-  while [[ $OPTION != y ]]; do
-    country_list
-    read_input_text "Confirm country: $country_name"
-  done
+  country=""
+  curl -s "https://www.archlinux.org/mirrorlist/all&use_mirror_status=on" | sed -e 's/^#Server/Server/' -e '/^#/d' | rankmirrors -n 5 -
 
-  url="https://www.archlinux.org/mirrorlist/?country=${country_code}&use_mirror_status=on"
-
-  tmpfile=$(mktemp --suffix=-mirrorlist)
-
-  # Get latest mirror list and save to tmpfile
-  curl -so ${tmpfile} ${url}
-  sed -i 's/^#Server/Server/g' ${tmpfile}
-
-  # Backup and replace current mirrorlist file (if new file is non-zero)
-  if [[ -s ${tmpfile} ]]; then
-   { echo " Backing up the original mirrorlist..."
-     mv -i /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.orig; } &&
-   { echo " Rotating the new list into place..."
-     mv -i ${tmpfile} /etc/pacman.d/mirrorlist; }
-  else
-    echo " Unable to update, could not download list."
-  fi
-  # better repo should go first
-  pacman -Sy pacman-contrib
-  cp /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.tmp
-  rankmirrors /etc/pacman.d/mirrorlist.tmp > /etc/pacman.d/mirrorlist
-  rm /etc/pacman.d/mirrorlist.tmp
-  # allow global read access (required for non-root yaourt execution)
-  chmod +r /etc/pacman.d/mirrorlist
-  
+  cp /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.backup
+  awk '/^## Country Name$/{f=1}f==0{next}/^$/{exit}{print substr($0, 2)}' /etc/pacman.d/mirrorlist.backup
+  sed -i 's/^#Server/Server/' /etc/pacman.d/mirrorlist.backup
+  rankmirrors -n 6 /etc/pacman.d/mirrorlist.backup > /etc/pacman.d/mirrorlist
   pressanykey
 }
 
@@ -1468,6 +1396,7 @@ archgrubinstall(){
   fi
   
   clear
+  echo "archchroot grubinstall"
   archchroot grubinstall
   pressanykey
 }
@@ -1946,6 +1875,7 @@ else
 fi
 loadstrings
 EDITOR=nano
+loadkeys $keymap
 mainmenu
 
 
