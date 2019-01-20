@@ -22,6 +22,7 @@ skipfont="0"
 # MAIN MENU
 # --------------------------------------------------------
 mainmenu(){
+  loadkeys $keymap
   if [ "$1" = "" ]; then
     nextitem="."
   else
@@ -867,13 +868,17 @@ installmenu(){
 
 rankmirrors(){
   clear
-  country=""
+  echo "Downloading mirrorlist"
   curl -s "https://www.archlinux.org/mirrorlist/all&use_mirror_status=on" | sed -e 's/^#Server/Server/' -e '/^#/d' | rankmirrors -n 5 -
 
+  echo "Creating backup"
   cp /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.backup
+  echo "Sorting by country"
   awk '/^## Country Name$/{f=1}f==0{next}/^$/{exit}{print substr($0, 2)}' /etc/pacman.d/mirrorlist.backup
   sed -i 's/^#Server/Server/' /etc/pacman.d/mirrorlist.backup
+  echo "Start ranking mirrors"
   rankmirrors -n 6 /etc/pacman.d/mirrorlist.backup > /etc/pacman.d/mirrorlist
+  echo "Ranking mirrors DONE"
   pressanykey
 }
 
@@ -1875,7 +1880,6 @@ else
 fi
 loadstrings
 EDITOR=nano
-#loadkeys $keymap
 mainmenu
 
 
