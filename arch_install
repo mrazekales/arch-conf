@@ -14,7 +14,7 @@
 # ----------------------------------------------------------------------------------------
 # MAIN MENU
 # ----------------------------------------------------------------------------------------
-mainmenu(){
+main_menu(){
   if [ "$1" = "" ]; then
     nextitem="."
   else
@@ -23,6 +23,7 @@ mainmenu(){
   options=()
   options+=("$txtrankmirrors" "$txtrmdone")
   options+=("$txtmakepartitions" "$txtmpdone")
+  options+=("$txtselectpartitions" "$txtspdone")
   options+=("$txtformatpartitions" "$txtfpdone")
   options+=("$txtmount" "$txtmountdone")
   options+=("" "")
@@ -31,26 +32,35 @@ mainmenu(){
   options+=("" "")
   options+=("" "")
   options+=("$txtreboot" "")
-  sel=$(whiptail --backtitle "$apptitle" --title "$txtmainmenu" --menu "" --cancel-button "$txtexit" --default-item "$nextitem" 0 0 0 \
+  sel=$(whiptail --backtitle "$apptitle" --title "$txtmainmenutitle" --menu "" --cancel-button "$txtexit" --default-item "$nextitem" 0 0 0 \
     "${options[@]}" \
     3>&1 1>&2 2>&3)
   if [ "$?" = "0" ]; then
     case $sel in
       "$txtrankmirrors")
+      rank_mirrors
       ;;
       "$txtmakepartitions")
+      partitioning_menu
+        nextitem="$txtselectpartitions"
+      ;;
+      "$txtselectpartitions")
+      select_partitions
         nextitem="$txtformatpartitions"
       ;;
       "$txtformatpartitions")
+      format_partitions
         nextitem="$txtmount"
       ;;
       "$txtmount")
+        mount_partitions
         nextitem="$txtreboot"
       ;;
       "$txtkeymap")
-        setkeymap
+        set_keymap
       ;;
       "$txtlanguage")
+      load_language
       ;;
       "$txtreboot")
         rebootpc
@@ -62,64 +72,33 @@ mainmenu(){
   fi
 }
 
-setkeymap(){
-  items=$(find /usr/share/kbd/keymaps/ -type f -printf "%f\n" | sort -V)
-  options=()
-  for item in $items; do
-    options+=("${item%%.*}" "")
-  done
-  keymap=$(whiptail --backtitle "$apptitle" --title "$txtsetkeymap" --menu "" 0 0 0 \
-    "${options[@]}" \
-    3>&1 1>&2 2>&3)
-  if [ "$?" = "0" ]; then
-    clear
-    echo "loadkeys $keymap"
-    loadkeys $keymap
-    pressanykey
-  fi
+# ----------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------
+# Rank Mirrors
+# ----------------------------------------------------------------------------------------
+rank_mirrors(){
+  clear
+
+  $txtrankmirrors="DONE"
+  pressanykey
 }
 
-chooseeditor(){
-  options=()
-  options+=("nano" "")
-  options+=("vim" "")
-  options+=("vi" "")
-  options+=("edit" "")
-  sel=$(whiptail --backtitle "$apptitle" --title "$txteditor" --menu "" 0 0 0 \
-    "${options[@]}" \
-    3>&1 1>&2 2>&3)
-  if [ "$?" = "0" ]; then
-    clear
-    echo "export EDITOR=$sel"
-    export EDITOR=$sel
-    EDITOR=$sel
-    pressanykey
-  fi
-}
-
-rebootpc(){
-  if (whiptail --backtitle "$apptitle" --title "$txtreboot" --yesno "$txtreboot ?" --defaultno 0 0) then
-    clear
-    reboot
-  fi
-}
-
-# --------------------------------------------------------
-# Disk Partitions Menu
-# --------------------------------------------------------
-diskpartmenu(){
+# ----------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------
+# Disk Partitioning
+# ----------------------------------------------------------------------------------------
+partitioning_menu(){
   if [ "$1" = "" ]; then
     nextitem="."
   else
     nextitem=$1
   fi
   options=()
-  
   options+=("$txtautoparts (gpt)" "")
   options+=("$txtautoparts (dos)" "")
   options+=("$txtautoparts (gpt,noswap)" "")
   options+=("$txtautoparts (dos,noswap)" "")
-  if [ "$eficomputer" != "0" ]; then
+  if [ "$efi" == "1" ]; then
     options+=("$txtautoparts (gpt,efi)" "")
     options+=("$txtautoparts (gpt,efi,noswap)" "")
     options+=("$txtautoparts (gpt,bios+efi,noswap)" "")
@@ -127,60 +106,67 @@ diskpartmenu(){
   options+=("$txteditparts (fdisk)" "")
   options+=("$txteditparts (cfdisk)" "")
   options+=("$txteditparts (cgdisk)" "")
-  sel=$(whiptail --backtitle "$apptitle" --title "$txtdiskpartmenu" --menu "" --cancel-button "$txtback" --default-item "$nextitem" 0 0 0 \
+  sel=$(whiptail --backtitle "$apptitle" --title "$txtpartitionmenu" --menu "" --cancel-button "$txtback" --default-item "$nextitem" 0 0 0 \
     "${options[@]}" \
     3>&1 1>&2 2>&3)
   if [ "$?" = "0" ]; then
     case $sel in
       "$txtautoparts (dos)")
-        diskpartautodos
+        partition_dos
         nextitem="$txtautoparts (dos)"
       ;;
       "$txtautoparts (gpt)")
-        diskpartautogpt
+        partition_gpt
         nextitem="$txtautoparts (gpt)"
       ;;
       "$txtautoparts (dos,noswap)")
-        diskpartautodosnoswap
+        partition_dosnoswap
         nextitem="$txtautoparts (dos,noswap)"
       ;;
       "$txtautoparts (gpt,noswap)")
-        diskpartautogptnoswap
+        partition_gptnoswap
         nextitem="$txtautoparts (gpt.noswap)"
       ;;
     # ---------------------------------------------
       "$txtautoparts (gpt,efi)")
-        diskpartautoefi
+        partition_efi
         nextitem="$txtautoparts (gpt,efi)"
       ;;
       "$txtautoparts (gpt,efi,noswap)")
-        diskpartautoefinoswap
+        partition_efinoswap
         nextitem="$txtautoparts (gpt,bios+efi,noswap)"
       ;;
       "$txtautoparts (gpt,bios+efi,noswap)")
-        diskpartautoefiusb
+        partition_efiusb
         nextitem="$txtautoparts (gpt,bios+efi,noswap)"
       ;;
     # ---------------------------------------------
       "$txteditparts (fdisk)")
-        diskpartfdisk
+        partition_fdisk
         nextitem="$txteditparts (fdisk)"
       ;;
       "$txteditparts (cfdisk)")
-        diskpartcfdisk
+        partition_cfdisk
         nextitem="$txteditparts (cfdisk)"
       ;;
       "$txteditparts (cgdisk)")
-        diskpartcgdisk
+       partition_cgdisk
         nextitem="$txteditparts (cgdisk)"
       ;;
     esac
     diskpartmenu "$nextitem"
   fi
+  if [ ! $rootdev = "none"] && [! $bootdev = "none"]; then
+      $txtmpdone="DONE"
+      $txtspdone="DONE"
+    else
+      $txtfpdone=""
+      $txtmpdone=""
+      $txtspdone=""
+    fi
 }
 
-
-diskpartautodos(){
+partition_dos(){
   items=$(lsblk -d -p -n -l -o NAME -e 7,11)
   options=()
   for item in $items; do
@@ -217,13 +203,11 @@ diskpartautodos(){
         swapdev=$device"2"
         rootdev=$device"3"
       fi
-      efimode="0"
     fi
   fi
-  selectparts
 }
 
-diskpartautodosnoswap(){
+partition_dosnoswap(){
   items=$(lsblk -d -p -n -l -o NAME -e 7,11)
   options=()
   for item in $items; do
@@ -257,13 +241,11 @@ diskpartautodosnoswap(){
         swapdev=
         rootdev=$device"4"
       fi
-      efimode="0"
     fi
   fi
-  selectparts
 }
 
-diskpartautogpt(){
+partition_gpt(){
   items=$(lsblk -d -p -n -l -o NAME -e 7,11)
   options=()
   for item in $items; do
@@ -298,12 +280,11 @@ diskpartautogpt(){
         swapdev=$device"3"
         rootdev=$device"4"
       fi
-      efimode="0"
     fi
   fi
 }
 
-diskpartautogptnoswap(){
+partition_gptnoswap(){
   items=$(lsblk -d -p -n -l -o NAME -e 7,11)
   options=()
   for item in $items; do
@@ -335,12 +316,11 @@ diskpartautogptnoswap(){
         swapdev=
         rootdev=$device"4"
       fi
-      efimode="0"
     fi
   fi
 }
 
-diskpartautoefi(){
+partition_efi(){
   items=$(lsblk -d -p -n -l -o NAME -e 7,11)
   options=()
   for item in $items; do
@@ -373,12 +353,11 @@ diskpartautoefi(){
         swapdev=$device"3"
         rootdev=$device"4"
       fi
-      efimode="1"
     fi
   fi
 }
 
-diskpartautoefinoswap(){
+partition_efinoswap(){
   items=$(lsblk -d -p -n -l -o NAME -e 7,11)
   options=()
   for item in $items; do
@@ -408,12 +387,11 @@ diskpartautoefinoswap(){
         swapdev=
         rootdev=$device"4"
       fi
-      efimode="1"
     fi
   fi
 }
 
-diskpartautoefiusb(){
+partition_efiusb(){
   items=$(lsblk -d -p -n -l -o NAME -e 7,11)
   options=()
   for item in $items; do
@@ -446,12 +424,11 @@ diskpartautoefiusb(){
         swapdev=
         rootdev=$device"4"
       fi
-      efimode="2"
     fi
   fi
 }
 
-diskpartfdisk(){
+partition_fdisk(){
   items=$(lsblk -d -p -n -l -o NAME -e 7,11)
   options=()
   for item in $items; do
@@ -466,7 +443,7 @@ diskpartfdisk(){
   fi
 }
 
-diskpartcfdisk(){
+partition_cfdisk(){
   items=$(lsblk -d -p -n -l -o NAME -e 7,11)
   options=()
   for item in $items; do
@@ -481,7 +458,7 @@ diskpartcfdisk(){
   fi
 }
 
-diskpartcgdisk(){
+partition_cgdisk(){
   items=$(lsblk -d -p -n -l -o NAME -e 7,11)
   options=()
   for item in $items; do
@@ -496,10 +473,11 @@ diskpartcgdisk(){
   fi
 }
 
-# --------------------------------------------------------
+# ----------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------
 # Select Partitions
-# --------------------------------------------------------
-selectparts(){
+# ----------------------------------------------------------------------------------------
+select_partitions(){
   items=$(lsblk -p -n -l -o NAME -e 7,11)
   options=()
   for item in $items; do
@@ -564,45 +542,53 @@ selectparts(){
       isnvme=1
     fi
   fi
+
+  if [ ! $rootdev = ""] && [! $bootdev = ""]; then
+      $txtmpdone="DONE"
+      $txtspdone="DONE"
+    else
+      $txtfpdone=""
+      $txtmpdone=""
+      $txtspdone=""
+    fi
 }
 
-# --------------------------------------------------------
-# Format Devices
-# --------------------------------------------------------
-formatdevices(){
-  if (whiptail --backtitle "$apptitle" --title "$txtformatdevices" --yesno "$txtformatdeviceconfirm" --defaultno 0 0) then
+
+# ----------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------
+# Format Partitions
+# ----------------------------------------------------------------------------------------
+format_partitions(){
+  if (whiptail --backtitle "$apptitle" --title "$txtformatpartitions" --yesno "$txtformatconfirm" --defaultno 0 0) then
     if [ ! "$bootdev" = "" ]; then
-      formatbootdevice boot $bootdev
+      formatboot boot $bootdev
+    fi
+    format_root root $rootdev
+    if [ ! "$homedev" = "" ]; then
+      format_home home $homedev
     fi
     if [ ! "$swapdev" = "" ]; then
-      formatswapdevice swap $swapdev
-    fi
-    formatdevice root $rootdev
-    if [ ! "$homedev" = "" ]; then
-      formatdevice home $homedev
-    fi
-    mountmenu "$txtmount"
+      format_swap swap $swapdev
+    fi   
   fi
 }
-formatbootdevice(){
+
+format_boot(){
   options=()
-  if [ "$efimode" == "1" ]||[ "$efimode" = "2" ]; then
+  if [ "$efi" == "1" ]; then
     options+=("fat32" "(EFI)")
   fi
   options+=("ext2" "")
   options+=("ext3" "")
   options+=("ext4" "")
-  if [ ! "$efimode" = "1" ]&&[ ! "$efimode" = "2" ]; then
-    options+=("fat32" "(EFI)")
-  fi
-  sel=$(whiptail --backtitle "$apptitle" --title "$txtformatdevice" --menu "${txtselectpartformat//%1/$1 ($2)}" 0 0 0 \
+  sel=$(whiptail --backtitle "$apptitle" --title "$txtformatpartition" --menu "${txtselectformat//%1/$1 ($2)}" 0 0 0 \
     "${options[@]}" \
     3>&1 1>&2 2>&3)
   if [ ! "$?" = "0" ]; then
     return 1
   fi
   clear
-  echo "${txtformatingpart//%1/$2} $sel"
+  echo "${txtformating//%1/$2} $sel"
   echo "----------------------------------------------"
   case $sel in
     ext2)
@@ -625,28 +611,7 @@ formatbootdevice(){
   echo ""
   pressanykey
 }
-formatswapdevice(){
-  options=()
-  options+=("swap" "")
-  sel=$(whiptail --backtitle "$apptitle" --title "$txtformatdevice" --menu "${txtselectpartformat//%1/$1 ($2)}" 0 0 0 \
-    "${options[@]}" \
-    3>&1 1>&2 2>&3)
-  if [ ! "$?" = "0" ]; then
-    return 1
-  fi
-  clear
-  echo "${txtformatingpart//%1/$swapdev} swap"
-  echo "----------------------------------------------------"
-  case $sel in
-    swap)
-      echo "mkswap $swapdev"
-      mkswap $swapdev
-      echo ""
-      pressanykey
-    ;;
-  esac
-  clear
-}
+
 formatdevice(){
   options=()
   options+=("btrfs" "")
@@ -659,14 +624,14 @@ formatdevice(){
   if [ ! "$3" = "noluks" ]; then
     options+=("luks" "encrypted")
   fi
-  sel=$(whiptail --backtitle "$apptitle" --title "$txtformatdevice" --menu "${txtselectpartformat//%1/$1 ($2)}" 0 0 0 \
+  sel=$(whiptail --backtitle "$apptitle" --title "$txtformatpartition" --menu "${txtselectpartformat//%1/$1 ($2)}" 0 0 0 \
     "${options[@]}" \
     3>&1 1>&2 2>&3)
   if [ ! "$?" = "0" ]; then
     return 1
   fi
   clear
-  echo "${txtformatingpart//%1/$2} $sel"
+  echo "${txtformating//%1/$2} $sel"
   echo "----------------------------------------------"
   case $sel in
     btrfs)
@@ -728,7 +693,7 @@ formatdevice(){
       options=()
       options+=("normal" "")
       options+=("fast" "")
-      sel=$(whiptail --backtitle "$apptitle" --title "$txtformatdevice" --menu "Wipe device ?" --cancel-button="$txtignore" 0 0 0 \
+      sel=$(whiptail --backtitle "$apptitle" --title "$txtformatpartition" --menu "Wipe device ?" --cancel-button="$txtignore" 0 0 0 \
         "${options[@]}" \
         3>&1 1>&2 2>&3)
       if [ "$?" = "0" ]; then
@@ -772,10 +737,34 @@ formatdevice(){
   pressanykey
 }
 
-# --------------------------------------------------------
-# Mount Partitions 
-# --------------------------------------------------------
-mountparts(){
+format_swap(){
+  options=()
+  options+=("swap" "")
+  sel=$(whiptail --backtitle "$apptitle" --title "$txtformatpartition" --menu "${txtselectformat//%1/$1 ($2)}" 0 0 0 \
+    "${options[@]}" \
+    3>&1 1>&2 2>&3)
+  if [ ! "$?" = "0" ]; then
+    return 1
+  fi
+  clear
+  echo "${txtformating//%1/$swapdev} swap"
+  echo "----------------------------------------------------"
+  case $sel in
+    swap)
+      echo "mkswap $swapdev"
+      mkswap $swapdev
+      echo ""
+      pressanykey
+    ;;
+  esac
+  clear
+}
+
+# ----------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------
+# Mount/Unmount Partitions
+# ----------------------------------------------------------------------------------------
+mount_partitions(){
 
   selectparts
   clear
@@ -796,14 +785,25 @@ mountparts(){
     mount $homedev /mnt/home
   fi
   pressanykey
-  installmenu
+  install_menu
 }
 
+unmount_partitions(){
+  clear
+  echo "umount -R /mnt"
+  umount -R /mnt
+  if [ ! "$swapdev" = "" ]; then
+    echo "swapoff $swapdev"
+    swapoff $swapdev
+  fi
+  pressanykey
+}
 
-# --------------------------------------------------------
-# Arch Installation Menu
-# --------------------------------------------------------
-installmenu(){
+# ----------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------
+# INSTALL MENU
+# ----------------------------------------------------------------------------------------
+install_menu(){
   if [ "$1" = "" ]; then
     nextitem="$txtinstallarchlinux"
   else
@@ -820,34 +820,32 @@ installmenu(){
   if [ "$?" = "0" ]; then
     case $sel in
       "$txtinstallarchlinux")
-        installbase
+        install_base
         nextitem="$txtbootloader"
       ;;
       "$txtbootloader")
-        archbootloadermenu
+        arch_bootloader_menu
         nextitem="$txtconfigarchlinux"
       ;;
       "$txtconfigarchlinux")
-        archconfmenu
+        arch_conf_menu
         nextitem="$txtconfigarchlinux"
       ;;
     esac
-    installmenu "$nextitem"
+    install_menu "$nextitem"
   else
-    unmountdevices
+    unmount_partitions
   fi
 }
 
-rankmirrors(){
-  clear
-  
-  pressanykey
-}
 
-
+# ----------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------
+# 
+# ----------------------------------------------------------------------------------------
 
 # install base arch linux system
-installbase(){
+install_base(){
   if (whiptail --backtitle "$apptitle" --title "$txtbasedev" --yesno "$txtinstalldev" --defaultno 0 0) then
     clear
     echo "pacstrap /mnt base base-dev"        
@@ -861,16 +859,7 @@ installbase(){
   pressanykey
 }
 
-unmountdevices(){
-  clear
-  echo "umount -R /mnt"
-  umount -R /mnt
-  if [ ! "$swapdev" = "" ]; then
-    echo "swapoff $swapdev"
-    swapoff $swapdev
-  fi
-  pressanykey
-}
+
 
 
 # --------------------------------------------------------
@@ -1726,21 +1715,59 @@ archenabledhcpcdchroot(){
 # ----------------------------------------------------------------------------------------
 # GLOBAL FUNCTIONS
 # ----------------------------------------------------------------------------------------
+check_isefi(){
+  if [ -d "/sys/firmware/efi/efivars" ]; then
+    efi=1
+    echo "EFI Available: YES"
+  else
+    efi=0
+    echo "EFI Available: NO"
+  fi
+}
+
+choose_editor(){
+  options=()
+  options+=("nano" "")
+  options+=("vim" "")
+  options+=("vi" "")
+  options+=("edit" "")
+  sel=$(whiptail --backtitle "$apptitle" --title "$txteditor" --menu "" 0 0 0 \
+    "${options[@]}" \
+    3>&1 1>&2 2>&3)
+  if [ "$?" = "0" ]; then
+    EDITOR=$sel
+  fi
+}
+
 load_language(){
   source languages/$applanguage
+}
+
+set_keymap(){
+  items=$(find /usr/share/kbd/keymaps/ -type f -printf "%f\n" | sort -V)
+  options=()
+  for item in $items; do
+    options+=("${item%%.*}" "")
+  done
+  keymap=$(whiptail --backtitle "$apptitle" --title "$txtsetkeymap" --menu "" 0 0 0 \
+    "${options[@]}" \
+    3>&1 1>&2 2>&3)
+  if [ "$?" = "0" ]; then
+    clear
+    echo "loadkeys $keymap"
+    loadkeys $keymap
+    pressanykey
+  fi
 }
 
 pressanykey(){
   read -n1 -p "$txtpressanykey"
 }
 
-check_isefi(){
-  if [ -d "/sys/firmware/efi/efivars" ]; then
-    isefi=1
-    echo "EFI Available: YES"
-  else
-    isefi=0
-    echo "EFI Available: NO"
+rebootpc(){
+  if (whiptail --backtitle "$apptitle" --title "$txtreboot" --yesno "$txtreboot ?" --defaultno 0 0) then
+    clear
+    reboot
   fi
 }
 
@@ -1763,7 +1790,7 @@ loadkeys $keymap
 # main menu start
 echo "Program will start"
 pressanykey
-mainmenu
+main_menu
 
 exit 0
 
