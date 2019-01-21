@@ -14,7 +14,7 @@
 # Global Strings
 # ----------------------------------------------------------------------------------------
 locale=en_US.UTF-8
-keymap=us
+usingkeymap=us
 
 txtexit="Exit"
 txtback="Back"
@@ -27,13 +27,13 @@ txtpressanykey="Press any key to continue."
 # ----------------------------------------------------------------------------------------
 txtmainmenutitle="Main Menu"
 txtrankmirrors="Rank Mirrors"
-txtmakepartitions="Create Partitions"
-txtselectpartitions="Select Partitions"
-txtformatpartitions="Format Partitions"
+txtmakepartitions="    Partitioning"
+txtselectpartitions="    Selection"
+txtformatpartitions="    Formating"
 txtmount="Mount and Install"
 txtkeymap="Keymap"
 txtlanguage="Language"
-txtreboot="         Reboot"
+txtreboot="                 Reboot"
 
 txtrmdone="(optional)"
 txtmpdone=""
@@ -46,7 +46,7 @@ txtmountdone=""
 # Disk Partitioning/Formating
 # ----------------------------------------------------------------------------------------
 # partitioning
-txtpartitionmenu="Disk Partitioning Menu"
+txtpartitionmenu="Partition Menu"
 txtautoparts="Automatic Partitioning"
 txteditparts="Manual Partitioning"
 
