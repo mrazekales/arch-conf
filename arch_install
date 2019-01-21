@@ -13,7 +13,7 @@
 # ----------------------------------------------------------------------------------------
 # MAIN MENU
 # ----------------------------------------------------------------------------------------
-mainmenu(){
+main_menu(){
   if [ "$1" = "" ]; then
     nextitem="."
   else
@@ -65,7 +65,7 @@ mainmenu(){
         rebootpc
       ;;
     esac
-    mainmenu "$nextitem"
+    main_menu "$nextitem"
   else
     clear
   fi
@@ -1279,7 +1279,6 @@ archbootloadermenu(){
   fi
 }
 
-
 archbootloadergrubmenu(){
   if [ "$1" = "" ]; then
     nextblitem="."
@@ -1714,7 +1713,7 @@ archenabledhcpcdchroot(){
 # ----------------------------------------------------------------------------------------
 # GLOBAL FUNCTIONS
 # ----------------------------------------------------------------------------------------
-checkefi(){
+check_efi(){
   if [ -d "/sys/firmware/efi/efivars" ]; then
     efi=1
     echo "EFI Available: YES"
@@ -1738,7 +1737,7 @@ choose_editor(){
   fi
 }
 
-loadlanguage(){
+load_language(){
   source languages/$applanguage
 }
 
@@ -1777,14 +1776,15 @@ rebootpc(){
 apptitle="Arch Linux Installer - Version: 0.1 (LGPLv3)"
 applanguage="english"
 
+pressanykey
+
 # check if efi is available
-clear
-checkefi
 echo "EFI DONE"
+check_efi
 
 # load language strings
 echo "Loading strings"
-loadlanguage
+load_language
 # load keyboard
 echo "Loading keymap"
 loadkeys $keymap
@@ -1792,7 +1792,7 @@ loadkeys $keymap
 # main menu start
 echo "Program will start"
 pressanykey
-mainmenu
+main_menu
 
 exit 0
 
