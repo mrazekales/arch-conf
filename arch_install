@@ -26,7 +26,7 @@ main_menu(){
   options+=("$txtformatpartitions" "$txtfpdone")
   options+=("$txtmount" "$txtmountdone")
   options+=("" "")
-  options+=("$txtkeymap" "$keymap")
+  options+=("$txtkeymap" "$usingkeymap")
   options+=("$txtlanguage" "$applanguage")
   options+=("" "")
   options+=("" "")
@@ -78,7 +78,7 @@ main_menu(){
 rank_mirrors(){
   clear
 
-  $txtrankmirrors="DONE"
+  $txtrmdone="DONE"
   pressanykey
 }
 
@@ -155,7 +155,7 @@ partitioning_menu(){
     esac
     diskpartmenu "$nextitem"
   fi
-  if [ ! $rootdev = "none"] && [! $bootdev = "none"]; then
+  if [ ! $rootdev == ""] && [! $bootdev == ""]; then
       $txtmpdone="DONE"
       $txtspdone="DONE"
     else
@@ -560,7 +560,7 @@ select_partitions(){
 format_partitions(){
   if (whiptail --backtitle "$apptitle" --title "$txtformatpartitions" --yesno "$txtformatconfirm" --defaultno 0 0) then
     if [ ! "$bootdev" = "" ]; then
-      formatboot boot $bootdev
+      format_boot boot $bootdev
     fi
     format_root root $rootdev
     if [ ! "$homedev" = "" ]; then
@@ -611,7 +611,7 @@ format_boot(){
   pressanykey
 }
 
-formatdevice(){
+format_root(){
   options=()
   options+=("btrfs" "")
   options+=("reiserfs" "")
@@ -1744,7 +1744,9 @@ set_keymap(){
     clear
     echo "loadkeys $keymap"
     loadkeys $keymap
+    $usingkeymap=$keymap
     pressanykey
+    
   fi
 }
 
@@ -1771,7 +1773,7 @@ load_language
 # load keyboard
 loadkeys $keymap
 
-check if efi is available
+# check if efi is available
 if [ -d "/sys/firmware/efi/efivars" ]; then
     efi=1
     echo "EFI Available: YES"
