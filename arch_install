@@ -1,26 +1,19 @@
 #!/bin/bash
-
-# Arch Linux Installer
-# --------------------------------
+# ----------------------------------------------------------------------------------------
+#             ENGLISH STRINGS
+#           Arch Linux Installer
+# ----------------------------------------------------------------------------------------
 # author:     Mrazek Ales
 #             https://github.com/mrazekales
 #
-# project:    https://github.com/mrazekales/myarch-desktop
-#
-# original project: https://github.com/MatMoul/archfi
-#                   http://sourceforge.net/projects/archfi/
+# project:    https://github.com/mrazekales/myarch-installer
 #
 # license:    LGPL-3.0 (http://opensource.org/licenses/lgpl-3.0.html)
-
-# --------------------------------------------------------
-
-
-apptitle="Arch Linux Installer - Version: 0.1 (LGPLv3)"
-skipfont="0"
-
-# --------------------------------------------------------
+#
+# ----------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------
 # MAIN MENU
-# --------------------------------------------------------
+# ----------------------------------------------------------------------------------------
 mainmenu(){
   if [ "$1" = "" ]; then
     nextitem="."
@@ -28,13 +21,8 @@ mainmenu(){
     nextitem=$1
   fi
   options=()
-  options+=("$txtsetkeymap" "(default: $keymap)")
-  options+=("$txteditor" "($txtoptional)")
-  options+=("$txteditmirrorlist" "($txtoptional)")  
-  options+=("" "")
-  options+=("$txtdiskpartmenu" "")
-  options+=("$txtformatdevices" "")
-  options+=("$txtmount" "$txtmountdesc")
+  options+=("$txtkeymap" "$keymap")
+  options+=("$txtlanguage" "$applanguage")
   options+=("" "")
   options+=("$txtreboot" "")
   sel=$(whiptail --backtitle "$apptitle" --title "$txtmainmenu" --menu "" --cancel-button "$txtexit" --default-item "$nextitem" 0 0 0 \
@@ -44,35 +32,13 @@ mainmenu(){
     case $sel in
       "$txtsetkeymap")
         setkeymap
-        nextitem="$txtdiskpartmenu"
+        nextitem="$txtsetkeymap"
       ;;
-      "$txteditor")
-        chooseeditor
-        nextitem="$txtdiskpartmenu"
+      "$txtlanguage")
+        nextitem="$txtsetkeymap"
       ;;
-      "$txteditmirrorlist")
-        rankmirrors
-        nextitem="$txtdiskpartmenu"
-      ;;
-      "$txtdiskpartmenu")
-        diskpartmenu
-        nextitem="$txtformatdevices"
-      ;;
-      "$txtformatdevices")
-        formatdevices
-        nextitem="$txtmount"
-      ;;
-      "$txtmount")
-        mountparts
-        nextitem="$txtreboot"
-      ;;
-      "$txtchangelog")
-        showchangelog
-        nextitem="$txtreboot"
-      ;;
-      "$txtreboot")
+      "$txtsetkeymap")
         rebootpc
-        nextitem="$txtreboot"
       ;;
     esac
     mainmenu "$nextitem"
@@ -1741,129 +1707,49 @@ archenabledhcpcdchroot(){
   exit
 }
 
+# ----------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------
+# GLOBAL FUNCTIONS
+# ----------------------------------------------------------------------------------------
+load_language(){
+  source /languages/$applanguage
+}
+
 pressanykey(){
   read -n1 -p "$txtpressanykey"
 }
 
-loadstrings(){
-  
-  locale=en_US.UTF-8
-  keymap="us"
-
-  txtbasedev="Devel Packages"
-  txtinstalldev="Do you want to instal 'base-devel' packages?"
-  txtinstallarch="Install Arch"
-  txtarchconfmenu="Arch Config Menu"
-  txtcreatenewuser="Create User"
-  
-  txtexit="Exit"
-  txtback="Back"
-  txtignore="Ignore"
-    
-  txtmainmenu="Main Menu"
-  txtsetkeymap="Set Keyboard Layout"
-  txteditor="Editor"
-  txtdiskpartmenu="Disk Partitions"
-  txtselectpartsmenu="Select Partitions and Install"
-  txthelp="Help"
-  txtchangelog="Changelog"
-  txtreboot="                   Reboot"
-
-  txtautoparts="Auto Partitions"
-  txteditparts="Edit Partitions"
-
-  txtautopartsconfirm="Selected device : %1\n\nAll data will be erased ! \n\nContinue ?"
-
-  txtautopartclear="Clear all partition data"
-  txtautopartcreate="Create %1 partition"
-  txthybridpartcreate="Set hybrid MBR"
-  txtautopartsettype="Set %1 partition type"
-
-  txtselectdevice="Select %1 device :"
-  txtselecteddevices="Selected devices :"
-
-  txtformatmountmenu="Format and Mount"
-  txtformatdevices="Format Devices"
-  txtformatdevice="Format Device"
-  txtmount="Mount "
-  txtunmount="Unmount"
-  txtmountdesc="Install or Config"
-
-  txtformatdeviceconfirm="Warning, all data on selected devices will be erased ! \nFormat devices ?"
-
-  txtselectpartformat="Select partition format for %1 :"
-  txtformatingpart="Formatting partition %1 as"
-  txtcreateluksdevice="Create luks device :"
-  txtopenluksdevice="Open luks device :"
-  txtluksdevicecreated="luks device created !"
-
-  txtinstallmenu="Install Menu"
-  
-  txtarchinstallmenu="Arch Install Menu"
-  
-  txteditmirrorlist="Rank mirrors"
-  txtinstallarchlinux="Install Arch"
-  txtconfigarchlinux="Config Arch"
-
-  txtsethostname="Set Computer Name"
-  txtsetfont="Set Font"
-  txtsetlocale="Set Locale"
-  txtsettime="Set Time"
-  txtsetrootpassword="Set root password"
-  
-  txtuseutcclock="Use UTC hardware clock ?"
-  
-  txtbootloader="Bootloader"
-  txtbootloadermenu="Choose your bootloader"
-  
-  txtefibootmgr="efibootmgr is required for EFI computers."
-  
-  txtbootloadergrubmenu="Grub Install Menu"
-  txtrungrubmakeconfig="Run grub-mkconfig ?"
-  txtgrubluksdetected="Encrypted root partion !\n\nAdd cryptdevice= to GRUB_CMDLINE_LINUX in /etc/default/grub ?"
-  
-  txtbootloadersyslinuxmenu="Syslinux Install Menu"
-  txtsyslinuxaddefibootmgr="EFI install require efibootmgr"
-  txtsyslinuxaddgptfdisk="GPT disk require gptfdisk"
-  txtsyslinuxaddmtools="FAT boot part require mtools"
-  
-  txtbootloadersystemdmenu="Systemd-boot Install Menu"
-  
-  txtbootloaderrefindmenu="rEFInd Install Menu"
-  
-  txtoptional="Optional"
-  txtrecommandeasyinst="Recommanded for easy install"
-  txtset="Set %1"
-  txtgenerate="Generate %1"
-  txtedit="Edit %1"
-  txtinstall="Install %1"
-  txtenable="Enable %1"
-  
-  txtpressanykey="Press any key to continue."
-  
+check_isefi(){
+  if [ -d "/sys/firmware/efi/efivars" ]; then
+    isefi=1
+    echo "EFI Available"
+  else
+    isefi=0
+    echo "EFI NO Available"
+  fi
 }
 
-# --------------------------------------------------------
-# Start of Script
-# --------------------------------------------------------
+# ----------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------
+# START OF THE PROGRAM
+# ----------------------------------------------------------------------------------------
+apptitle="Arch Linux Installer - Version: 0.1 (LGPLv3)"
+applanguage="english"
 
-#pacman -S --needed arch-install-scripts wget libnewt
-#dmesg |grep efi: > /dev/null
-if [ "$?" == "1" ]; then
-    if [ "$eficomputer" != "1" ]; then
-        eficomputer=0
-    fi
-else
-    eficomputer=1
-    if [ "$efimode" == "" ]; then
-        efimode=1
-    fi
-fi
-loadstrings
-EDITOR=nano
+# check if efi is available
+check_isefi
+
+# load language strings
+load_language
+
+# load keyboard
 loadkeys $keymap
+
+# main menu start
+echo "Program will start"
+pressanykey
 mainmenu
 
-
 exit 0
+
 # --------------------------------------------------------
