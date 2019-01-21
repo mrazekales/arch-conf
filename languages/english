@@ -27,13 +27,13 @@ txtpressanykey="Press any key to continue."
 # ----------------------------------------------------------------------------------------
 txtmainmenutitle="Main Menu"
 txtrankmirrors="Rank Mirrors"
-txtmakepartitions="    Partitioning"
-txtselectpartitions="    Selection"
-txtformatpartitions="    Formating"
+txtmakepartitions="Disk Partitioning  "
+txtselectpartitions="Partitions Selection  "
+txtformatpartitions="Partitions Formating  "
 txtmount="Mount and Install"
 txtkeymap="Keymap"
 txtlanguage="Language"
-txtreboot="                 Reboot"
+txtreboot="              Reboot"
 
 txtrmdone="(optional)"
 txtmpdone=""
@@ -65,7 +65,6 @@ txtselecteddevices="Selected devices :"
 # formating
 txtformatconfirm="Warning, all data on selected devices will be erased ! \nFormat devices ?"
 
-txtformatpartitions="Format Partitions"
 txtformatpartition="Format Partition"
 
 
@@ -79,21 +78,27 @@ txtluksdevicecreated="luks device created !"
 # ----------------------------------------------------------------------------------------
 # Arch Installation Menu
 # ----------------------------------------------------------------------------------------
-
-
-
-
+txtinstallmenu="Install Menu"
+txtinstallarchlinux="Install Arch Linux   "
+txtbootloader="Install Bootloader"
+txtconfigarchlinux="Config Arch Linux"
 txtunmount="Unmount"
 
+txtarchinstalldone=""
+txtbootloaderdone=""
 
-
-txtinstallmenu="Install Menu"
 
 txtarchinstallmenu="Arch Install Menu"
 
+
+
+
+
+
+
+
+
 txteditmirrorlist="Edit mirrorlist"
-txtinstallarchlinux="Install Arch Linux"
-txtconfigarchlinux="Config Arch Linux"
 
 txtsethostname="Set Computer Name"
 txtsetfont="Set Font"
@@ -103,7 +108,6 @@ txtsetrootpassword="Set root password"
 
 txtuseutcclock="Use UTC hardware clock ?"
 
-txtbootloader="Bootloader"
 txtbootloadermenu="Choose your bootloader"
 
 txtefibootmgr="efibootmgr is required for EFI computers."
