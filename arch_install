@@ -21,6 +21,11 @@ mainmenu(){
     nextitem=$1
   fi
   options=()
+  options+=("$txtrankmirrors" "")
+  options+=("$txtmakepartitions" "")
+  options+=("$txtformatpartitions" "")
+  options+=("$txtmount" "$txtmountdesc")
+  options+=("" "")
   options+=("$txtkeymap" "$keymap")
   options+=("$txtlanguage" "$applanguage")
   options+=("" "")
@@ -30,14 +35,23 @@ mainmenu(){
     3>&1 1>&2 2>&3)
   if [ "$?" = "0" ]; then
     case $sel in
-      "$txtsetkeymap")
+      "$txtrankmirrors")
+      ;;
+      "$txtmakepartitions")
+        nextitem="$txtformatpartitions"
+      ;;
+      "$txtformatpartitions")
+        nextitem="$txtmount"
+      ;;
+      "$txtmount")
+        nextitem="$txtreboot"
+      ;;
+      "$txtkeymap")
         setkeymap
-        nextitem="$txtsetkeymap"
       ;;
       "$txtlanguage")
-        nextitem="$txtsetkeymap"
       ;;
-      "$txtsetkeymap")
+      "$txtreboot")
         rebootpc
       ;;
     esac
@@ -1712,7 +1726,7 @@ archenabledhcpcdchroot(){
 # GLOBAL FUNCTIONS
 # ----------------------------------------------------------------------------------------
 load_language(){
-  source /languages/$applanguage
+  source languages/$applanguage
 }
 
 pressanykey(){
@@ -1722,10 +1736,10 @@ pressanykey(){
 check_isefi(){
   if [ -d "/sys/firmware/efi/efivars" ]; then
     isefi=1
-    echo "EFI Available"
+    echo "EFI Available: YES"
   else
     isefi=0
-    echo "EFI NO Available"
+    echo "EFI Available: NO"
   fi
 }
 
@@ -1737,11 +1751,11 @@ apptitle="Arch Linux Installer - Version: 0.1 (LGPLv3)"
 applanguage="english"
 
 # check if efi is available
+clear
 check_isefi
 
 # load language strings
 load_language
-
 # load keyboard
 loadkeys $keymap
 
