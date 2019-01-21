@@ -29,11 +29,15 @@ txtmainmenutitle="Main Menu"
 txtrankmirrors="Rank Mirrors"
 txtmakepartitions="Create Partitions"
 txtformatpartitions="Format Partitions"
-txtmount="Mount"
-txtmountdesc="to /mnt"
+txtmount="Mount and Install"
 txtkeymap="Keymap"
 txtlanguage="Language"
-txtreboot="           Reboot"
+txtreboot="         Reboot"
+
+txtrmdone=""
+txtmpdone=""
+txtfpdone=""
+txtmountdone=""
 
 # ----------------------------------------------------------------------------------------
 # ----------------------------------------------------------------------------------------
