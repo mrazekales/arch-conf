@@ -22,10 +22,10 @@ main_menu(){
   options=()
   options+=("$txtrankmirrors" "$txtrmdone")
   options+=("" "")
-  options+=("Disk Device" "")
   options+=("$txtmakepartitions" "$txtmpdone")
   options+=("$txtselectpartitions" "$txtspdone")
   options+=("$txtformatpartitions" "$txtfpdone")
+  options+=("" "")
   options+=("$txtmount" "$txtmountdone")
   options+=("" "")
   options+=("$txtkeymap" "$usingkeymap")
@@ -61,7 +61,7 @@ main_menu(){
         set_keymap
       ;;
       "$txtlanguage")
-      load_language
+      choose_language
       ;;
       "$txtreboot")
         rebootpc
@@ -157,7 +157,7 @@ partitioning_menu(){
     esac
     diskpartmenu "$nextitem"
   fi
-  if [ ! $rootdev == ""] && [! $bootdev == ""]; then
+  if [ ! $rootdev = ""] && [! $bootdev = ""]; then
       $txtmpdone="DONE"
       $txtspdone="DONE"
     else
@@ -1729,6 +1729,24 @@ choose_editor(){
   fi
 }
 
+choose_language(){
+  options=()
+  options+=("english" "")
+  
+  sel=$(whiptail --backtitle "$apptitle" --title "$txtlanguage" --menu "" 0 0 0 \
+    "${options[@]}" \
+    3>&1 1>&2 2>&3)
+  if [ ! "$?" = "0" ]; then
+    case $sel in
+    "english")
+      clear
+      $applanguage="english"
+      load_language
+    ;;
+  esac
+  fi
+}
+
 load_language(){
   source languages/$applanguage
 }
@@ -1746,7 +1764,7 @@ set_keymap(){
     clear
     echo "loadkeys $keymap"
     loadkeys $keymap
-    $usingkeymap=$keymap
+    usingkeymap=$keymap
     pressanykey
     
   fi
