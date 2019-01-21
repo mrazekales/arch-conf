@@ -26,12 +26,14 @@ txtpressanykey="Press any key to continue."
 # Main Menu
 # ----------------------------------------------------------------------------------------
 txtmainmenutitle="Main Menu"
-txtsetkeymap="Set Keyboard Layout"
-txtdiskpartmenu="Disk Partitions"
-txtselectpartsmenu="Select Partitions and Install"
-txtkeymap="Change Keymap"
-txtlanguage="Change Language"
-txtreboot="Reboot"
+txtrankmirrors="Rank Mirrors"
+txtmakepartitions="Create Partitions"
+txtformatpartitions="Format Partitions"
+txtmount="Mount"
+txtmountdesc="to /mnt"
+txtkeymap="Keymap"
+txtlanguage="Language"
+txtreboot="           Reboot"
 
 # ----------------------------------------------------------------------------------------
 # ----------------------------------------------------------------------------------------
@@ -55,9 +57,7 @@ txtselecteddevices="Selected devices :"
 txtformatmountmenu="Format and Mount"
 txtformatdevices="Format Devices"
 txtformatdevice="Format Device"
-txtmount="Mount"
 txtunmount="Unmount"
-txtmountdesc="Install or Config"
 
 txtformatdeviceconfirm="Warning, all data on selected devices will be erased ! \nFormat devices ?"
 
