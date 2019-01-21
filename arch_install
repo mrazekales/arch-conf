@@ -1768,23 +1768,22 @@ applanguage="english"
 
 # load language strings
 echo "Loading strings"
-load_language
+#load_language
 # load keyboard
 echo "Loading keymap"
-loadkeys $keymap
+#loadkeys $keymap
 
 # check if efi is available
-if [ -d "/sys/firmware/efi/efivars" ]; then
-    efi=1
-    echo "EFI Available: YES"
-  else
-    efi=0
-    echo "EFI Available: NO"
-  fi
+# if [ -d "/sys/firmware/efi/efivars" ]; then
+#     efi=1
+#     echo "EFI Available: YES"
+#   else
+#     efi=0
+#     echo "EFI Available: NO"
+#   fi
 
 # main menu start
 echo "Program will start"
-pressanykey
 main_menu
 
 exit 0
