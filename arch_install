@@ -13,7 +13,7 @@
 # ----------------------------------------------------------------------------------------
 # MAIN MENU
 # ----------------------------------------------------------------------------------------
-main_menu(){
+mainmenu(){
   if [ "$1" = "" ]; then
     nextitem="."
   else
@@ -65,7 +65,7 @@ main_menu(){
         rebootpc
       ;;
     esac
-    main_menu "$nextitem"
+    mainmenu "$nextitem"
   else
     clear
   fi
@@ -1714,7 +1714,7 @@ archenabledhcpcdchroot(){
 # ----------------------------------------------------------------------------------------
 # GLOBAL FUNCTIONS
 # ----------------------------------------------------------------------------------------
-check_isefi(){
+checkefi(){
   if [ -d "/sys/firmware/efi/efivars" ]; then
     efi=1
     echo "EFI Available: YES"
@@ -1738,7 +1738,7 @@ choose_editor(){
   fi
 }
 
-load_language(){
+loadlanguage(){
   source languages/$applanguage
 }
 
@@ -1779,12 +1779,12 @@ applanguage="english"
 
 # check if efi is available
 clear
-check_isefi
+checkefi
 echo "EFI DONE"
 
 # load language strings
 echo "Loading strings"
-load_language
+loadlanguage
 # load keyboard
 echo "Loading keymap"
 loadkeys $keymap
@@ -1792,7 +1792,7 @@ loadkeys $keymap
 # main menu start
 echo "Program will start"
 pressanykey
-main_menu
+mainmenu
 
 exit 0
 
