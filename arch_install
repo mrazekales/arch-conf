@@ -21,13 +21,14 @@ mainmenu(){
     nextitem=$1
   fi
   options=()
-  options+=("$txtrankmirrors" "")
-  options+=("$txtmakepartitions" "")
-  options+=("$txtformatpartitions" "")
-  options+=("$txtmount" "$txtmountdesc")
+  options+=("$txtrankmirrors" "$txtrmdone")
+  options+=("$txtmakepartitions" "$txtmpdone")
+  options+=("$txtformatpartitions" "$txtfpdone")
+  options+=("$txtmount" "$txtmountdone")
   options+=("" "")
   options+=("$txtkeymap" "$keymap")
   options+=("$txtlanguage" "$applanguage")
+  options+=("" "")
   options+=("" "")
   options+=("$txtreboot" "")
   sel=$(whiptail --backtitle "$apptitle" --title "$txtmainmenu" --menu "" --cancel-button "$txtexit" --default-item "$nextitem" 0 0 0 \
