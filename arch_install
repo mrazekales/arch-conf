@@ -1773,7 +1773,7 @@ applanguage="english"
 # load language strings
 load_language
 # load keyboard
-loadkeys $keymap
+loadkeys $usingkeymap
 
 # check if efi is available
 if [ -d "/sys/firmware/efi/efivars" ]; then
