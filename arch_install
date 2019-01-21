@@ -21,6 +21,8 @@ main_menu(){
   fi
   options=()
   options+=("$txtrankmirrors" "$txtrmdone")
+  options+=("" "")
+  options+=("Disk Device" "")
   options+=("$txtmakepartitions" "$txtmpdone")
   options+=("$txtselectpartitions" "$txtspdone")
   options+=("$txtformatpartitions" "$txtfpdone")
