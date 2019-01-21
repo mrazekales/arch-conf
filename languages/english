@@ -28,25 +28,27 @@ txtpressanykey="Press any key to continue."
 txtmainmenutitle="Main Menu"
 txtrankmirrors="Rank Mirrors"
 txtmakepartitions="Create Partitions"
+txtselectpartitions="Select Partitions"
 txtformatpartitions="Format Partitions"
 txtmount="Mount and Install"
 txtkeymap="Keymap"
 txtlanguage="Language"
 txtreboot="         Reboot"
 
-txtrmdone=""
+txtrmdone="(optional)"
 txtmpdone=""
+txtspdone=""
 txtfpdone=""
 txtmountdone=""
 
 # ----------------------------------------------------------------------------------------
 # ----------------------------------------------------------------------------------------
-# Arch Installation Menu
+# Disk Partitioning/Formating
 # ----------------------------------------------------------------------------------------
-txtchangelog="Changelog"
-
-txtautoparts="Auto Partitions"
-txteditparts="Edit Partitions"
+# partitioning
+txtpartitionmenu="Disk Partitioning Menu"
+txtautoparts="Automatic Partitioning"
+txteditparts="Manual Partitioning"
 
 txtautopartsconfirm="Selected device : %1\n\nAll data will be erased ! \n\nContinue ?"
 
@@ -55,21 +57,35 @@ txtautopartcreate="Create %1 partition"
 txthybridpartcreate="Set hybrid MBR"
 txtautopartsettype="Set %1 partition type"
 
+# select partitions
+txtselectpartsmenu="Select Partitions Menu"
 txtselectdevice="Select %1 device :"
 txtselecteddevices="Selected devices :"
 
-txtformatmountmenu="Format and Mount"
-txtformatdevices="Format Devices"
-txtformatdevice="Format Device"
-txtunmount="Unmount"
+# formating
+txtformatconfirm="Warning, all data on selected devices will be erased ! \nFormat devices ?"
 
-txtformatdeviceconfirm="Warning, all data on selected devices will be erased ! \nFormat devices ?"
+txtformatpartitions="Format Partitions"
+txtformatpartition="Format Partition"
 
-txtselectpartformat="Select partition format for %1 :"
-txtformatingpart="Formatting partition %1 as"
+
+txtselectformat="Select partition format for %1 :"
+txtformating="Formatting partition %1 as"
 txtcreateluksdevice="Create luks device :"
 txtopenluksdevice="Open luks device :"
 txtluksdevicecreated="luks device created !"
+
+# ----------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------
+# Arch Installation Menu
+# ----------------------------------------------------------------------------------------
+
+
+
+
+txtunmount="Unmount"
+
+
 
 txtinstallmenu="Install Menu"
 
