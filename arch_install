@@ -1778,7 +1778,68 @@ rebootpc(){
 apptitle="Arch Linux Installer - Version: 0.1 (LGPLv3)"
 applanguage="english"
 
-# check if efi is available
+while (( "$#" )); do
+  case $1 in
+    --help)
+      echo "archfi"
+      echo "------"
+      echo "-sf | --skip-font                  Skip setfont from language files"
+      echo "-efiX                              -efi0 : disable EFI, -efi1 efi inst, -efi2 efi hybrid inst"
+      echo "-t | --test ghusername ghbranch    Test language files"
+      exit 0
+    ;;
+    -sf | --skip-font) skipfont=1;;
+    -t | --test) baseurl="https://raw.githubusercontent"
+                baseurl="$baseurl.com/""$2/archfi/$3";;
+    -efi0) efimode=0;;
+    -efi1)
+      eficomputer=1
+      efimode=1
+    ;;
+    -efi2)
+      eficomputer=1
+      efimode=2
+    ;;
+    --chroot) chroot=1
+              command=$2
+              args=$3;;
+  esac
+  shift
+done
+if [ "$chroot" = "1" ]; then
+  case $command in
+    'setrootpassword') archsetrootpasswordchroot;;
+    'setlocale') archsetlocalechroot;;
+    'settimeutc') archsettimeutcchroot;;
+    'settimelocal') archsettimelocalchroot;;
+    'genmkinitcpio') archgenmkinitcpiochroot;;
+    'enabledhcpcd') archenabledhcpcdchroot;;
+    'grubinstall') archgrubinstallchroot;;
+    'grubbootloaderinstall') archgrubinstallbootloaderchroot $args;;
+    'grubbootloaderefiinstall') archgrubinstallbootloaderefichroot $args;;
+    'grubbootloaderefiusbinstall') archgrubinstallbootloaderefiusbchroot $args;;
+    'syslinuxbootloaderinstall') archsyslinuxinstallbootloaderchroot $args;;
+    'syslinuxbootloaderefiinstall') archsyslinuxinstallbootloaderefichroot $args;;
+    'systemdbootloaderinstall') archsystemdinstallchroot $args;;
+    'refindbootloaderinstall') archrefindinstallchroot $args;;
+    'archdiinstallandlaunch') archdiinstallandlaunchchroot;;
+    'archdiinstall') archdiinstallchroot;;
+    'archdilaunch') archdilaunchchroot;;
+  esac
+else
+  pacman -S --needed arch-install-scripts wget libnewt
+  dmesg |grep efi: > /dev/null
+  if [ "$?" == "1" ]; then
+    if [ "$eficomputer" != "1" ]; then
+      eficomputer=0
+    fi
+  else
+    eficomputer=1
+    if [ "$efimode" == "" ]; then
+      efimode=1
+    fi
+  fi
+  # check if efi is available
 clear
 check_isefi
 
@@ -1791,7 +1852,5 @@ loadkeys $keymap
 echo "Program will start"
 pressanykey
 main_menu
-
+fi
 exit 0
-
-# --------------------------------------------------------
