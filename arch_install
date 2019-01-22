@@ -21,15 +21,14 @@ main_menu(){
   fi
   options=()
   options+=("$txtrankmirrors" "$txtrmdone")
+  options+=("$txtkeymap" "$usingkeymap")
+  options+=("$txtlanguage" "$applanguage")
   options+=("" "")
   options+=("$txtmakepartitions" "$txtmpdone")
   options+=("$txtselectpartitions" "$txtspdone")
   options+=("$txtformatpartitions" "$txtfpdone")
   options+=("" "")
   options+=("$txtmount" "$txtmountdone")
-  options+=("" "")
-  options+=("$txtkeymap" "$usingkeymap")
-  options+=("$txtlanguage" "$applanguage")
   options+=("" "")
   options+=("" "")
   options+=("$txtreboot" "")
@@ -825,7 +824,7 @@ install_menu(){
         nextitem="$txtbootloader"
       ;;
       "$txtbootloader")
-        arch_bootloader_menu
+        install_bootloader_menu
         nextitem="$txtconfigarchlinux"
       ;;
       "$txtconfigarchlinux")
@@ -839,13 +838,10 @@ install_menu(){
   fi
 }
 
-
 # ----------------------------------------------------------------------------------------
 # ----------------------------------------------------------------------------------------
-# 
+# INSTALL ARCH LINUX
 # ----------------------------------------------------------------------------------------
-
-# install base arch linux system
 install_base(){
   if (whiptail --backtitle "$apptitle" --title "$txtbasedev" --yesno "$txtinstalldev" --defaultno 0 0) then
     clear
@@ -856,16 +852,189 @@ install_base(){
     echo "pacstrap /mnt base"        
     pacstrap /mnt base
   fi
-  
   pressanykey
 }
 
+# ----------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------
+# INSTALL BOOTLOADER
+# ----------------------------------------------------------------------------------------
+install_bootloader_menu(){
+  options=()
+  options+=("grub" "")
+  sel=$(whiptail --backtitle "$apptitle" --title "$txtbootloadermenu" --menu "" --cancel-button "$txtback" 0 0 0 \
+    "${options[@]}" \
+    3>&1 1>&2 2>&3)
+  if [ "$?" = "0" ]; then
+    case $sel in
+      "grub") grub_menu;;
+    esac
+  fi
+}
 
+# ----------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------
+# GRUB MENU/INSTALL
+# ----------------------------------------------------------------------------------------
+grub_menu(){
+  if [ "$1" = "" ]; then
+    nextblitem="."
+  else
+    nextblitem=$1
+  fi
+  options=()
+  options+=("${txtinstall//%1/grub}" "pacstrap grub (efibootmgr), grub-mkconfig")
+  options+=("${txtedit//%1/grub}" "($txtoptional)")
+  options+=("${txtinstall//%1/bootloader}" "grub-install")
+  sel=$(whiptail --backtitle "$apptitle" --title "$txtbootloadergrubmenu" --menu "" --cancel-button "$txtback" --default-item "$nextblitem" 0 0 0 \
+    "${options[@]}" \
+    3>&1 1>&2 2>&3)
+  if [ "$?" = "0" ]; then
+    case $sel in
+      "${txtinstall//%1/grub}")
+        grub_install
+        nextblitem="${txtinstall//%1/bootloader}"
+      ;;
+      "${txtedit//%1/grub}")
+        choose_editor
+        $EDITOR /mnt/etc/default/grub
+        if (whiptail --backtitle "$apptitle" --title "${txtedit//%1/grub}" --yesno "$txtrungrubmakeconfig" 0 0) then
+          clear
+          arch_chroot grubinstall
+          pressanykey
+        fi
+        nextblitem="${txtinstall//%1/bootloader}"
+      ;;
+      "${txtinstall//%1/bootloader}")
+        grub_installbootloader
+        nextblitem="${txtinstall//%1/bootloader}"
+      ;;
+    esac
+    grub_menu "$nextblitem"
+  fi
+}
 
+grub_install(){
+  clear
+  echo "pacstrap /mnt grub"
+  pacstrap /mnt grub
+  pressanykey
+  
+  if [ "$efi" == "1" ]; then
+    if (whiptail --backtitle "$apptitle" --title "${txtinstall//%1/efibootmgr}" --yesno "$txtefibootmgr" --defaultno 0 0) then
+      clear
+      echo "pacstrap /mnt efibootmgr"
+      pacstrap /mnt efibootmgr
+      pressanykey
+    fi
+  fi
+  
+  if [ "$luksroot" = "1" ]; then
+    if (whiptail --backtitle "$apptitle" --title "${txtinstall//%1/grub}" --yesno "$txtgrubluksdetected" 0 0) then
+      clear
+      echo "sed -i /GRUB_CMDLINE_LINUX=/c\GRUB_CMDLINE_LINUX=\\\"cryptdevice=/dev/disk/by-uuid/$luksrootuuid:root\\\" /mnt/etc/default/grub"
+      sed -i /GRUB_CMDLINE_LINUX=/c\GRUB_CMDLINE_LINUX=\"cryptdevice=/dev/disk/by-uuid/$luksrootuuid:root\" /mnt/etc/default/grub
+      pressanykey
+    fi
+  fi
+  
+  clear
+  echo "arch_chroot grubinstall"
+  arch_chroot grubinstall
+  pressanykey
+}
 
-# --------------------------------------------------------
-# Arch Config Menu
-# --------------------------------------------------------
+grub_installchroot(){
+  echo "mkdir /boot/grub"
+  echo "grub-mkconfig -o /boot/grub/grub.cfg"
+  mkdir /boot/grub
+  grub-mkconfig -o /boot/grub/grub.cfg
+  exit
+}
+
+grub_installbootloader(){
+  items=$(lsblk -d -p -n -l -o NAME -e 7,11)
+  options=()
+  for item in $items; do
+    options+=("$item" "")
+  done
+  device=$(whiptail --backtitle "$apptitle" --title "${txtinstall//%1/bootloader}" --menu "" 0 0 0 \
+    "${options[@]}" \
+    3>&1 1>&2 2>&3)
+  if [ "$?" = "0" ]; then
+    if [ "$eficomputer" == "1" ]; then
+      options=()
+      if [ "$efimode" = "1" ]; then
+        options+=("EFI" "")
+        options+=("BIOS" "")
+        options+=("BIOS+EFI" "")
+      elif [ "$efimode" = "2" ]; then
+        options+=("BIOS+EFI" "")
+        options+=("BIOS" "")
+        options+=("EFI" "")
+      else
+        options+=("BIOS" "")
+        options+=("EFI" "")
+        options+=("BIOS+EFI" "")
+      fi
+      sel=$(whiptail --backtitle "$apptitle" --title "${txtinstall//%1/bootloader}" --menu "" --cancel-button "$txtback" 0 0 0 \
+        "${options[@]}" \
+        3>&1 1>&2 2>&3)
+      if [ "$?" = "0" ]; then
+        clear
+        case $sel in
+          "BIOS") arch_chroot grubbootloaderinstall $device;;
+          "EFI") arch_chroot grubbootloaderefiinstall $device;;
+          "BIOS+EFI") arch_chroot grubbootloaderefiusbinstall $device;;
+        esac
+        pressanykey
+      fi
+    else
+      clear
+      arch_chroot grubbootloaderinstall $device
+      pressanykey
+    fi
+  fi
+}
+grub_installbootloaderchroot(){
+  if [ ! "$1" = "none" ]; then
+    echo "grub-install --target=i386-pc --recheck $1"
+    grub-install --target=i386-pc --recheck $1
+  fi
+  exit
+}
+grub_installbootloaderefichroot(){
+  if [ ! "$1" = "none" ]; then
+    echo "grub-install --target=x86_64-efi --efi-directory=/boot --recheck $1"
+    grub-install --target=x86_64-efi --efi-directory=/boot --recheck $1
+    isvbox=$(lspci | grep "VirtualBox G")
+    if [ "$isvbox" ]; then
+      echo "VirtualBox detected, creating startup.nsh..."
+      echo "\EFI\arch\grubx64.efi" > /boot/startup.nsh
+    fi
+  fi
+  exit
+}
+
+grub_installbootloaderefiusbchroot(){
+  if [ ! "$1" = "none" ]; then
+    echo "grub-install --target=i386-pc --recheck $1"
+    grub-install --target=i386-pc --recheck $1
+    echo "grub-install --target=x86_64-efi --efi-directory=/boot --removable --recheck $1"
+    grub-install --target=x86_64-efi --efi-directory=/boot --removable --recheck $1
+    isvbox=$(lspci | grep "VirtualBox G")
+    if [ "$isvbox" ]; then
+      echo "VirtualBox detected, creating startup.nsh..."
+      echo "\EFI\arch\grubx64.efi" > /boot/startup.nsh
+    fi
+  fi
+  exit
+}
+
+# ----------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------
+# CONF MENU
+# ----------------------------------------------------------------------------------------
 archconfmenu(){
   if [ "$1" = "" ]; then
     nextitem="."
@@ -993,17 +1162,6 @@ archconfmenu(){
     archconfmenu "$nextitem"
   fi
 }
-
-
-archchroot(){
-  echo "arch-chroot /mnt /root"
-  cp $0 /mnt/root
-  chmod 755 /mnt/root/$(basename "$0")
-  arch-chroot /mnt /root/$(basename "$0") --chroot $1 $2
-  rm /mnt/root/$(basename "$0")
-  echo "exit"
-}
-
 
 archsethostname(){
   hostname=$(whiptail --backtitle "$apptitle" --title "$txtsethostname" --inputbox "" 0 0 "archlinux" 3>&1 1>&2 2>&3)
@@ -1258,191 +1416,8 @@ archgenmkinitcpiochroot(){
   exit
 }
 
-archbootloadermenu(){
-  options=()
-  options+=("grub" "")
-  if [ "$efimode" == "1" ]; then
-    options+=("systemd-boot" "")
-    options+=("refind" "")
-  fi
-  if [ "$efimode" != "2" ]; then
-    options+=("syslinux" "")
-  fi
-  sel=$(whiptail --backtitle "$apptitle" --title "$txtbootloadermenu" --menu "" --cancel-button "$txtback" 0 0 0 \
-    "${options[@]}" \
-    3>&1 1>&2 2>&3)
-  if [ "$?" = "0" ]; then
-    case $sel in
-      "grub") archbootloadergrubmenu;;
-      "systemd-boot")archbootloadersystemdbmenu;;
-      "refind") archbootloaderrefindmenu;;
-      "syslinux")archbootloadersyslinuxbmenu;;
-    esac
-  fi
-}
 
-archbootloadergrubmenu(){
-  if [ "$1" = "" ]; then
-    nextblitem="."
-  else
-    nextblitem=$1
-  fi
-  options=()
-  options+=("${txtinstall//%1/grub}" "pacstrap grub (efibootmgr), grub-mkconfig")
-  options+=("${txtedit//%1/grub}" "($txtoptional)")
-  options+=("${txtinstall//%1/bootloader}" "grub-install")
-  sel=$(whiptail --backtitle "$apptitle" --title "$txtbootloadergrubmenu" --menu "" --cancel-button "$txtback" --default-item "$nextblitem" 0 0 0 \
-    "${options[@]}" \
-    3>&1 1>&2 2>&3)
-  if [ "$?" = "0" ]; then
-    case $sel in
-      "${txtinstall//%1/grub}")
-        archgrubinstall
-        nextblitem="${txtinstall//%1/bootloader}"
-      ;;
-      "${txtedit//%1/grub}")
-        $EDITOR /mnt/etc/default/grub
-        if (whiptail --backtitle "$apptitle" --title "${txtedit//%1/grub}" --yesno "$txtrungrubmakeconfig" 0 0) then
-          clear
-          archchroot grubinstall
-          pressanykey
-        fi
-        nextblitem="${txtinstall//%1/bootloader}"
-      ;;
-      "${txtinstall//%1/bootloader}")
-        archgrubinstallbootloader
-        nextblitem="${txtinstall//%1/bootloader}"
-      ;;
-    esac
-    archbootloadergrubmenu "$nextblitem"
-  fi
-}
 
-archgrubinstall(){
-  clear
-  echo "pacstrap /mnt grub"
-  pacstrap /mnt grub
-  pressanykey
-  
-  if [ "$eficomputer" == "1" ]; then
-    if [ "$efimode" == "1" ]||[ "$efimode" == "2" ]; then
-      if (whiptail --backtitle "$apptitle" --title "${txtinstall//%1/efibootmgr}" --yesno "$txtefibootmgr" 0 0) then
-        clear
-        echo "pacstrap /mnt efibootmgr"
-        pacstrap /mnt efibootmgr
-        pressanykey
-      fi
-    else
-      if (whiptail --backtitle "$apptitle" --title "${txtinstall//%1/efibootmgr}" --yesno "$txtefibootmgr" --defaultno 0 0) then
-        clear
-        echo "pacstrap /mnt efibootmgr"
-        pacstrap /mnt efibootmgr
-        pressanykey
-      fi
-    fi
-  fi
-  
-  if [ "$luksroot" = "1" ]; then
-    if (whiptail --backtitle "$apptitle" --title "${txtinstall//%1/grub}" --yesno "$txtgrubluksdetected" 0 0) then
-      clear
-      echo "sed -i /GRUB_CMDLINE_LINUX=/c\GRUB_CMDLINE_LINUX=\\\"cryptdevice=/dev/disk/by-uuid/$luksrootuuid:root\\\" /mnt/etc/default/grub"
-      sed -i /GRUB_CMDLINE_LINUX=/c\GRUB_CMDLINE_LINUX=\"cryptdevice=/dev/disk/by-uuid/$luksrootuuid:root\" /mnt/etc/default/grub
-      pressanykey
-    fi
-  fi
-  
-  clear
-  echo "archchroot grubinstall"
-  archchroot grubinstall
-  pressanykey
-}
-
-archgrubinstallchroot(){
-  echo "mkdir /boot/grub"
-  echo "grub-mkconfig -o /boot/grub/grub.cfg"
-  mkdir /boot/grub
-  grub-mkconfig -o /boot/grub/grub.cfg
-  exit
-}
-
-archgrubinstallbootloader(){
-  items=$(lsblk -d -p -n -l -o NAME -e 7,11)
-  options=()
-  for item in $items; do
-    options+=("$item" "")
-  done
-  device=$(whiptail --backtitle "$apptitle" --title "${txtinstall//%1/bootloader}" --menu "" 0 0 0 \
-    "${options[@]}" \
-    3>&1 1>&2 2>&3)
-  if [ "$?" = "0" ]; then
-    if [ "$eficomputer" == "1" ]; then
-      options=()
-      if [ "$efimode" = "1" ]; then
-        options+=("EFI" "")
-        options+=("BIOS" "")
-        options+=("BIOS+EFI" "")
-      elif [ "$efimode" = "2" ]; then
-        options+=("BIOS+EFI" "")
-        options+=("BIOS" "")
-        options+=("EFI" "")
-      else
-        options+=("BIOS" "")
-        options+=("EFI" "")
-        options+=("BIOS+EFI" "")
-      fi
-      sel=$(whiptail --backtitle "$apptitle" --title "${txtinstall//%1/bootloader}" --menu "" --cancel-button "$txtback" 0 0 0 \
-        "${options[@]}" \
-        3>&1 1>&2 2>&3)
-      if [ "$?" = "0" ]; then
-        clear
-        case $sel in
-          "BIOS") archchroot grubbootloaderinstall $device;;
-          "EFI") archchroot grubbootloaderefiinstall $device;;
-          "BIOS+EFI") archchroot grubbootloaderefiusbinstall $device;;
-        esac
-        pressanykey
-      fi
-    else
-      clear
-      archchroot grubbootloaderinstall $device
-      pressanykey
-    fi
-  fi
-}
-archgrubinstallbootloaderchroot(){
-  if [ ! "$1" = "none" ]; then
-    echo "grub-install --target=i386-pc --recheck $1"
-    grub-install --target=i386-pc --recheck $1
-  fi
-  exit
-}
-archgrubinstallbootloaderefichroot(){
-  if [ ! "$1" = "none" ]; then
-    echo "grub-install --target=x86_64-efi --efi-directory=/boot --recheck $1"
-    grub-install --target=x86_64-efi --efi-directory=/boot --recheck $1
-    isvbox=$(lspci | grep "VirtualBox G")
-    if [ "$isvbox" ]; then
-      echo "VirtualBox detected, creating startup.nsh..."
-      echo "\EFI\arch\grubx64.efi" > /boot/startup.nsh
-    fi
-  fi
-  exit
-}
-
-archgrubinstallbootloaderefiusbchroot(){
-  if [ ! "$1" = "none" ]; then
-    echo "grub-install --target=i386-pc --recheck $1"
-    grub-install --target=i386-pc --recheck $1
-    echo "grub-install --target=x86_64-efi --efi-directory=/boot --removable --recheck $1"
-    grub-install --target=x86_64-efi --efi-directory=/boot --removable --recheck $1
-    isvbox=$(lspci | grep "VirtualBox G")
-    if [ "$isvbox" ]; then
-      echo "VirtualBox detected, creating startup.nsh..."
-      echo "\EFI\arch\grubx64.efi" > /boot/startup.nsh
-    fi
-  fi
-  exit
-}
 
 archbootloadersyslinuxbmenu(){
   if [ "$1" = "" ]; then
@@ -1715,6 +1690,15 @@ archenabledhcpcdchroot(){
 # ----------------------------------------------------------------------------------------
 # GLOBAL FUNCTIONS
 # ----------------------------------------------------------------------------------------
+arch_chroot(){
+  echo "arch-chroot /mnt /root"
+  cp $0 /mnt/root
+  chmod 755 /mnt/root/$(basename "$0")
+  arch-chroot /mnt /root/$(basename "$0") --chroot $1 $2
+  rm /mnt/root/$(basename "$0")
+  echo "exit"
+}
+
 choose_editor(){
   options=()
   options+=("nano" "")
