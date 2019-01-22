@@ -765,8 +765,8 @@ format_swap(){
 # Mount/Unmount Partitions
 # ----------------------------------------------------------------------------------------
 mount_partitions(){
-
-  if [ $rootdev = "" ] && [ $bootdev = "" ]
+  clear
+  if [ "$rootdev" = "" ] && [ "$bootdev" = "" ]; then
     select_partitions
   fi
   clear
