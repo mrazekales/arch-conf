@@ -84,7 +84,6 @@ txtarchinstallmenu="Arch Install Menu"
 txtbasedev="Install Devel Packages"
 txtinstalldev="Do you want to install 'base-dev' packages?"
 
-
 # ----------------------------------------------------------------------------------------
 # ----------------------------------------------------------------------------------------
 # Bootloader Menu
@@ -104,24 +103,20 @@ txtsyslinuxaddmtools="FAT boot part require mtools"
 
 txtbootloaderrefindmenu="rEFInd Install Menu"
 
-
-
 # ----------------------------------------------------------------------------------------
 # ----------------------------------------------------------------------------------------
 # Config Menu
 # ----------------------------------------------------------------------------------------
-
-
-
+txtconfmenu="Config Menu"
 txtsethostname="Set Computer Name"
+txtsetkeymap="Set Keymap"
 txtsetfont="Set Font"
 txtsetlocale="Set Locale"
 txtsettime="Set Time"
 txtsetrootpassword="Set root password"
+txtcreatenewuser="Create home user"
 
 txtuseutcclock="Use UTC hardware clock ?"
-
-
 
 txtoptional="Optional"
 txtrecommandeasyinst="Recommanded for easy install"
