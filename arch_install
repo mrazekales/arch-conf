@@ -1045,7 +1045,7 @@ conf_menu(){
   options+=("$txtsetlocale" "/etc/locale.conf, /etc/locale.gen")
   options+=("$txtsettime" "/etc/localtime")
   options+=("$txtsetrootpassword" "")
-  options+=("$txtcreatenewuser" "install sudo")
+  options+=("$txtcreatenewuser" "sudo")
   options+=("${txtgenerate//%1/fstab}" "")
   if [ "$luksdrive" = "1" ]; then
     options+=("${txtgenerate//%1/crypttab}" "")
@@ -1063,38 +1063,34 @@ conf_menu(){
   options+=("${txtedit//%1/crypttab}" "($txtoptional)")
   options+=("${txtedit//%1/mkinitcpio.conf}" "($txtoptional)")
   options+=("${txtedit//%1/mirrorlist}" "($txtoptional)")
-  sel=$(whiptail --backtitle "$apptitle" --title "$txtarchconfmenu" --menu "" --cancel-button "$txtback" --default-item "$nextitem" 0 0 0 \
+  sel=$(whiptail --backtitle "$apptitle" --title "$txtconfmenu" --menu "" --cancel-button "$txtback" --default-item "$nextitem" 0 0 0 \
     "${options[@]}" \
     3>&1 1>&2 2>&3)
   if [ "$?" = "0" ]; then
     case $sel in
       "$txtsethostname")
         set_hostname
-        nextitem="$txtsetkeymap"
+        nextitem="$txtsethostname"
       ;;
       "$txtsetkeymap")
         change_keymap
-        nextitem="$txtsetlocale"
-      ;;
-      "$txtsetfont")
-        set_font
-        nextitem="$txtsetlocale"
+        nextitem="$txtsetkeymap"
       ;;
       "$txtsetlocale")
         set_locale
-        nextitem="$txtsettime"
+        nextitem="$txtsetlocale"
       ;;
       "$txtsettime")
         set_time
+        nextitem="$txtsettime"
+      ;;
+      "$txtsetrootpassword")
+        set_rootpassword
         nextitem="$txtsetrootpassword"
       ;;
       "$txtcreatenewuser")
         create_user
         nextitem="$txtcreatenewuser"
-      ;;
-      "$txtsetrootpassword")
-        set_rootpassword
-        nextitem="${txtgenerate//%1/fstab}"
       ;;
       "${txtgenerate//%1/fstab}")
         genfstab_menu
@@ -1157,7 +1153,7 @@ conf_menu(){
         nextitem="${txtenable//%1/dhcpcd}"
       ;;
     esac
-    archconfmenu "$nextitem"
+    conf_menu "$nextitem"
   fi
 }
 
@@ -1172,7 +1168,7 @@ set_hostname(){
     echo "127.0.0.1     localhost" > /mnt/etc/hosts
 
     echo "echo '::1	        localhost' > /mnt/etc/hosts"
-    echo "::1	        localhost" > /mnt/etc/hosts
+    echo "::1	          localhost" > /mnt/etc/hosts
 
     echo "echo '127.0.1.1     $hostname.localdomain   $hostname' > /mnt/etc/hosts"
     echo "127.0.1.1     $hostname.localdomain   $hostname" > /mnt/etc/hosts
@@ -1306,7 +1302,7 @@ set_timelocalchroot(){
   exit
 }
 
-archsetrootpassword(){
+set_rootpassword(){
   clear
   arch_chroot set_rootpasswordchroot
   pressanykey
@@ -1318,7 +1314,7 @@ set_rootpasswordchroot(){
   exit
 }
 
-create_user({
+create_user(){
   clear
   newusername=$(whiptail --backtitle "$apptitle" --title "$txtcreatenewuser" --inputbox "" 0 0 "newhomeuser" 3>&1 1>&2 2>&3)
   
@@ -1326,7 +1322,7 @@ create_user({
     arch_chroot create_userchroot $newusername
   fi
   pressanykey
-})
+}
 
 create_userchroot(){
   echo "useradd -m -s /bin/bash $0"
@@ -1344,9 +1340,7 @@ create_userchroot(){
   exit
 }
 
-# tady jsem skoncil
-###################################################
-archgenfstabmenu(){
+genfstab_menu(){
   options=()
   options+=("UUID" "genfstab -U")
   options+=("LABEL" "genfstab -L")
@@ -1382,47 +1376,62 @@ archgenfstabmenu(){
   pressanykey
 }
 
-archgencrypttab(){
+gen_crypttab(){
   clear
   echo "echo -e \"$crypttab\" >> /mnt/etc/crypttab"
   echo -e "$crypttab" >> /mnt/etc/crypttab
   pressanykey
 }
 
-archgenmkinitcpioluks(){
+gen_mkinitcpioluks(){
   clear
   echo "sed -i \"s/block filesystems/block encrypt filesystems/g\" /mnt/etc/mkinitcpio.conf"
   sed -i "s/block filesystems/block encrypt filesystems/g" /mnt/etc/mkinitcpio.conf
-  archchroot genmkinitcpio
+  arch_chroot gen_mkinitcpiochroot
   pressanykey
 }
 
-archgenmkinitcpionvme(){
+gen_mkinitcpionvme(){
   clear
   echo "sed -i \"s/MODULES=()/MODULES=(nvme)/g\" /mnt/etc/mkinitcpio.conf"
   sed -i "s/MODULES=()/MODULES=(nvme)/g" /mnt/etc/mkinitcpio.conf
-  archchroot genmkinitcpio
+  arch_chroot gen_mkinitcpiochroot
   pressanykey
 }
 
-archeditmkinitcpio(){
+edit_mkinitcpio(){
   $EDITOR /mnt/etc/mkinitcpio.conf
   if (whiptail --backtitle "$apptitle" --title "${txtedit//%1/mkinitcpio.conf}" --yesno "${txtgenerate//%1/mkinitcpio} ?" 0 0) then
     clear
-    archchroot genmkinitcpio
+    arch_chroot gen_mkinitcpiochroot
     pressanykey
   fi
 }
 
-archgenmkinitcpiochroot(){
+gen_mkinitcpiochroot(){
   echo "mkinitcpio -p linux"
   mkinitcpio -p linux
   exit
 }
 
+enable_dhcpcd(){
+  if (whiptail --backtitle "$apptitle" --title "${txtenable//%1/dhcpcd}" --yesno "${txtenable//%1/dhcpcd} ?" 0 0) then
+    clear
+    arch_chroot enable_dhcpcdchroot
+    pressanykey
+  fi
+}
 
+enable_dhcpcdchroot(){
+  echo "systemctl enable dhcpcd"
+  systemctl enable dhcpcd
+  exit
+}
 
-
+# ----------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------
+# UNUSED BOOTLOADERS
+# ----------------------------------------------------------------------------------------
 archbootloadersyslinuxbmenu(){
   if [ "$1" = "" ]; then
     nextblitem="."
@@ -1567,6 +1576,7 @@ archbootloadersystemdbmenu(){
     archbootloadersystemdbmenu "$nextblitem"
   fi
 }
+
 archsystemdinstall(){
   clear
   archchroot systemdbootloaderinstall $realrootdev
@@ -1610,6 +1620,7 @@ archsystemdinstall(){
   
   pressanykey
 }
+
 archsystemdinstallchroot(){
   echo "bootctl --path=/boot install"
   bootctl --path=/boot install
@@ -1619,7 +1630,6 @@ archsystemdinstallchroot(){
     echo "\EFI\systemd\systemd-bootx64.efi" > /boot/startup.nsh
   fi
 }
-
 
 archbootloaderrefindmenu(){
   if [ "$1" = "" ]; then
@@ -1648,6 +1658,7 @@ archbootloaderrefindmenu(){
   fi
 
 }
+
 archrefindinstall(){
   clear
   
@@ -1665,6 +1676,7 @@ archrefindinstall(){
   echo "\"Arch Linux Terminal\" \"root=UUID=$rootuuid rw add_efi_memmap systemd.unit=multi-user.target\"" >> /mnt/boot/refind_linux.conf
   pressanykey
 }
+
 archrefindinstallchroot(){
   #--usedefault /dev/sdXY --alldrivers
   echo "refind-install"
@@ -1676,20 +1688,6 @@ archrefindinstallchroot(){
   fi
 }
 
-
-archenabledhcpcd(){
-  if (whiptail --backtitle "$apptitle" --title "${txtenable//%1/dhcpcd}" --yesno "${txtenable//%1/dhcpcd} ?" 0 0) then
-    clear
-    archchroot enabledhcpcd
-    pressanykey
-  fi
-}
-archenabledhcpcdchroot(){
-  echo "systemctl enable dhcpcd"
-  systemctl enable dhcpcd
-  exit
-}
-
 # ----------------------------------------------------------------------------------------
 # ----------------------------------------------------------------------------------------
 # GLOBAL FUNCTIONS
@@ -1698,7 +1696,7 @@ arch_chroot(){
   echo "arch-chroot /mnt /root"
   cp $0 /mnt/root
   chmod 755 /mnt/root/$(basename "$0")
-  arch-chroot /mnt /root/$(basename "$0") --chroot $1 $2
+  arch-chroot /mnt /root/$(basename "$0") -chroot $1 $2
   rm /mnt/root/$(basename "$0")
   echo "exit"
 }
@@ -1775,7 +1773,7 @@ rebootpc(){
 # ----------------------------------------------------------------------------------------
 
 # this is for arch-chroot operations
-if [ "$1" = "-chroot"]; then
+if [ "$1" = "-chroot" ]; then
   # $2 is function to run, $3 is argument
   eval $2 $3
 else
