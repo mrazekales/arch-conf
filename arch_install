@@ -900,7 +900,7 @@ grub_menu(){
         $EDITOR /mnt/etc/default/grub
         if (whiptail --backtitle "$apptitle" --title "${txtedit//%1/grub}" --yesno "$txtrungrubmakeconfig" 0 0) then
           clear
-          arch_chroot grubinstall
+          grub_installchroot
           pressanykey
         fi
         nextblitem="${txtinstall//%1/bootloader}"
@@ -939,12 +939,14 @@ grub_install(){
   fi
   
   clear
-  echo "arch_chroot grubinstall"
-  arch_chroot grubinstall
+  echo "grub_installchroot"
+  grub_installchroot
   pressanykey
 }
 
 grub_installchroot(){
+  echo "arch-chroot /mnt"
+  arch-chroot /mnt
   echo "mkdir /boot/grub"
   echo "grub-mkconfig -o /boot/grub/grub.cfg"
   mkdir /boot/grub
@@ -962,41 +964,38 @@ grub_installbootloader(){
     "${options[@]}" \
     3>&1 1>&2 2>&3)
   if [ "$?" = "0" ]; then
-    if [ "$eficomputer" == "1" ]; then
+    if [ "$efi" == "1" ]; then
       options=()
-      if [ "$efimode" = "1" ]; then
-        options+=("EFI" "")
-        options+=("BIOS" "")
-        options+=("BIOS+EFI" "")
-      elif [ "$efimode" = "2" ]; then
-        options+=("BIOS+EFI" "")
-        options+=("BIOS" "")
-        options+=("EFI" "")
-      else
-        options+=("BIOS" "")
-        options+=("EFI" "")
-        options+=("BIOS+EFI" "")
-      fi
-      sel=$(whiptail --backtitle "$apptitle" --title "${txtinstall//%1/bootloader}" --menu "" --cancel-button "$txtback" 0 0 0 \
-        "${options[@]}" \
-        3>&1 1>&2 2>&3)
+      options+=("EFI" "")
+      options+=("BIOS" "")
+      options+=("BIOS+EFI" "")
+    else
+      options+=("BIOS" "")
+      options+=("EFI" "")
+      options+=("BIOS+EFI" "")
+    fi
+    sel=$(whiptail --backtitle "$apptitle" --title "${txtinstall//%1/bootloader}" --menu "" --cancel-button "$txtback" 0 0 0 \
+      "${options[@]}" \
+      3>&1 1>&2 2>&3)
       if [ "$?" = "0" ]; then
         clear
         case $sel in
-          "BIOS") arch_chroot grubbootloaderinstall $device;;
-          "EFI") arch_chroot grubbootloaderefiinstall $device;;
-          "BIOS+EFI") arch_chroot grubbootloaderefiusbinstall $device;;
+          "BIOS") grub_installbootloaderchroot $device;;
+          "EFI") grub_installbootloaderefichroot $device;;
+          "BIOS+EFI") grub_installbootloaderefiusbchroot $device;;
         esac
         pressanykey
       fi
     else
       clear
-      arch_chroot grubbootloaderinstall $device
+      grub_installbootloaderchroot $device
       pressanykey
     fi
   fi
 }
 grub_installbootloaderchroot(){
+  echo "arch-chroot /mnt"
+  arch-chroot /mnt
   if [ ! "$1" = "none" ]; then
     echo "grub-install --target=i386-pc --recheck $1"
     grub-install --target=i386-pc --recheck $1
@@ -1004,6 +1003,8 @@ grub_installbootloaderchroot(){
   exit
 }
 grub_installbootloaderefichroot(){
+  echo "arch-chroot /mnt"
+  arch-chroot /mnt
   if [ ! "$1" = "none" ]; then
     echo "grub-install --target=x86_64-efi --efi-directory=/boot --recheck $1"
     grub-install --target=x86_64-efi --efi-directory=/boot --recheck $1
@@ -1017,6 +1018,8 @@ grub_installbootloaderefichroot(){
 }
 
 grub_installbootloaderefiusbchroot(){
+  echo "arch-chroot /mnt"
+  arch-chroot /mnt
   if [ ! "$1" = "none" ]; then
     echo "grub-install --target=i386-pc --recheck $1"
     grub-install --target=i386-pc --recheck $1
