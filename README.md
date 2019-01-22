@@ -7,7 +7,7 @@
 $ pacman -Sy git
 $ git clone git://github.com/mrazekales/myarch-installer.git
 ```
-3. Run `arch_install` script
+3. Run `arch_install` to install basic Arch linux system
 ```bash
 $ cd myarch-installer
 $ sh arch_install 
@@ -16,7 +16,7 @@ $ sh arch_install
 ### Install and config Desktop Environment
 
 ```bash
-$ sh i3wm_install
+$ sh desktop_install
 ```
 **Window Manager:**   i3
 
