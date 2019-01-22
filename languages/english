@@ -33,13 +33,9 @@ txtformatpartitions="Partitions Formating  "
 txtmount="Mount and Install"
 txtkeymap="Keymap"
 txtlanguage="Language"
-txtreboot="              Reboot"
+txtreboot="Reboot"
 
 txtrmdone="(optional)"
-txtmpdone=""
-txtspdone=""
-txtfpdone=""
-txtmountdone=""
 
 # ----------------------------------------------------------------------------------------
 # ----------------------------------------------------------------------------------------
@@ -84,30 +80,15 @@ txtbootloader="Install Bootloader"
 txtconfigarchlinux="Config Arch Linux"
 txtunmount="Unmount"
 
-txtarchinstalldone=""
-txtbootloaderdone=""
-
-
 txtarchinstallmenu="Arch Install Menu"
+txtbasedev="Install Devel Packages"
+txtinstalldev="Do you want to install 'base-dev' packages?"
 
 
-
-
-
-
-
-
-
-txteditmirrorlist="Edit mirrorlist"
-
-txtsethostname="Set Computer Name"
-txtsetfont="Set Font"
-txtsetlocale="Set Locale"
-txtsettime="Set Time"
-txtsetrootpassword="Set root password"
-
-txtuseutcclock="Use UTC hardware clock ?"
-
+# ----------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------
+# Bootloader Menu
+# ----------------------------------------------------------------------------------------
 txtbootloadermenu="Choose your bootloader"
 
 txtefibootmgr="efibootmgr is required for EFI computers."
@@ -123,6 +104,25 @@ txtsyslinuxaddmtools="FAT boot part require mtools"
 
 txtbootloaderrefindmenu="rEFInd Install Menu"
 
+
+
+# ----------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------
+# Config Menu
+# ----------------------------------------------------------------------------------------
+
+
+
+txtsethostname="Set Computer Name"
+txtsetfont="Set Font"
+txtsetlocale="Set Locale"
+txtsettime="Set Time"
+txtsetrootpassword="Set root password"
+
+txtuseutcclock="Use UTC hardware clock ?"
+
+
+
 txtoptional="Optional"
 txtrecommandeasyinst="Recommanded for easy install"
 txtset="Set %1"
@@ -131,9 +131,3 @@ txtedit="Edit %1"
 txtinstall="Install %1"
 txtenable="Enable %1"
 
-
-txtarchdidesc="Full desktop install script"
-txtinstallarchdi="Arch Linux Desktop Install (archdi) is a second script who can help you to install a full workstation.\n\nYou can just launch the script or install it. Choose in the next menu.\n\nArch Linux Desktop Install as two dependencies : wget and libnewt.\n\npacstrap wget libnewt ?"
-txtarchdiinstallandlaunch="Install and run archdi"
-txtarchdiinstall="Install archdi"
-txtarchdilaunch="Launch archdi"
