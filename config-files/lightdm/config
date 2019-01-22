@@ -1,0 +1,1 @@
+lightdm config file
