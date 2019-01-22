@@ -830,7 +830,7 @@ install_menu(){
         nextitem="$txtconfigarchlinux"
       ;;
       "$txtconfigarchlinux")
-        arch_conf_menu
+        conf_menu
         nextitem="$txtconfigarchlinux"
       ;;
     esac
@@ -942,7 +942,7 @@ grub_install(){
   
   clear
   echo "grub_installchroot"
-  grub_installchroot
+  arch_chroot grub_installchroot
   pressanykey
 }
 
@@ -1033,7 +1033,7 @@ grub_installbootloaderefiusbchroot(){
 # ----------------------------------------------------------------------------------------
 # CONF MENU
 # ----------------------------------------------------------------------------------------
-archconfmenu(){
+conf_menu(){
   if [ "$1" = "" ]; then
     nextitem="."
   else
@@ -1069,35 +1069,35 @@ archconfmenu(){
   if [ "$?" = "0" ]; then
     case $sel in
       "$txtsethostname")
-        archsethostname
+        set_hostname
         nextitem="$txtsetkeymap"
       ;;
       "$txtsetkeymap")
-        archsetkeymap
+        change_keymap
         nextitem="$txtsetlocale"
       ;;
       "$txtsetfont")
-        archsetfont
+        set_font
         nextitem="$txtsetlocale"
       ;;
       "$txtsetlocale")
-        archsetlocale
+        set_locale
         nextitem="$txtsettime"
       ;;
       "$txtsettime")
-        archsettime
+        set_time
         nextitem="$txtsetrootpassword"
       ;;
       "$txtcreatenewuser")
-        createuser
+        create_user
         nextitem="$txtcreatenewuser"
       ;;
       "$txtsetrootpassword")
-        archsetrootpassword
+        set_rootpassword
         nextitem="${txtgenerate//%1/fstab}"
       ;;
       "${txtgenerate//%1/fstab}")
-        archgenfstabmenu
+        genfstab_menu
         if [ "$luksdrive" = "1" ]; then
           nextitem="${txtgenerate//%1/crypttab}"
         else
@@ -1113,7 +1113,7 @@ archconfmenu(){
         fi
       ;;
       "${txtgenerate//%1/crypttab}")
-        archgencrypttab
+        gen_crypttab
         if [ "$luksroot" = "1" ]; then
           nextitem="${txtgenerate//%1/mkinitcpio.conf-luks}"
         else
@@ -1125,7 +1125,7 @@ archconfmenu(){
         fi
       ;;
       "${txtgenerate//%1/mkinitcpio.conf-luks}")
-        archgenmkinitcpioluks
+        gen_mkinitcpioluks
         if [ "$isnvme" = "1" ]; then
           nextitem="${txtgenerate//%1/mkinitcpio.conf-nvme}"
         else
@@ -1133,7 +1133,7 @@ archconfmenu(){
         fi
       ;;
       "${txtgenerate//%1/mkinitcpio.conf-nvme}")
-        archgenmkinitcpionvme
+        gen_mkinitcpionvme
         nextitem="${txtenable//%1/dhcpcd}"
       ;;
       "${txtedit//%1/fstab}")
@@ -1145,7 +1145,7 @@ archconfmenu(){
         nextitem="${txtedit//%1/crypttab}"
       ;;
       "${txtedit//%1/mkinitcpio.conf}")
-        archeditmkinitcpio
+        edit_mkinitcpio
         nextitem="${txtedit//%1/mkinitcpio.conf}"
       ;;
       "${txtedit//%1/mirrorlist}")
@@ -1153,7 +1153,7 @@ archconfmenu(){
         nextitem="${txtedit//%1/mirrorlist}"
       ;;
       "${txtenable//%1/dhcpcd}")
-        archenabledhcpcd
+        enable_dhcpcd
         nextitem="${txtenable//%1/dhcpcd}"
       ;;
     esac
@@ -1161,7 +1161,7 @@ archconfmenu(){
   fi
 }
 
-archsethostname(){
+set_hostname(){
   hostname=$(whiptail --backtitle "$apptitle" --title "$txtsethostname" --inputbox "" 0 0 "archlinux" 3>&1 1>&2 2>&3)
   if [ "$?" = "0" ]; then
     clear
@@ -1180,12 +1180,7 @@ archsethostname(){
   fi
 }
 
-archsetkeymap(){
-  #items=$(localectl list-keymaps)
-  #options=()
-  #for item in $items; do
-  #  options+=("$item" "")
-  #done
+change_keymap(){
   items=$(find /usr/share/kbd/keymaps/ -type f -printf "%f\n" | sort -V)
   options=()
   defsel=""
@@ -1206,7 +1201,7 @@ archsetkeymap(){
   fi
 }
 
-archsetfont(){
+set_font(){
   items=$(find /usr/share/kbd/consolefonts/*.psfu.gz -printf "%f\n")
   
   options=()
@@ -1224,7 +1219,7 @@ archsetfont(){
   fi
 }
 
-archsetlocale(){
+set_locale(){
   items=$(ls /usr/share/i18n/locales)
   options=()
   defsel=""
@@ -1245,18 +1240,18 @@ archsetlocale(){
     echo "LC_COLLATE=C" >> /mnt/etc/locale.conf
     echo "sed -i '/"$locale".UTF-8/s/^#//g' /mnt/etc/locale.gen"
     sed -i '/'$locale'.UTF-8/s/^#//g' /mnt/etc/locale.gen
-    archchroot setlocale
+    arch_chroot set_localechroot
     pressanykey
   fi
 }
 
-archsetlocalechroot(){
+set_localechroot(){
   echo "locale-gen"
   locale-gen
   exit
 }
 
-archsettime(){
+set_time(){
   items=$(ls -l /mnt/usr/share/zoneinfo/ | grep '^d' | gawk -F':[0-9]* ' '/:/{print $2}')
   options=()
   for item in $items; do
@@ -1291,22 +1286,21 @@ archsettime(){
   
   if (whiptail --backtitle "$apptitle" --title "$txtsettime" --yesno "$txtuseutcclock" 0 0) then
     clear
-    archchroot settimeutc
+    arch_chroot set_timeutcchroot
   else
     clear
-    archchroot settimelocal
+    arch_chroot set_timelocalchroot
   fi
   
   pressanykey
-  
 }
 
-archsettimeutcchroot(){
+set_timeutcchroot(){
   echo "hwclock --systohc --utc"
   hwclock --systohc --utc
   exit
 }
-archsettimelocalchroot(){
+set_timelocalchroot(){
   echo "hwclock --systohc --localtime"
   hwclock --systohc --localtime
   exit
@@ -1314,32 +1308,44 @@ archsettimelocalchroot(){
 
 archsetrootpassword(){
   clear
-  archchroot setrootpassword
+  arch_chroot set_rootpasswordchroot
   pressanykey
 }
 
-archsetrootpasswordchroot(){
+set_rootpasswordchroot(){
   echo "passwd root"
   passwd root
   exit
 }
 
-createuser(){
+create_user({
+  clear
   newusername=$(whiptail --backtitle "$apptitle" --title "$txtcreatenewuser" --inputbox "" 0 0 "newhomeuser" 3>&1 1>&2 2>&3)
-  if [ "$?" = "0" ]; then
-    clear
-    useradd -m -s /bin/bash $newusername
-    usermod -aG wheel,storage,audio,video $newusername
-    passwd $newusername
-
-    pacman -S sudo
-    echo '%wheel ALL=(ALL) ALL' >> /etc/sudoers
-    echo 'Defaults rootpw' >> /etc/sudoers
-
-    pressanykey
+  
+  if [ "$?" = "0" ]; then    
+    arch_chroot create_userchroot $newusername
   fi
+  pressanykey
+})
+
+create_userchroot(){
+  echo "useradd -m -s /bin/bash $0"
+  useradd -m -s /bin/bash $0
+  echo "usermod -aG wheel,storage,audio,video $0"
+  usermod -aG wheel,storage,audio,video $0
+  echo "$0"
+  passwd $0
+
+  echo "Setting up SUDO"
+  pacman -S sudo
+  echo '%wheel ALL=(ALL) ALL' >> /etc/sudoers
+  echo 'Defaults rootpw' >> /etc/sudoers
+  #echo 'Defaults targetpw' >> /etc/sudoers
+  exit
 }
 
+# tady jsem skoncil
+###################################################
 archgenfstabmenu(){
   options=()
   options+=("UUID" "genfstab -U")
@@ -1769,7 +1775,7 @@ rebootpc(){
 # ----------------------------------------------------------------------------------------
 
 # this is for arch-chroot operations
-if [ "$1" = "-chroot"]
+if [ "$1" = "-chroot"]; then
   # $2 is function to run, $3 is argument
   eval $2 $3
 else
