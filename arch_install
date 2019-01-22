@@ -766,7 +766,9 @@ format_swap(){
 # ----------------------------------------------------------------------------------------
 mount_partitions(){
 
-  selectparts
+  if [ $rootdev = "" ] && [ $bootdev = "" ]
+    select_partitions
+  fi
   clear
   echo "mount $rootdev /mnt"
   mount $rootdev /mnt
@@ -900,7 +902,7 @@ grub_menu(){
         $EDITOR /mnt/etc/default/grub
         if (whiptail --backtitle "$apptitle" --title "${txtedit//%1/grub}" --yesno "$txtrungrubmakeconfig" 0 0) then
           clear
-          grub_installchroot
+          arch_chroot grub_installchroot
           pressanykey
         fi
         nextblitem="${txtinstall//%1/bootloader}"
@@ -945,8 +947,6 @@ grub_install(){
 }
 
 grub_installchroot(){
-  echo "arch-chroot /mnt"
-  arch-chroot /mnt
   echo "mkdir /boot/grub"
   echo "grub-mkconfig -o /boot/grub/grub.cfg"
   mkdir /boot/grub
@@ -977,34 +977,31 @@ grub_installbootloader(){
     sel=$(whiptail --backtitle "$apptitle" --title "${txtinstall//%1/bootloader}" --menu "" --cancel-button "$txtback" 0 0 0 \
       "${options[@]}" \
       3>&1 1>&2 2>&3)
-      if [ "$?" = "0" ]; then
-        clear
-        case $sel in
-          "BIOS") grub_installbootloaderchroot $device;;
-          "EFI") grub_installbootloaderefichroot $device;;
-          "BIOS+EFI") grub_installbootloaderefiusbchroot $device;;
-        esac
-        pressanykey
-      fi
-    else
+    if [ "$?" = "0" ]; then
       clear
-      grub_installbootloaderchroot $device
+      case $sel in
+        "BIOS") arch_chroot grub_installbootloaderchroot $device;;
+        "EFI") arch_chroot grub_installbootloaderefichroot $device;;
+        "BIOS+EFI") grub_installbootloaderefiusbchroot $device;;
+      esac
       pressanykey
     fi
+  else
+    clear
+    arch_chroot grub_installbootloaderchroot $device
+    pressanykey
   fi
 }
+
 grub_installbootloaderchroot(){
-  echo "arch-chroot /mnt"
-  arch-chroot /mnt
   if [ ! "$1" = "none" ]; then
     echo "grub-install --target=i386-pc --recheck $1"
     grub-install --target=i386-pc --recheck $1
   fi
   exit
 }
+
 grub_installbootloaderefichroot(){
-  echo "arch-chroot /mnt"
-  arch-chroot /mnt
   if [ ! "$1" = "none" ]; then
     echo "grub-install --target=x86_64-efi --efi-directory=/boot --recheck $1"
     grub-install --target=x86_64-efi --efi-directory=/boot --recheck $1
@@ -1018,8 +1015,6 @@ grub_installbootloaderefichroot(){
 }
 
 grub_installbootloaderefiusbchroot(){
-  echo "arch-chroot /mnt"
-  arch-chroot /mnt
   if [ ! "$1" = "none" ]; then
     echo "grub-install --target=i386-pc --recheck $1"
     grub-install --target=i386-pc --recheck $1
@@ -1772,28 +1767,35 @@ rebootpc(){
 # ----------------------------------------------------------------------------------------
 # START OF THE PROGRAM
 # ----------------------------------------------------------------------------------------
-apptitle="Arch Linux Installer - Version: 0.1 (LGPLv3)"
-applanguage="english"
 
-# load language strings
-load_language
-# load keyboard
-loadkeys $usingkeymap
+# this is for arch-chroot operations
+if [ "$1" = "-chroot"]
+  # $2 is function to run, $3 is argument
+  eval $2 $3
+else
+# normal program start
+  apptitle="Arch Linux Installer - Version: 0.1 (LGPLv3)"
+  applanguage="english"
 
-# check if efi is available
-if [ -d "/sys/firmware/efi/efivars" ]; then
-    efi=1
-    echo "EFI Available: YES"
-  else
-    efi=0
-    echo "EFI Available: NO"
-  fi
+  # load language strings
+  load_language
+  # load keyboard
+  loadkeys $usingkeymap
 
-# main menu start
-echo "Program will start"
-pressanykey
-main_menu
+  # check if efi is available
+  if [ -d "/sys/firmware/efi/efivars" ]; then
+      efi=1
+      echo "EFI Available: YES"
+    else
+      efi=0
+      echo "EFI Available: NO"
+    fi
 
+  # main menu start
+  echo "Program will start"
+  pressanykey
+  main_menu
+fi
 exit 0
 
 # --------------------------------------------------------
