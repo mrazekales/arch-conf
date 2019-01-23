@@ -716,8 +716,8 @@ format_root(){
       fi
       echo ""
       pressanykey
-      echo "formatdevice $1 /dev/mapper/$1 noluks"
-      formatdevice $1 /dev/mapper/$1 noluks
+      echo ""
+      format_root $1 /dev/mapper/$1 noluks
       if [ "$1" = "root" ]; then
         realrootdev=$rootdev
         rootdev=/dev/mapper/$1
