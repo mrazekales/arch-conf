@@ -716,6 +716,7 @@ format_root(){
       fi
       echo ""
       pressanykey
+      echo "formatdevice $1 /dev/mapper/$1 noluks"
       formatdevice $1 /dev/mapper/$1 noluks
       if [ "$1" = "root" ]; then
         realrootdev=$rootdev
@@ -1058,7 +1059,6 @@ conf_menu(){
   fi
   options+=("${txtenable//%1/dhcpcd}" "systemctl enable dhcpd")
   options+=("" "")
-  options+=("$txtsetfont" "/etc/vconsole.conf ($txtoptional)")
   options+=("${txtedit//%1/fstab}" "($txtoptional)")
   options+=("${txtedit//%1/crypttab}" "($txtoptional)")
   options+=("${txtedit//%1/mkinitcpio.conf}" "($txtoptional)")
@@ -1325,16 +1325,21 @@ create_user(){
 }
 
 create_userchroot(){
-  echo "useradd -m -s /bin/bash $0"
-  useradd -m -s /bin/bash $0
-  echo "usermod -aG wheel,storage,audio,video $0"
-  usermod -aG wheel,storage,audio,video $0
-  echo "$0"
-  passwd $0
+  clear
+  echo "useradd -m -s /bin/bash $1"
+  useradd -m -s /bin/bash $1
+  echo "usermod -aG wheel,storage,audio,video $1"
+  usermod -aG wheel,storage,audio,video $1
+  echo "passwd $1"
+  passwd $1
+
+  pressanykey
 
   echo "Setting up SUDO"
-  pacman -S sudo
+  y | pacman -S sudo
+  echo "%wheel ALL=(ALL) ALL' >> /etc/sudoers"
   echo '%wheel ALL=(ALL) ALL' >> /etc/sudoers
+  echo "'Defaults rootpw' >> /etc/sudoers"
   echo 'Defaults rootpw' >> /etc/sudoers
   #echo 'Defaults targetpw' >> /etc/sudoers
   exit
