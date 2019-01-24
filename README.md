@@ -24,6 +24,19 @@ $ git clone git://github.com/mrazekales/myarch-installer.git
 ```bash
 $ sh desktop_install
 ```
+
+### Xiaomi Notebook Pro Setup
+1. Boot Installed Arch and login as root
+2. Clone script repository
+```bash
+$ pacman -S git
+$ git clone git://github.com/mrazekales/myarch-installer.git
+```
+3. Run Script
+```bash
+$ sh xiaomi_ntb_pro_setup
+```
+
 **Window Manager:**   i3
 
 **Display Manager:**  LightDM
