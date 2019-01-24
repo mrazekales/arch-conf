@@ -1,1 +1,264 @@
-gdg
+#!/bin/bash
+# ----------------------------------------------------------------------------------------
+#           Desktop Installer
+# ----------------------------------------------------------------------------------------
+# author:     Mrazek Ales
+#             https://github.com/mrazekales
+#
+# project:    https://github.com/mrazekales/myarch-installer
+#
+# license:    LGPL-3.0 (http://opensource.org/licenses/lgpl-3.0.html)
+#
+# ----------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------
+# MAIN MENU
+# ----------------------------------------------------------------------------------------
+main_menu(){
+  if [ "$1" = "" ]; then
+    nextitem="."
+  else
+    nextitem=$1
+  fi
+  options=()
+  options+=("$txtdisplaymanager" "")
+  options+=("$txtwindowmanager" "")
+  options+=("$txtdesktopenvironment" "")
+  options+=("" "")
+  options+=("$txtpowermanager" "")
+  options+=("$txtnetworkmanagement" "")
+
+  sel=$(whiptail --backtitle "$apptitle" --title "$txtmainmenutitle" --menu "" --cancel-button "$txtexit" --default-item "$nextitem" 0 0 0 \
+    "${options[@]}" \
+    3>&1 1>&2 2>&3)
+  if [ "$?" = "0" ]; then
+    case $sel in
+      "$txtdisplaymanager")
+        nextitem="$txtdesktopenvironment"
+      ;;
+      "$txtwindowmanager")
+        nextitem="$txt"
+      ;;
+      "$txt")
+        nextitem="$txt"
+      ;;
+      
+      
+    esac
+    main_menu "$nextitem"
+  else
+    clear
+  fi
+}
+
+
+
+
+# ----------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------
+# AUR HELPER -YAY
+# ----------------------------------------------------------------------------------------
+install_yay(){
+  echo "pacman -S git"
+  pacman -S git < y
+  echo "git clone https://aur.archlinux.org/yay.git"
+  git clone https://aur.archlinux.org/yay.git
+  echo "cd yay"
+  cd yay
+  echo "makepkg -si"
+  makepkg -si
+  echo "cd .."
+  cd ..
+  echo "rm -r yay"
+  rm -r yay
+}
+
+# ----------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------
+# SWAP FILE
+# ----------------------------------------------------------------------------------------
+create_swapfile(){
+  ramsize=$(cat /proc/meminfo | grep MemTotal | awk '{ print $2 }')
+  echo "RAM: $ramsize B"
+
+  if (( $ramsize >= 9000 )); then
+    swapsize=$(($ramsize/2000))"M"
+  elif (( $ramsize >= 3000 )); then
+    swapsize=$(($ramsize/1000))"M"
+  else
+    swapsize=$(($ramsize/500))"M"
+  fi
+
+  echo "SWAP FILE: $swapsize M"
+  echo "fallocate -l {$swapsize}M /swapfile"
+  fallocate -l ${swapsize}M /swapfile
+  echo "chmod 600 /swapfile"
+  chmod 600 /swapfile
+  echo "mkswap /swapfile"
+  mkswap /swapfile
+  echo "swapon /swapfile"
+  swapon /swapfile
+  echo "'/swapfile none swap defaults 0 0' >> /etc/fstab"
+  echo "/swapfile none swap defaults 0 0" >> /etc/fstab
+  pressanykey
+}
+
+remove_swapfile(){
+  echo "swapoff -a"
+  swapoff -a
+  echo "rm -f /swapfile"
+  rm -f /swapfile
+  echo "sed -i '/pattern to match/d' ./etc/fstab"
+  sed -i '//swapfile none swap defaults 0 0/d' ./etc/fstab
+  pressanykey
+}
+
+# ----------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------
+# DRIVERS
+# ----------------------------------------------------------------------------------------
+install_intelmicrocode(){
+  echo "Installing intel-ucode"
+  yes | pacman -S intel-ucode
+
+  echo "grub-mkconfig -o /boot/grub/grub.cfg"
+  grub-mkconfig -o /boot/grub/grub.cfg
+}
+
+only_intelgpu(){
+  echo "Installing  xf86-video-intel  bbswitch" 
+  yes | pacman -S  xf86-video-intel  bbswitch
+
+  echo "Blacklist the nvidia and xf86-video-nouveau"
+  echo "blacklist nouveau\nblacklist nvidia" >> /etc/modprobe.d/nouveau.conf
+
+  echo "Turn nVidia gpu off"
+  echo "options bbswitch load_state=0 unload_state=0" >> /etc/modprobe.d/bbswitch.conf
+}
+
+hybrid_gpu(){
+
+}
+
+# ----------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------
+# TOUCH PAD
+# ----------------------------------------------------------------------------------------
+install_libinput(){
+  echo "pacman -S  xf86-input-libinput"
+  yes | pacman -S  xf86-input-libinput
+
+  echo "Copying configuration to /etc/X11/xorg.conf.d/20-touchpad.conf"
+  echo "Section \"InputClass\"\n\tIdentifier \"libinput touchpad\"\n\tDriver \"libinput\"\n\tMatchIsTouchpad \"on\"\n\tMatchDevicePath \"/dev/input/event*\"\n\tOption \"Tapping\" \"on\"\n\tOption \"ClickMethod\" \"clickfinger\"\n\tOption \"NaturalScrolling\" \"true\"\nEndSection" > /etc/X11/xorg.conf.d/20-touchpad.conf
+}
+
+# ----------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------
+# DISPLAY CALIBRATION
+# ----------------------------------------------------------------------------------------
+display_calibration(){
+
+}
+
+
+# ----------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------
+# POWER MANAGEMENT
+# ----------------------------------------------------------------------------------------
+
+# ----------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------
+# NETWORK MANAGERS
+# ----------------------------------------------------------------------------------------
+install_networkmanager(){
+  echo "Installing networkmanager network-manager-applet"
+  yes | pacman -S networkmanager nm-applet 
+
+  echo "Disable dhcpcd and netctl"
+  systemctl disable dhcpcd
+  systemctl disable netctl-auto
+
+# Using GNOME Keyring
+  yes | pacman -S  gnome-keyring libsecret 
+
+  echo "systemctl enable NetworkManager.service"
+  systemctl enable NetworkManager.service
+  systemctl start NetworkManager.service
+  pressanykey
+}
+
+install_nftables(){
+  echo "Installing nftables < y"
+  yes | pacman -S nftables
+  echo "systemctl enable nftables.service"
+  systemctl enable nftables.service
+
+  echo "Default ruleset"
+  nft list ruleset
+  nft list ruleset > /etc/nftables.conf
+}
+
+install_connman(){
+  echo "Installing connman wpa_supplicant bluez openvpn"
+  yes | pacman -S connman wpa_supplicant openvpn cmst 
+
+  install_bluez
+
+  echo "Disable dhcpcd and netctl"
+  systemctl disable dhcpcd
+  systemctl disable netctl-auto
+
+  systemctl enable connman.service
+  systemctl start connman.service
+  pressanykey
+}
+
+install_bluez(){
+  echo "Installing bluez bluez-utils"
+  yes | pacman -S bluez bluez-utils 
+  pressanykey
+}
+
+# ----------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------
+# GLOBAL FUNCTIONS
+# ----------------------------------------------------------------------------------------
+choose_editor(){
+  options=()
+  options+=("nano" "")
+  options+=("vim" "")
+  options+=("vi" "")
+  options+=("edit" "")
+  sel=$(whiptail --backtitle "$apptitle" --title "$txteditor" --menu "" 0 0 0 \
+    "${options[@]}" \
+    3>&1 1>&2 2>&3)
+  if [ "$?" = "0" ]; then
+    EDITOR=$sel
+  fi
+}
+
+pressanykey(){
+  read -n1 -p "$txtpressanykey"
+}
+
+rebootpc(){
+  if (whiptail --backtitle "$apptitle" --title "$txtreboot" --yesno "$txtreboot ?" --defaultno 0 0) then
+    clear
+    reboot
+  fi
+}
+
+# ----------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------
+# START OF THE PROGRAM
+# ----------------------------------------------------------------------------------------
+
+# normal program start
+apptitle="Arch Desktop Installer - Version: 0.1 (LGPLv3)"
+
+# main menu start
+echo "Program will start"
+pressanykey
+main_menu
+exit 0
+
+# --------------------------------------------------------
