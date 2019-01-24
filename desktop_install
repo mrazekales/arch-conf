@@ -254,6 +254,7 @@ rebootpc(){
 
 # normal program start
 apptitle="Arch Desktop Installer - Version: 0.1 (LGPLv3)"
+source languages/english_desktop
 
 # main menu start
 echo "Program will start"
