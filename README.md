@@ -43,6 +43,7 @@ $ sh xiaomi_ntb_pro_setup
 2. https://github.com/helmuthdu/aui
 3. https://wiki.archlinux.org/index.php/installation_guide
 5. https://wiki.archlinux.org/index.php/Xiaomi_Mi_Notebook_Air_13.3_(2018_Global_version)
+6. https://www.notebookcheck.net/Xiaomi-Mi-Notebook-Pro-i5-Laptop-Review.262386.0.html
 
 
 
