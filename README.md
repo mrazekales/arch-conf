@@ -1,4 +1,5 @@
-# myArch Installer
+# myArch Setup
+This repository provides scripts for installing base Arch Linux system, Desktop Environment and some configurations for Xiaomi Notebook Pro
 ### Install and config base Arch system
 
 1. Boot with [Arch live ISO](https://www.archlinux.org/download/)
@@ -36,6 +37,14 @@ $ git clone git://github.com/mrazekales/myarch-installer.git
 ```bash
 $ sh xiaomi_ntb_pro_setup
 ```
+
+## Reference
+1. https://github.com/MatMoul/archfi
+2. https://github.com/helmuthdu/aui
+3. https://wiki.archlinux.org/index.php/installation_guide
+5. https://wiki.archlinux.org/index.php/Xiaomi_Mi_Notebook_Air_13.3_(2018_Global_version)
+
+
 
 **Window Manager:**   i3
 
