@@ -77,6 +77,7 @@ main_menu(){
 # Rank Mirrors
 # ----------------------------------------------------------------------------------------
 rank_mirrors(){
+
   clear
   local countriescode=("AU" "AT" "BY" "BE" "BR" "BG" "CA" "CL" "CN" "CO" "CZ" "DK" "EE" "FI" "FR" "DE" "GR" "HK" "HU" "ID" "IN" "IR" "IE" "IL" "IT" "JP" "KZ" "KR" "LV" "LU" "MK" "NL" "NC" "NZ" "NO" "PL" "PT" "RO" "RU" "RS" "SG" "SK" "ZA" "ES" "LK" "SE" "CH" "TW" "TR" "UA" "GB" "US" "UZ" "VN")
   local countriesname=("Australia" "Austria" "Belarus" "Belgium" "Brazil" "Bulgaria" "Canada" "Chile" "China" "Colombia" "Czech Republic" "Denmark" "Estonia" "Finland" "France" "Germany" "Greece" "Hong Kong" "Hungary" "Indonesia" "India" "Iran" "Ireland" "Israel" "Italy" "Japan" "Kazakhstan" "Korea" "Latvia" "Luxembourg" "Macedonia" "Netherlands" "New Caledonia" "New Zealand" "Norway" "Poland" "Portugal" "Romania" "Russia" "Serbia" "Singapore" "Slovakia" "South Africa" "Spain" "Sri Lanka" "Sweden" "Switzerland" "Taiwan" "Turkey" "Ukraine" "United Kingdom" "United States" "Uzbekistan" "Viet Nam")
@@ -95,32 +96,34 @@ rank_mirrors(){
   fi
 
   clear
-  yes | pacman -Sy pacman-contrib
-  cp /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.backup
+  echo "$countrycode"
 
-  url="https://www.archlinux.org/mirrorlist/?country=${countrycode}&use_mirror_status=on"
-  tmpfile=$(mktemp --suffix=-mirrorlist)
+  # yes | pacman -Sy pacman-contrib
+  # cp /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.backup
 
-  # Get latest mirror list and save to tmpfile
-  curl -so ${tmpfile} ${url}
-  sed -i 's/^#Server/Server/g' ${tmpfile}
+  # url="https://www.archlinux.org/mirrorlist/?country=${countrycode}&use_mirror_status=on"
+  # tmpfile=$(mktemp --suffix=-mirrorlist)
 
-  # Backup and replace current mirrorlist file (if new file is non-zero)
-  if [[ -s ${tmpfile} ]]; then
-   { echo " Backing up the original mirrorlist..."
-     mv -i /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.backup; } &&
-   { echo " Rotating the new list into place..."
-     mv -i ${tmpfile} /etc/pacman.d/mirrorlist; }
-  else
-    echo " Unable to update, could not download list."
-  fi
+  # echo "$url"
+  # # Get latest mirror list and save to tmpfile
+  # curl -so ${tmpfile} ${url}
+  # sed -i 's/^#Server/Server/g' ${tmpfile}
+
+  # # Backup and replace current mirrorlist file (if new file is non-zero)
+  # if [[ -s ${tmpfile} ]]; then
+  #  { echo "Backing up the original mirrorlist..."
+  #    mv -i /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.backup; } &&
+  #  { echo "Rotating the new list into place..."
+  #    mv -i ${tmpfile} /etc/pacman.d/mirrorlist; }
+  # else
+  #   echo " Unable to update, could not download list."
+  # fi
   
-  echo "Ranking MirrorList"
-  cp /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.tmp
-  rankmirrors /etc/pacman.d/mirrorlist.tmp > /etc/pacman.d/mirrorlist
-  rm /etc/pacman.d/mirrorlist.tmp
-  # allow global read access (required for non-root yaourt execution)
-  chmod +r /etc/pacman.d/mirrorlist
+  # echo "Ranking MirrorList"
+  # cp /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.tmp
+  # rankmirrors /etc/pacman.d/mirrorlist.tmp > /etc/pacman.d/mirrorlist
+  # rm /etc/pacman.d/mirrorlist.tmp
+  # chmod +r /etc/pacman.d/mirrorlist
   pressanykey
 }
 
