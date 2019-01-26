@@ -81,8 +81,10 @@ rank_mirrors(){
   clear
   local countriescode=("AU" "AT" "BY" "BE" "BR" "BG" "CA" "CL" "CN" "CO" "CZ" "DK" "EE" "FI" "FR" "DE" "GR" "HK" "HU" "ID" "IN" "IR" "IE" "IL" "IT" "JP" "KZ" "KR" "LV" "LU" "MK" "NL" "NC" "NZ" "NO" "PL" "PT" "RO" "RU" "RS" "SG" "SK" "ZA" "ES" "LK" "SE" "CH" "TW" "TR" "UA" "GB" "US" "UZ" "VN")
   local countriesname=("Australia" "Austria" "Belarus" "Belgium" "Brazil" "Bulgaria" "Canada" "Chile" "China" "Colombia" "Czech Republic" "Denmark" "Estonia" "Finland" "France" "Germany" "Greece" "Hong Kong" "Hungary" "Indonesia" "India" "Iran" "Ireland" "Israel" "Italy" "Japan" "Kazakhstan" "Korea" "Latvia" "Luxembourg" "Macedonia" "Netherlands" "New Caledonia" "New Zealand" "Norway" "Poland" "Portugal" "Romania" "Russia" "Serbia" "Singapore" "Slovakia" "South Africa" "Spain" "Sri Lanka" "Sweden" "Switzerland" "Taiwan" "Turkey" "Ukraine" "United Kingdom" "United States" "Uzbekistan" "Viet Nam")
+  url="https://www.archlinux.org/mirrorlist/?country=all&use_mirror_status=on"
 
   options=()
+  options+=("ALL" "")
   for item in "${countriesname[@]}"; do
     options+=("$item" "")
   done
@@ -91,22 +93,17 @@ rank_mirrors(){
     3>&1 1>&2 2>&3)
   if [ "$?" = "0" ]; then
     
-    for i in "${!countriesname[@]}"; do
-      if [[ "${countriesname[$i]}" = "${selcountry}" ]]; then
-       indexcountry="${i}";
-       echo "$indexcountry"
-       break
+    for ((i=0;i<${#countriesname[@]};++i)); do
+      if [ "${countriesname[i]}" = "$selcountry"]; then
+            url="https://www.archlinux.org/mirrorlist/?country=${countriescode[i]}&use_mirror_status=on"
+        break
       fi
     done
-
-    countrycode=$(countriescode[${indexcountry}])
-    echo "$countrycode"
   fi
 
   yes | pacman -Sy pacman-contrib
   cp /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.backup
 
-  url="https://www.archlinux.org/mirrorlist/?country=${countrycode}&use_mirror_status=on"
   tmpfile=$(mktemp --suffix=-mirrorlist)
 
   echo "$url"
