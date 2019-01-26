@@ -128,13 +128,6 @@ install_intelmicrocode(){
 # DISPLAY CALIBRATION
 # ----------------------------------------------------------------------------------------
 
-txtcopyicctitle="Copy All ICC Profiles"
-txtcopyicc="Do you want to copy all profiles from ICC to $iccsyspath ?"
-
-contains() {
-    [[ $1 =~ (^|[[:space:]])$2($|[[:space:]]) ]] && exit(0) || exit(1)
-}
-
 display_calibration(){
   iccsyspath="/usr/share/color/icc"
   items=$(ls -R ICC | grep "\.icm$")
@@ -208,7 +201,7 @@ install_libinput(){
   echo "Searching for configuration file in '/etc/X11/xorg.conf.d/'"
   touchfile=$(find /etc/X11/xorg.conf.d -name "*touchpad.conf")
 
-  if [ "$touchfile" -eq "" ]
+  if [ "$touchfile" -eq "" ]; then
     echo "ERROR: No Configuration file found in '/etc/X11/xorg.conf.d/'"
     ls /etc/X11/xorg.conf.d/
   else
@@ -262,6 +255,9 @@ load_strings(){
   txtcpumc="CPU microcode"
   txttouchpad="Touchpad"
   txtdisplaycalib="Display Calibration"
+
+  txtcopyicctitle="Copy All ICC Profiles"
+  txtcopyicc="Do you want to copy all profiles from ICC to $iccsyspath ?"
 }
 
 # ----------------------------------------------------------------------------------------
