@@ -1383,7 +1383,8 @@ create_userchroot(){
   pressanykey
 
   echo "Setting up SUDO"
-  y | pacman -S sudo
+
+  yes | pacman -S sudo
   echo "%wheel ALL=(ALL) ALL' >> /etc/sudoers"
   echo '%wheel ALL=(ALL) ALL' >> /etc/sudoers
   echo "'Defaults rootpw' >> /etc/sudoers"
