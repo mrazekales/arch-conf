@@ -65,7 +65,6 @@ gpu_menu(){
   options=()
   options+=("$txtintelonlygpu" "xf86-video-intel")
   options+=("$txthybridgpu" "bumblebee")
-  
   options+=("" "")
   sel=$(whiptail --backtitle "$apptitle" --title "$txtgpumenu" --menu "" --cancel-button "$txtexit" --default-item "." 0 0 0 \
     "${options[@]}" \
@@ -75,8 +74,8 @@ gpu_menu(){
       "$txtintelonlygpu")
         intelgpu_only
       ;;
-      "$hybridgpu")
-      bumblebee_hybridgpu
+      "$txthybridgpu")
+        bumblebee_hybridgpu
       ;;
     esac
   else
@@ -93,10 +92,13 @@ intelgpu_only(){
   pacman -S  xf86-video-intel  bbswitch
 
   echo "Blacklisting the 'nvidia' and 'xf86-video-nouveau' drivers"
+  sed -i '/blacklist nouveau\n/d' /etc/modprobe.d/nouveau.conf
+  sed -i '/blacklist nvidia\n/d' /etc/modprobe.d/nouveau.conf
   printf "blacklist nouveau\nblacklist nvidia\n" >> /etc/modprobe.d/nouveau.conf
   cat /etc/modprobe.d/nouveau.conf
 
   echo "Turning nVidia GPU off:"
+  sed -i '/options bbswitch load_state=0 unload_state=0\n/d' /etc/modprobe.d/bbswitch.conf
   printf "options bbswitch load_state=0 unload_state=0\n" >> /etc/modprobe.d/bbswitch.conf
   cat /etc/modprobe.d/bbswitch.conf
 
@@ -114,6 +116,7 @@ install_intelmicrocode(){
 
   echo "Configuring Grub"
   grub-mkconfig -o /boot/grub/grub.cfg
+
   pressanykey
 }
 
@@ -135,7 +138,7 @@ display_calibration(){
   for sysicc in $sysiccs; do
     options+=("$sysicc" "")
   done
-  selprofile=$(whiptail --backtitle "$apptitle" --title "Select Profile" --menu "" 0 0 0 \
+  selprofile=$(whiptail --backtitle "$apptitle" --title "Select Profile" --menu "" --cancel-button "$txtexit" --default-item "." 0 0 0 \
     "${options[@]}" \
     3>&1 1>&2 2>&3)
   if [ "$?" = "0" ]; then
@@ -146,13 +149,13 @@ display_calibration(){
     options+=("xiccd" "AUR")
     options+=("gnome-color-manager" "GUI")
     options+=("displaycal" "GUI")
-    selprofile=$(whiptail --backtitle "$apptitle" --title "Select Loader" --menu "" 0 0 0 \
+    selprofile=$(whiptail --backtitle "$apptitle" --title "Select Loader" --menu "" --cancel-button "$txtexit" --default-item "." 0 0 0 \
     "${options[@]}" \
     3>&1 1>&2 2>&3)
     if [ "$?" = "0" ]; then
     clear
       xinitrcpath="/etc/X11/xinit/xinitrc"
-      case $sel in
+      case $selprofile in
         "dispwin(argyllcms)")
           echo "Installing 'argyllcms'(dispwin) ICC loader package"
           pacman -S argyllcms
@@ -203,6 +206,7 @@ install_libinput(){
     echo "Copying configuration to $touchfile"
     printf "Section \"InputClass\"\n\tIdentifier \"libinput touchpad\"\n\tDriver \"libinput\"\n\tMatchIsTouchpad \"on\"\n\tMatchDevicePath \"/dev/input/event*\"\n\tOption \"Tapping\" \"on\"\n\tOption \"ClickMethod\" \"clickfinger\"\n\tOption \"NaturalScrolling\" \"true\"\nEndSection\n" > $touchfile
   fi
+  echo "DONE"
   pressanykey
 }
 
@@ -243,6 +247,8 @@ load_strings(){
   txtmainmenutitle="Main Menu"
   txtgpumenu="GPU Menu"
   txtcpumc="Intel microcode"
+  txtexit="Exit"
+  txtpressanykey="Press any key"
 
   txtintelonlygpu="Intel Only(power saving)"
   txthybridgpu="Hybrid (intel/nVidia)"
