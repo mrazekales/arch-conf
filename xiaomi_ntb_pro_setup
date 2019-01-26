@@ -1,1 +1,282 @@
-ff
+#!/bin/bash
+# ----------------------------------------------------------------------------------------
+#
+# Xiaomi Notebook Pro Setup Script
+# 
+# https://wiki.archlinux.org/index.php/Xiaomi_Mi_Notebook_Air_13.3_(2018_Global_version)
+# ----------------------------------------------------------------------------------------
+# author:     Mrazek Ales
+#             https://github.com/mrazekales
+#
+#
+# project:    https://github.com/mrazekales/myarch-installer
+#
+# license:    LGPL-3.0 (http://opensource.org/licenses/lgpl-3.0.html)
+#
+# ----------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------
+# MAIN MENU
+# ----------------------------------------------------------------------------------------
+
+txtgpuconf="GPU config"
+txtcpumc="CPU microcode"
+txttouchpad="Touchpad"
+txtdisplaycalib="Display Calibration"
+
+main_menu(){
+  if [ "$1" = "" ]; then
+    nextitem="."
+  else
+    nextitem=$1
+  fi
+  options=()
+  options+=("$txtgpuconf" "intel only or hybrid")
+  options+=("$cpumc" "intel microcode")
+  options+=("" "")
+  options+=("$txttouchpad" "libinput")
+  options+=("$txtdisplaycalib" "ICC profiles")
+  options+=("" "")
+  sel=$(whiptail --backtitle "$apptitle" --title "$txtmainmenutitle" --menu "" --cancel-button "$txtexit" --default-item "$nextitem" 0 0 0 \
+    "${options[@]}" \
+    3>&1 1>&2 2>&3)
+  if [ "$?" = "0" ]; then
+    case $sel in
+      "$txtgpuconf")
+        gpu_menu
+        nextitem="$txtcpumc"
+      ;;
+      "$txtcpumc")
+        install_intelmicrocode
+        nextitem="$txttouchpad"
+      ;;
+      "$txttouchpad")
+        install_libinput
+        nextitem="$txtdisplaycalib"
+      ;;
+      "$txtdisplaycalib")
+        display_calibration
+        nextitem="$txtdisplaycalib"
+    esac
+    main_menu "$nextitem"
+  else
+    clear
+  fi
+}
+
+# ----------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------
+# GPU MENU
+# ----------------------------------------------------------------------------------------
+gpu_menu(){
+  options=()
+  options+=("$txtintelonlygpu" "xf86-video-intel")
+  options+=("$txthybridgpu" "bumblebee")
+  
+  options+=("" "")
+  sel=$(whiptail --backtitle "$apptitle" --title "$txtgpumenu" --menu "" --cancel-button "$txtexit" --default-item "." 0 0 0 \
+    "${options[@]}" \
+    3>&1 1>&2 2>&3)
+  if [ "$?" = "0" ]; then
+    case $sel in
+      "$txtintelonlygpu")
+        intelgpu_only
+      ;;
+      "$hybridgpu")
+      bumblebee_hybridgpu
+      ;;
+    esac
+  else
+    clear
+  fi
+}
+
+# ----------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------
+# GPU/CPU Configuration
+# ----------------------------------------------------------------------------------------
+intelgpu_only(){
+  echo "Installing  'xf86-video-intel'  'bbswitch' Packages"
+  yes | pacman -S  xf86-video-intel  bbswitch
+
+  echo "Blacklisting the 'nvidia' and 'xf86-video-nouveau' drivers"
+  printf "blacklist nouveau\nblacklist nvidia" >> /etc/modprobe.d/nouveau.conf
+  cat /etc/modprobe.d/nouveau.conf
+
+  echo "Turning nVidia GPU off:"
+  printf "options bbswitch load_state=0 unload_state=0" >> /etc/modprobe.d/bbswitch.conf
+  cat /etc/modprobe.d/bbswitch.conf
+
+  pressanykey
+}
+
+bumblebee_hybridgpu(){
+
+  pressanykey
+}
+
+install_intelmicrocode(){
+  echo "Installing 'intel-ucode' Package"
+  yes | pacman -S intel-ucode
+
+  echo "Configuring Grub"
+  grub-mkconfig -o /boot/grub/grub.cfg
+  pressanykey
+}
+
+# ----------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------
+# DISPLAY CALIBRATION
+# ----------------------------------------------------------------------------------------
+
+txtcopyicctitle="Copy All ICC Profiles"
+txtcopyicc="Do you want to copy all profiles from ICC to $iccsyspath ?"
+
+contains() {
+    [[ $1 =~ (^|[[:space:]])$2($|[[:space:]]) ]] && exit(0) || exit(1)
+}
+
+display_calibration(){
+  iccsyspath="/usr/share/color/icc"
+  items=$(ls -R ICC | grep "\.icm$")
+
+  cp ICC/*.icm /$iccpath
+  cp ICC/*.icc /$iccpath
+  
+  sysiccs=$(ls -R $iccsyspath | grep "\.icm$")
+
+  options=()
+  for sysicc in $sysiccs; do
+    options+=("$sysicc" "")
+  done
+  selprofile=$(whiptail --backtitle "$apptitle" --title "Select Profile" --menu "" 0 0 0 \
+    "${options[@]}" \
+    3>&1 1>&2 2>&3)
+  if [ "$?" = "0" ]; then
+    clear
+    options=()
+    options+=("dispwin(argyllcms)" "loader")
+    options+=("xcalib" "loader,AUR")
+    options+=("xiccd" "AUR")
+    options+=("gnome-color-manager" "GUI")
+    options+=("displaycal" "GUI")
+    selprofile=$(whiptail --backtitle "$apptitle" --title "Select Loader" --menu "" 0 0 0 \
+    "${options[@]}" \
+    3>&1 1>&2 2>&3)
+    if [ "$?" = "0" ]; then
+      xinitrcpath="/etc/X11/xinit/xinitrc"
+      case $sel in
+        "dispwin(argyllcms)")
+          echo "Installing 'argyllcms'(dispwin) ICC loader package"
+          pacman -S argyllcms
+
+          echo "Xinitrc setting up with dispwin"
+          cmd="/usr/bin/dispwin -d0 /home/arch/.color/icc/$selprofile"
+          sed -i '2i\\n$cmd' $xinitrcpath
+        ;;
+        "xcalib")
+          echo "Installing 'xcalib' ICC loader package"
+          yay -S xcalib
+
+          echo "Xinitrc setting up with xcalib"
+          cmd="/usr/bin/xcalib -d :0 /usr/share/color/icc/$selprofile"
+          sed -i '2i\\n$cmd' $xinitrcpath
+        ;;
+        "xiccd")
+          echo "Installing 'xiccd' daemon package"
+          #yay -S xiccd
+        ;;
+        "gnome-color-manager")
+        ;;
+        "displaycal")
+        ;;
+      esac
+      pressanykey
+    fi 
+  fi
+}
+
+
+
+# ----------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------
+# TOUCH PAD
+# ----------------------------------------------------------------------------------------
+install_libinput(){
+  echo "Installing  'xf86-input-libinput' Package"
+  yes | pacman -S  xf86-input-libinput
+
+  echo "Searching for configuration file in '/etc/X11/xorg.conf.d/'"
+  touchfile=$(find /etc/X11/xorg.conf.d -name "*touchpad.conf")
+
+  if [ "$touchfile" -eq "" ]
+    echo "ERROR: No Configuration file found in '/etc/X11/xorg.conf.d/'"
+    ls /etc/X11/xorg.conf.d/
+  else
+    echo "Copying configuration to /etc/X11/xorg.conf.d/$touchfile"
+    printf "Section \"InputClass\"\n\tIdentifier \"libinput touchpad\"\n\tDriver \"libinput\"\n\tMatchIsTouchpad \"on\"\n\tMatchDevicePath \"/dev/input/event*\"\n\tOption \"Tapping\" \"on\"\n\tOption \"ClickMethod\" \"clickfinger\"\n\tOption \"NaturalScrolling\" \"true\"\nEndSection\n" > /etc/X11/xorg.conf.d/$touchfile
+  fi
+  pressanykey
+}
+
+# ----------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------
+# GLOBAL FUNCTIONS
+# ----------------------------------------------------------------------------------------
+choose_editor(){
+  options=()
+  options+=("nano" "")
+  options+=("vim" "")
+  options+=("vi" "")
+  options+=("edit" "")
+  sel=$(whiptail --backtitle "$apptitle" --title "$txteditor" --menu "" 0 0 0 \
+    "${options[@]}" \
+    3>&1 1>&2 2>&3)
+  if [ "$?" = "0" ]; then
+    EDITOR=$sel
+  fi
+}
+
+pressanykey(){
+  read -n1 -p "$txtpressanykey"
+}
+
+rebootpc(){
+  if (whiptail --backtitle "$apptitle" --title "$txtreboot" --yesno "$txtreboot ?" --defaultno 0 0) then
+    clear
+    reboot
+  fi
+}
+
+# ----------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------
+# STRINGS
+# ----------------------------------------------------------------------------------------
+load_strings(){
+  txtmainmenutitle="Main Menu"
+  txtgpumenu="GPU Menu"
+
+  txtintelonlygpu="Intel Only(power saving)"
+  txthybridgpu="Hybrid (intel/nVidia)"
+
+  txtgpuconf="GPU config"
+  txtcpumc="CPU microcode"
+  txttouchpad="Touchpad"
+  txtdisplaycalib="Display Calibration"
+}
+
+# ----------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------
+# START OF THE PROGRAM
+# ----------------------------------------------------------------------------------------
+
+# normal program start
+apptitle="myArch-installer(Xiaomi Notebook Pro Setup) - Version: 0.1 (LGPLv3)"
+load_strings
+
+# main menu start
+echo "Program will start"
+pressanykey
+main_menu
+exit 0
+
+# ----------------------------------------------------------------------------------------
