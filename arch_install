@@ -94,7 +94,7 @@ rank_mirrors(){
   if [ "$?" = "0" ]; then
     
     for ((i=0;i<${#countriesname[@]};++i)); do
-      if [ "${countriesname[i]}" = "$selcountry"]; then
+      if [ "${countriesname[i]}" = "$selcountry" ]; then
             url="https://www.archlinux.org/mirrorlist/?country=${countriescode[i]}&use_mirror_status=on"
         break
       fi
@@ -123,9 +123,10 @@ rank_mirrors(){
   
   echo "Ranking MirrorList"
   cp /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.tmp
-  rankmirrors /etc/pacman.d/mirrorlist.tmp > /etc/pacman.d/mirrorlist
+  rankmirrors -n 6 /etc/pacman.d/mirrorlist.tmp > /etc/pacman.d/mirrorlist
   rm /etc/pacman.d/mirrorlist.tmp
   chmod +r /etc/pacman.d/mirrorlist
+  echo "done"
   pressanykey
 }
 
