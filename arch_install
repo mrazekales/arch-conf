@@ -90,37 +90,45 @@ rank_mirrors(){
     "${options[@]}" \
     3>&1 1>&2 2>&3)
   if [ "$?" = "0" ]; then
-    indexcountry=indexof $selcountry  
-    countrycode=countriescode[${indexcountry}]
+    
+    for i in "${!countriesname[@]}"; do
+      if [[ "${countriesname[$i]}" = "${selcountry}" ]]; then
+       indexcountry="${i}";
+       echo "$indexcountry"
+       break
+      fi
+    done
+
+    countrycode=$(countriescode[${indexcountry}])
     echo "$countrycode"
   fi
 
-  # yes | pacman -Sy pacman-contrib
-  # cp /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.backup
+  yes | pacman -Sy pacman-contrib
+  cp /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.backup
 
-  # url="https://www.archlinux.org/mirrorlist/?country=${countrycode}&use_mirror_status=on"
-  # tmpfile=$(mktemp --suffix=-mirrorlist)
+  url="https://www.archlinux.org/mirrorlist/?country=${countrycode}&use_mirror_status=on"
+  tmpfile=$(mktemp --suffix=-mirrorlist)
 
-  # echo "$url"
-  # # Get latest mirror list and save to tmpfile
-  # curl -so ${tmpfile} ${url}
-  # sed -i 's/^#Server/Server/g' ${tmpfile}
+  echo "$url"
+  # Get latest mirror list and save to tmpfile
+  curl -so ${tmpfile} ${url}
+  sed -i 's/^#Server/Server/g' ${tmpfile}
 
-  # # Backup and replace current mirrorlist file (if new file is non-zero)
-  # if [[ -s ${tmpfile} ]]; then
-  #  { echo "Backing up the original mirrorlist..."
-  #    mv -i /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.backup; } &&
-  #  { echo "Rotating the new list into place..."
-  #    mv -i ${tmpfile} /etc/pacman.d/mirrorlist; }
-  # else
-  #   echo " Unable to update, could not download list."
-  # fi
+  # Backup and replace current mirrorlist file (if new file is non-zero)
+  if [[ -s ${tmpfile} ]]; then
+   { echo "Backing up the original mirrorlist..."
+     mv -i /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.backup; } &&
+   { echo "Rotating the new list into place..."
+     mv -i ${tmpfile} /etc/pacman.d/mirrorlist; }
+  else
+    echo " Unable to update, could not download list."
+  fi
   
-  # echo "Ranking MirrorList"
-  # cp /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.tmp
-  # rankmirrors /etc/pacman.d/mirrorlist.tmp > /etc/pacman.d/mirrorlist
-  # rm /etc/pacman.d/mirrorlist.tmp
-  # chmod +r /etc/pacman.d/mirrorlist
+  echo "Ranking MirrorList"
+  cp /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.tmp
+  rankmirrors /etc/pacman.d/mirrorlist.tmp > /etc/pacman.d/mirrorlist
+  rm /etc/pacman.d/mirrorlist.tmp
+  chmod +r /etc/pacman.d/mirrorlist
   pressanykey
 }
 
@@ -1745,19 +1753,6 @@ arch_chroot(){
   arch-chroot /mnt /root/$(basename "$0") -chroot $1 $2
   rm /mnt/root/$(basename "$0")
   echo "exit"
-}
-
-indexof()
-{
-    local word
-    local item
-    local idx
-
-    word=$1
-    shift
-    item=$(printf '%s\n' "$@" | fgrep -nx "$word")
-    let idx=${item%%:*}-1
-    echo $idx
 }
 
 contains_element() { #{{{
