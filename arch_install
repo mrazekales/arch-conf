@@ -82,15 +82,15 @@ rank_mirrors(){
   local countriesname=("Australia" "Austria" "Belarus" "Belgium" "Brazil" "Bulgaria" "Canada" "Chile" "China" "Colombia" "Czech Republic" "Denmark" "Estonia" "Finland" "France" "Germany" "Greece" "Hong Kong" "Hungary" "Indonesia" "India" "Iran" "Ireland" "Israel" "Italy" "Japan" "Kazakhstan" "Korea" "Latvia" "Luxembourg" "Macedonia" "Netherlands" "New Caledonia" "New Zealand" "Norway" "Poland" "Portugal" "Romania" "Russia" "Serbia" "Singapore" "Slovakia" "South Africa" "Spain" "Sri Lanka" "Sweden" "Switzerland" "Taiwan" "Turkey" "Ukraine" "United Kingdom" "United States" "Uzbekistan" "Viet Nam")
 
   options=()
-  for country in $countriesname; do
-    options+=("$countriesname" "")
+  for item in "${countriesname[@]}"; do
+    options+=("$item" "")
   done
   selcountry=$(whiptail --backtitle "$apptitle" --title "$txtrankmirrorstitle" --menu "" 0 0 0 \
     "${options[@]}" \
     3>&1 1>&2 2>&3)
   if [ "$?" = "0" ]; then
     if contains_element "$selcountry" "${countriesname[@]}"; then
-        countrycode=${countries_code[$(( $REPLY - 1 ))]}
+        countrycode=${countriescode[$(( $REPLY - 1 ))]}
     fi
   fi
 
@@ -100,7 +100,7 @@ rank_mirrors(){
 
   # Get latest mirror list and save to tmpfile
   curl -so ${tmpfile} ${url}
-  sed -i 's/^#Server/Server/g' ${tmpfile}
+  sed -i 's/^#Server/Server/g' ${tmpfile} 
 
   # Backup and replace current mirrorlist file (if new file is non-zero)
   if [[ -s ${tmpfile} ]]; then
@@ -119,7 +119,6 @@ rank_mirrors(){
   rm /etc/pacman.d/mirrorlist.tmp
   # allow global read access (required for non-root yaourt execution)
   chmod +r /etc/pacman.d/mirrorlist
-  $txtrmdone="DONE"
   pressanykey
 }
 
