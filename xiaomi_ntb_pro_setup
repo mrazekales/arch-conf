@@ -90,14 +90,14 @@ gpu_menu(){
 # ----------------------------------------------------------------------------------------
 intelgpu_only(){
   echo "Installing  'xf86-video-intel'  'bbswitch' Packages"
-  yes | pacman -S  xf86-video-intel  bbswitch
+  pacman -S  xf86-video-intel  bbswitch
 
   echo "Blacklisting the 'nvidia' and 'xf86-video-nouveau' drivers"
-  printf "blacklist nouveau\nblacklist nvidia" >> /etc/modprobe.d/nouveau.conf
+  printf "blacklist nouveau\nblacklist nvidia\n" >> /etc/modprobe.d/nouveau.conf
   cat /etc/modprobe.d/nouveau.conf
 
   echo "Turning nVidia GPU off:"
-  printf "options bbswitch load_state=0 unload_state=0" >> /etc/modprobe.d/bbswitch.conf
+  printf "options bbswitch load_state=0 unload_state=0\n" >> /etc/modprobe.d/bbswitch.conf
   cat /etc/modprobe.d/bbswitch.conf
 
   pressanykey
