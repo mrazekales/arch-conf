@@ -95,35 +95,32 @@ rank_mirrors(){
     fi
   fi
 
-  clear
-  echo "$countrycode"
+  yes | pacman -Sy pacman-contrib
+  cp /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.backup
 
-  # yes | pacman -Sy pacman-contrib
-  # cp /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.backup
+  url="https://www.archlinux.org/mirrorlist/?country=${countrycode}&use_mirror_status=on"
+  tmpfile=$(mktemp --suffix=-mirrorlist)
 
-  # url="https://www.archlinux.org/mirrorlist/?country=${countrycode}&use_mirror_status=on"
-  # tmpfile=$(mktemp --suffix=-mirrorlist)
+  echo "$url"
+  # Get latest mirror list and save to tmpfile
+  curl -so ${tmpfile} ${url}
+  sed -i 's/^#Server/Server/g' ${tmpfile}
 
-  # echo "$url"
-  # # Get latest mirror list and save to tmpfile
-  # curl -so ${tmpfile} ${url}
-  # sed -i 's/^#Server/Server/g' ${tmpfile}
-
-  # # Backup and replace current mirrorlist file (if new file is non-zero)
-  # if [[ -s ${tmpfile} ]]; then
-  #  { echo "Backing up the original mirrorlist..."
-  #    mv -i /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.backup; } &&
-  #  { echo "Rotating the new list into place..."
-  #    mv -i ${tmpfile} /etc/pacman.d/mirrorlist; }
-  # else
-  #   echo " Unable to update, could not download list."
-  # fi
+  # Backup and replace current mirrorlist file (if new file is non-zero)
+  if [[ -s ${tmpfile} ]]; then
+   { echo "Backing up the original mirrorlist..."
+     mv -i /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.backup; } &&
+   { echo "Rotating the new list into place..."
+     mv -i ${tmpfile} /etc/pacman.d/mirrorlist; }
+  else
+    echo " Unable to update, could not download list."
+  fi
   
-  # echo "Ranking MirrorList"
-  # cp /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.tmp
-  # rankmirrors /etc/pacman.d/mirrorlist.tmp > /etc/pacman.d/mirrorlist
-  # rm /etc/pacman.d/mirrorlist.tmp
-  # chmod +r /etc/pacman.d/mirrorlist
+  echo "Ranking MirrorList"
+  cp /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.tmp
+  rankmirrors /etc/pacman.d/mirrorlist.tmp > /etc/pacman.d/mirrorlist
+  rm /etc/pacman.d/mirrorlist.tmp
+  chmod +r /etc/pacman.d/mirrorlist
   pressanykey
 }
 
@@ -1749,6 +1746,10 @@ arch_chroot(){
   rm /mnt/root/$(basename "$0")
   echo "exit"
 }
+
+contains_element() { #{{{
+    for e in "${@:2}"; do [[ $e == $1 ]] && break; done;
+  }
 
 choose_editor(){
   options=()
