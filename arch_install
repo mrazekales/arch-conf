@@ -94,13 +94,16 @@ rank_mirrors(){
     fi
   fi
 
-  url="https://www.archlinux.org/mirrorlist/?country=${countrycode}&use_mirror_status=on"
+  clear
+  yes | pacman -Sy pacman-contrib
+  cp /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.backup
 
+  url="https://www.archlinux.org/mirrorlist/?country=${countrycode}&use_mirror_status=on"
   tmpfile=$(mktemp --suffix=-mirrorlist)
 
   # Get latest mirror list and save to tmpfile
   curl -so ${tmpfile} ${url}
-  sed -i 's/^#Server/Server/g' ${tmpfile} 
+  sed -i 's/^#Server/Server/g' ${tmpfile}
 
   # Backup and replace current mirrorlist file (if new file is non-zero)
   if [[ -s ${tmpfile} ]]; then
@@ -111,8 +114,7 @@ rank_mirrors(){
   else
     echo " Unable to update, could not download list."
   fi
-  # better repo should go first
-  pacman -Sy pacman-contrib
+  
   echo "Ranking MirrorList"
   cp /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.tmp
   rankmirrors /etc/pacman.d/mirrorlist.tmp > /etc/pacman.d/mirrorlist
