@@ -1430,6 +1430,7 @@ set_timeutcchroot(){
   hwclock --systohc --utc
   exit
 }
+
 set_timelocalchroot(){
   echo "hwclock --systohc --localtime"
   hwclock --systohc --localtime
@@ -1581,10 +1582,6 @@ arch_chroot(){
   echo "exit"
 }
 
-contains_element() { #{{{
-    for e in "${@:2}"; do [[ $e == $1 ]] && break; done;
-  }
-
 choose_editor(){
   options=()
   options+=("nano" "")
@@ -1597,28 +1594,6 @@ choose_editor(){
   if [ "$?" = "0" ]; then
     EDITOR=$sel
   fi
-}
-
-choose_language(){
-  options=()
-  options+=("english" "")
-  
-  sel=$(whiptail --backtitle "$apptitle" --title "$txtlanguage" --menu "" 0 0 0 \
-    "${options[@]}" \
-    3>&1 1>&2 2>&3)
-  if [ ! "$?" = "0" ]; then
-    case $sel in
-    "english")
-      clear
-      $applanguage="english"
-      load_language
-    ;;
-  esac
-  fi
-}
-
-load_language(){
-  source languages/$applanguage
 }
 
 set_keymap(){
@@ -1668,7 +1643,7 @@ else
 
   # load language strings
   load_language
-  # load keyboard
+  # load keymap
   loadkeys $usingkeymap
 
   # check if efi is available
@@ -1686,5 +1661,3 @@ else
   main_menu
 fi
 exit 0
-
-# --------------------------------------------------------
