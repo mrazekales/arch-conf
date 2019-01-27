@@ -14,10 +14,12 @@
 # GLOBAL STRINGS
 # ----------------------------------------------------------------------------------------
 apptitle="myArch-installer(Desktop Environment) - Version: 0.1 (LGPLv3)"
+
 txtpressanykey="Press any key to continue."
 txtexit="Exit"
 txtback="Back"
 txtignore="Ignore"
+txtoptional="(Optional)"
 txtdone="Done"
 
 # ----------------------------------------------------------------------------------------
