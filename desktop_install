@@ -1,6 +1,6 @@
 #!/bin/bash
 # ----------------------------------------------------------------------------------------
-#           Desktop Installer
+# Desktop Installer
 # ----------------------------------------------------------------------------------------
 # author:     Mrazek Ales
 #             https://github.com/mrazekales
@@ -11,65 +11,108 @@
 #
 # ----------------------------------------------------------------------------------------
 # ----------------------------------------------------------------------------------------
+# GLOBAL STRINGS
+# ----------------------------------------------------------------------------------------
+apptitle="myArch-installer(Desktop Environment) - Version: 0.1 (LGPLv3)"
+txtpressanykey="Press any key to continue."
+txtexit="Exit"
+txtback="Back"
+txtignore="Ignore"
+txtdone="Done"
+
+# ----------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------
 # MAIN MENU
 # ----------------------------------------------------------------------------------------
 main_menu(){
+  # whiptail strings
+  txtmainmenutitle="Main Menu"
+  txtaurhelper="AUR helper/base-devel"
+  txtdisplaymanager="Display Manager"
+  txtwindowmanager="Window Manager"
+  txtdesktopenvironment="Desktop Environment"
+  txtpowermanager="Power Manager"
+  txtnetworkmanager="Network Manager"
+  txtswapfile="Create Swap File"
+
+  txtreboot="Reboot"
+
   if [ "$1" = "" ]; then
     nextitem="."
   else
     nextitem=$1
   fi
   options=()
+  options+=("$txtaurhelper" "yay")
   options+=("$txtdisplaymanager" "")
   options+=("$txtwindowmanager" "")
   options+=("$txtdesktopenvironment" "")
   options+=("" "")
   options+=("$txtpowermanager" "")
-  options+=("$txtnetworkmanagement" "")
-
+  options+=("$txtnetworkmanager" "")
+  options+=("$txtswapfile" "")
   sel=$(whiptail --backtitle "$apptitle" --title "$txtmainmenutitle" --menu "" --cancel-button "$txtexit" --default-item "$nextitem" 0 0 0 \
     "${options[@]}" \
     3>&1 1>&2 2>&3)
   if [ "$?" = "0" ]; then
     case $sel in
+      "$txtaurhelper")
+      install_yay
+        nextitem="$txtaurhelper"
+      ;;
       "$txtdisplaymanager")
-        nextitem="$txtdesktopenvironment"
+        nextitem="$txtdisplaymanager"
       ;;
       "$txtwindowmanager")
-        nextitem="$txt"
+        nextitem="$txtwindowmanager"
       ;;
-      "$txt")
-        nextitem="$txt"
+      "$txtdesktopenvironment")
+        nextitem="$txtdesktopenvironment"
       ;;
-      
-      
+      "$txtpowermanager")
+        nextitem="$txtpowermanager"
+      ;;
+      "$txtnetworkmanager")
+        nextitem="$txtnetworkmanager"
+      ;;
+      "$txtswapfile")
+        create_swapfile
+        nextitem="$txtswapfile"
+      ;;
     esac
     main_menu "$nextitem"
   else
     clear
   fi
 }
-
-
-
-
 # ----------------------------------------------------------------------------------------
 # ----------------------------------------------------------------------------------------
-# AUR HELPER -YAY
+# BASE_DEV/AUR HELPER -YAY
 # ----------------------------------------------------------------------------------------
 install_yay(){
-  echo "pacman -S git"
-  pacman -S git < y
+  echo "Installing 'base-devel'"
+  yes | pacman -S base-devel
+  
+  echo "Installing git"
+  yes | pacman -S git
+
   echo "git clone https://aur.archlinux.org/yay.git"
   git clone https://aur.archlinux.org/yay.git
+
   echo "cd yay"
   cd yay
+
   echo "makepkg -si"
   makepkg -si
+
   echo "cd .."
   cd ..
+
   echo "rm -r yay"
   rm -r yay
+
+  echo "$txtdone"
+  pressanykey
 }
 
 # ----------------------------------------------------------------------------------------
@@ -77,6 +120,12 @@ install_yay(){
 # SWAP FILE
 # ----------------------------------------------------------------------------------------
 create_swapfile(){
+
+  if [ -e /swapfile ]; then
+    echo "Removing old swapfile ..."
+    remove_swapfile
+  fi
+
   ramsize=$(cat /proc/meminfo | grep MemTotal | awk '{ print $2 }')
   echo "RAM: $ramsize B"
 
@@ -114,61 +163,20 @@ remove_swapfile(){
 
 # ----------------------------------------------------------------------------------------
 # ----------------------------------------------------------------------------------------
-# DRIVERS
+# POWER MANAGER
 # ----------------------------------------------------------------------------------------
-install_intelmicrocode(){
-  echo "Installing intel-ucode"
-  yes | pacman -S intel-ucode
-
-  echo "grub-mkconfig -o /boot/grub/grub.cfg"
-  grub-mkconfig -o /boot/grub/grub.cfg
-}
-
-only_intelgpu(){
-  echo "Installing  xf86-video-intel  bbswitch" 
-  yes | pacman -S  xf86-video-intel  bbswitch
-
-  echo "Blacklist the nvidia and xf86-video-nouveau"
-  echo "blacklist nouveau\nblacklist nvidia" >> /etc/modprobe.d/nouveau.conf
-
-  echo "Turn nVidia gpu off"
-  echo "options bbswitch load_state=0 unload_state=0" >> /etc/modprobe.d/bbswitch.conf
-}
-
-hybrid_gpu(){
+power_menu(){
 
 }
-
-# ----------------------------------------------------------------------------------------
-# ----------------------------------------------------------------------------------------
-# TOUCH PAD
-# ----------------------------------------------------------------------------------------
-install_libinput(){
-  echo "pacman -S  xf86-input-libinput"
-  yes | pacman -S  xf86-input-libinput
-
-  echo "Copying configuration to /etc/X11/xorg.conf.d/20-touchpad.conf"
-  echo "Section \"InputClass\"\n\tIdentifier \"libinput touchpad\"\n\tDriver \"libinput\"\n\tMatchIsTouchpad \"on\"\n\tMatchDevicePath \"/dev/input/event*\"\n\tOption \"Tapping\" \"on\"\n\tOption \"ClickMethod\" \"clickfinger\"\n\tOption \"NaturalScrolling\" \"true\"\nEndSection" > /etc/X11/xorg.conf.d/20-touchpad.conf
-}
-
-# ----------------------------------------------------------------------------------------
-# ----------------------------------------------------------------------------------------
-# DISPLAY CALIBRATION
-# ----------------------------------------------------------------------------------------
-display_calibration(){
-
-}
-
-
-# ----------------------------------------------------------------------------------------
-# ----------------------------------------------------------------------------------------
-# POWER MANAGEMENT
-# ----------------------------------------------------------------------------------------
 
 # ----------------------------------------------------------------------------------------
 # ----------------------------------------------------------------------------------------
 # NETWORK MANAGERS
 # ----------------------------------------------------------------------------------------
+network_menu(){
+
+}
+
 install_networkmanager(){
   echo "Installing networkmanager network-manager-applet"
   yes | pacman -S networkmanager nm-applet 
@@ -253,7 +261,6 @@ rebootpc(){
 # ----------------------------------------------------------------------------------------
 
 # normal program start
-apptitle="Arch Desktop Installer - Version: 0.1 (LGPLv3)"
 source languages/english_desktop
 
 # main menu start
