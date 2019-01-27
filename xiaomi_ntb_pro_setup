@@ -15,9 +15,29 @@
 #
 # ----------------------------------------------------------------------------------------
 # ----------------------------------------------------------------------------------------
+# GLOBAL STRINGS
+# ----------------------------------------------------------------------------------------
+apptitle="myArch-installer(Xiaomi Notebook Pro Setup) - Version: 0.1 (LGPLv3)"
+
+txtpressanykey="Press any key to continue."
+txtexit="Exit"
+txtback="Back"
+txtignore="Ignore"
+txtoptional="(Optional)"
+txtdone="Done"
+
+# ----------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------
 # MAIN MENU
 # ----------------------------------------------------------------------------------------
 main_menu(){
+  # whiptail strings
+  txtmainmenutitle="Main Menu"
+  txtgpuconf="GPU config"
+  txtcpumc="CPU microcode"
+  txttouchpad="Touchpad"
+  txtdisplaycalib="Display Calibration"
+
   if [ "$1" = "" ]; then
     nextitem="."
   else
@@ -62,6 +82,11 @@ main_menu(){
 # GPU MENU
 # ----------------------------------------------------------------------------------------
 gpu_menu(){
+  # whiptail strings
+  txtgpumenu="GPU options"
+  txtintelonlygpu="Intel Only(power saving)"
+  txthybridgpu="Hybrid (intel/nVidia)"
+  
   options=()
   options+=("$txtintelonlygpu" "xf86-video-intel")
   options+=("$txthybridgpu" "bumblebee")
@@ -126,6 +151,12 @@ install_intelmicrocode(){
 # ----------------------------------------------------------------------------------------
 
 display_calibration(){
+  # whiptail strings
+  txtcalibmenu="Select ICC Profile"
+  txtloadermenu="Select Profile Loader"
+  txtcopyicctitle="Copy All ICC Profiles"
+  txtcopyicc="Do you want to copy all profiles from ICC to $iccsyspath ?"
+
   iccsyspath="/usr/share/color/icc"
   items=$(ls -R ICC | grep "\.icm$")
 
@@ -138,7 +169,7 @@ display_calibration(){
   for sysicc in $sysiccs; do
     options+=("$sysicc" "")
   done
-  selprofile=$(whiptail --backtitle "$apptitle" --title "Select Profile" --menu "" --cancel-button "$txtexit" --default-item "." 0 0 0 \
+  selprofile=$(whiptail --backtitle "$apptitle" --title "$txtcalibmenu" --menu "" --cancel-button "$txtexit" --default-item "." 0 0 0 \
     "${options[@]}" \
     3>&1 1>&2 2>&3)
   if [ "$?" = "0" ]; then
@@ -149,7 +180,7 @@ display_calibration(){
     options+=("xiccd" "AUR")
     options+=("gnome-color-manager" "GUI")
     options+=("displaycal" "GUI")
-    selprofile=$(whiptail --backtitle "$apptitle" --title "Select Loader" --menu "" --cancel-button "$txtexit" --default-item "." 0 0 0 \
+    selprofile=$(whiptail --backtitle "$apptitle" --title "$txtloadermenu" --menu "" --cancel-button "$txtexit" --default-item "." 0 0 0 \
     "${options[@]}" \
     3>&1 1>&2 2>&3)
     if [ "$?" = "0" ]; then
@@ -215,6 +246,9 @@ install_libinput(){
 # GLOBAL FUNCTIONS
 # ----------------------------------------------------------------------------------------
 choose_editor(){
+  # whiptail strings
+  txteditor="Select Editor"
+
   options=()
   options+=("nano" "")
   options+=("vim" "")
@@ -241,35 +275,8 @@ rebootpc(){
 
 # ----------------------------------------------------------------------------------------
 # ----------------------------------------------------------------------------------------
-# STRINGS
-# ----------------------------------------------------------------------------------------
-load_strings(){
-  txtmainmenutitle="Main Menu"
-  txtgpumenu="GPU Menu"
-  txtcpumc="Intel microcode"
-  txtexit="Exit"
-  txtpressanykey="Press any key"
-
-  txtintelonlygpu="Intel Only(power saving)"
-  txthybridgpu="Hybrid (intel/nVidia)"
-
-  txtgpuconf="GPU config"
-  txtcpumc="CPU microcode"
-  txttouchpad="Touchpad"
-  txtdisplaycalib="Display Calibration"
-
-  txtcopyicctitle="Copy All ICC Profiles"
-  txtcopyicc="Do you want to copy all profiles from ICC to $iccsyspath ?"
-}
-
-# ----------------------------------------------------------------------------------------
-# ----------------------------------------------------------------------------------------
 # START OF THE PROGRAM
 # ----------------------------------------------------------------------------------------
-
-# normal program start
-apptitle="myArch-installer(Xiaomi Notebook Pro Setup) - Version: 0.1 (LGPLv3)"
-load_strings
 
 # main menu start
 echo "Program will start"
