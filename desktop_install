@@ -262,9 +262,6 @@ rebootpc(){
 # START OF THE PROGRAM
 # ----------------------------------------------------------------------------------------
 
-# normal program start
-source languages/english_desktop
-
 # main menu start
 echo "Program will start"
 pressanykey
