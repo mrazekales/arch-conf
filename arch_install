@@ -11,24 +11,48 @@
 #
 # ----------------------------------------------------------------------------------------
 # ----------------------------------------------------------------------------------------
+# GLOBAL STRINGS
+# ----------------------------------------------------------------------------------------
+apptitle="Arch Linux Installer - Version: 0.1 (LGPLv3)"
+
+txtpressanykey="Press any key to continue."
+txtexit="Exit"
+txtback="Back"
+txtignore="Ignore"
+txtoptional="(Optional)"
+txtdone="Done"
+
+# ----------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------
 # MAIN MENU
 # ----------------------------------------------------------------------------------------
 main_menu(){
+  # whiptail strings
+  txtmainmenutitle="Main Menu"
+  txtrankmirrors="Rank Mirrors"
+  txtmakepartitions="Disk Partitioning  "
+  txtselectpartitions="Partitions Selection  "
+  txtformatpartitions="Partitions Formating  "
+  txtmount="Mount and Install"
+  txtkeymap="Keymap"
+  txtlanguage="Language"
+  txtreboot="Reboot"
+
   if [ "$1" = "" ]; then
     nextitem="."
   else
     nextitem=$1
   fi
   options=()
-  options+=("$txtrankmirrors" "$txtrmdone")
+  options+=("$txtrankmirrors" "$txtoptional")
   options+=("$txtkeymap" "$usingkeymap")
   options+=("$txtlanguage" "$applanguage")
   options+=("" "")
-  options+=("$txtmakepartitions" "$txtmpdone")
-  options+=("$txtselectpartitions" "$txtspdone")
-  options+=("$txtformatpartitions" "$txtfpdone")
+  options+=("$txtmakepartitions" "")
+  options+=("$txtselectpartitions" "")
+  options+=("$txtformatpartitions" "")
   options+=("" "")
-  options+=("$txtmount" "$txtmountdone")
+  options+=("$txtmount" "")
   options+=("" "")
   options+=("" "")
   options+=("$txtreboot" "")
@@ -77,6 +101,8 @@ main_menu(){
 # Rank Mirrors
 # ----------------------------------------------------------------------------------------
 rank_mirrors(){
+  # whiptail strings
+  txtrankmirrorstitle="Rank Mirrorlist"
 
   clear
   local countriescode=("AU" "AT" "BY" "BE" "BR" "BG" "CA" "CL" "CN" "CO" "CZ" "DK" "EE" "FI" "FR" "DE" "GR" "HK" "HU" "ID" "IN" "IR" "IE" "IL" "IT" "JP" "KZ" "KR" "LV" "LU" "MK" "NL" "NC" "NZ" "NO" "PL" "PT" "RO" "RU" "RS" "SG" "SK" "ZA" "ES" "LK" "SE" "CH" "TW" "TR" "UA" "GB" "US" "UZ" "VN")
@@ -135,6 +161,17 @@ rank_mirrors(){
 # Disk Partitioning
 # ----------------------------------------------------------------------------------------
 partitioning_menu(){
+  # whiptail strings
+  txtpartitionmenu="Partition Menu"
+  txtautoparts="Automatic Partitioning"
+  txteditparts="Manual Partitioning"
+  txtautopartsconfirm="Selected device : %1\n\nAll data will be erased ! \n\nContinue ?"
+
+  txtautopartclear="Clear all partition data"
+  txtautopartcreate="Create %1 partition"
+  txthybridpartcreate="Set hybrid MBR"
+  txtautopartsettype="Set %1 partition type"
+
   if [ "$1" = "" ]; then
     nextitem="."
   else
@@ -525,6 +562,11 @@ partition_cgdisk(){
 # Select Partitions
 # ----------------------------------------------------------------------------------------
 select_partitions(){
+  # whiptail strings
+  txtselectpartsmenu="Select Partitions Menu"
+  txtselectdevice="Select %1 device :"
+  txtselecteddevices="Selected devices :"
+
   items=$(lsblk -p -n -l -o NAME -e 7,11)
   options=()
   for item in $items; do
@@ -606,6 +648,15 @@ select_partitions(){
 # Format Partitions
 # ----------------------------------------------------------------------------------------
 format_partitions(){
+  # whiptail strings
+  txtformatconfirm="Warning, all data on selected devices will be erased ! \nFormat devices ?"
+  txtformatpartition="Format Partition"
+  txtselectformat="Select partition format for %1 :"
+  txtformating="Formatting partition %1 as"
+  txtcreateluksdevice="Create luks device :"
+  txtopenluksdevice="Open luks device :"
+  txtluksdevicecreated="luks device created !"
+
   if (whiptail --backtitle "$apptitle" --title "$txtformatpartitions" --yesno "$txtformatconfirm" --defaultno 0 0) then
     if [ ! "$bootdev" = "" ]; then
       format_boot boot $bootdev
@@ -854,6 +905,17 @@ unmount_partitions(){
 # INSTALL MENU
 # ----------------------------------------------------------------------------------------
 install_menu(){
+  # whiptail strings
+  txtinstallmenu="Install Menu"
+  txtinstallarchlinux="Install Arch Linux   "
+  txtbootloader="Install Bootloader"
+  txtconfigarchlinux="Config Arch Linux"
+  txtunmount="Unmount"
+
+  txtarchinstallmenu="Arch Install Menu"
+  txtbasedev="Install Devel Packages"
+  txtinstalldev="Do you want to install 'base-dev' packages?"
+
   if [ "$1" = "" ]; then
     nextitem="$txtinstallarchlinux"
   else
@@ -910,6 +972,9 @@ install_base(){
 # INSTALL BOOTLOADER
 # ----------------------------------------------------------------------------------------
 install_bootloader_menu(){
+  # whiptail strings
+  txtbootloadermenu="Choose your bootloader"
+
   options=()
   options+=("grub" "")
   sel=$(whiptail --backtitle "$apptitle" --title "$txtbootloadermenu" --menu "" --cancel-button "$txtback" 0 0 0 \
@@ -927,6 +992,12 @@ install_bootloader_menu(){
 # GRUB MENU/INSTALL
 # ----------------------------------------------------------------------------------------
 grub_menu(){
+  # whiptail strings
+  txtbootloadergrubmenu="Grub Install Menu"
+  txtrungrubmakeconfig="Run grub-mkconfig ?"
+  txtgrubluksdetected="Encrypted root partion !\n\nAdd cryptdevice= to GRUB_CMDLINE_LINUX in /etc/default/grub ?"
+
+
   if [ "$1" = "" ]; then
     nextblitem="."
   else
@@ -1082,6 +1153,22 @@ grub_installbootloaderefiusbchroot(){
 # CONF MENU
 # ----------------------------------------------------------------------------------------
 conf_menu(){
+  # whiptail strings 
+  txtconfmenu="Config Menu"
+  txtsethostname="Set Computer Name"
+  txtsetkeymap="Set Keymap"
+  txtsetlocale="Set Locale"
+  txtsettime="Set Time"
+  txtsetrootpassword="Set root password"
+  txtcreatenewuser="Create home user"
+  txtuseutcclock="Use UTC hardware clock ?"
+  txtrecommandeasyinst="Recommanded for easy install"
+  txtset="Set %1"
+  txtgenerate="Generate %1"
+  txtedit="Edit %1"
+  txtinstall="Install %1"
+  txtenable="Enable %1"
+
   if [ "$1" = "" ]; then
     nextitem="."
   else
@@ -1483,266 +1570,6 @@ enable_dhcpcdchroot(){
 
 # ----------------------------------------------------------------------------------------
 # ----------------------------------------------------------------------------------------
-# UNUSED BOOTLOADERS
-# ----------------------------------------------------------------------------------------
-archbootloadersyslinuxbmenu(){
-  if [ "$1" = "" ]; then
-    nextblitem="."
-  else
-    nextblitem=$1
-  fi
-  options=()
-  options+=("${txtinstall//%1/syslinux}" "pacstrap syslinux (gptfdisk,mtools)")
-  options+=("${txtedit//%1/syslinux}" "($txtoptional)")
-  options+=("${txtinstall//%1/bootloader}" "syslinux-install_update")
-  sel=$(whiptail --backtitle "$apptitle" --title "$txtbootloadersyslinuxmenu" --menu "" --cancel-button "$txtback" --default-item "$nextblitem" 0 0 0 \
-    "${options[@]}" \
-    3>&1 1>&2 2>&3)
-  if [ "$?" = "0" ]; then
-    case $sel in
-      "${txtinstall//%1/syslinux}")
-        archsyslinuxinstall
-        nextblitem="${txtinstall//%1/bootloader}"
-      ;;
-      "${txtedit//%1/syslinux}")
-        $EDITOR /mnt/boot/syslinux/syslinux.cfg
-        nextblitem="${txtinstall//%1/bootloader}"
-      ;;
-      "${txtinstall//%1/bootloader}")
-        archsyslinuxinstallbootloader
-        nextblitem="${txtinstall//%1/bootloader}"
-      ;;
-    esac
-    archbootloadersyslinuxbmenu "$nextblitem"
-  fi
-}
-
-archsyslinuxinstall(){
-  clear
-  
-  if [ "$efimode" == "1" ]||[ "$efimode" == "2" ]; then
-    echo "$txtsyslinuxaddefibootmgr"
-    additionalpkg=$additionalpkg"efibootmgr "
-  fi
-  
-  if [ "$isnvme" = "1" ]; then
-    if [ "$(parted ${realrootdev::(-2)} print|grep gpt)" != "" ]; then
-      echo "$txtsyslinuxaddgptfdisk"
-      additionalpkg=$additionalpkg"gptfdisk "
-    fi
-  else
-    if [ "$(parted ${realrootdev::8} print|grep gpt)" != "" ]; then
-      echo "$txtsyslinuxaddgptfdisk"
-      additionalpkg=$additionalpkg"gptfdisk "
-    fi
-  fi
-  
-  if [ "$bootdev" != "" ]; then
-    if [ "$(parted $bootdev print|grep fat)" != "" ]; then
-      echo "$txtsyslinuxaddmtools"
-      additionalpkg=$additionalpkg"mtools "
-    fi
-  fi
-
-  echo "pacstrap /mnt syslinux $additionalpkg"
-  pacstrap /mnt syslinux $additionalpkg
-  pressanykey
-
-  clear
-  echo "Updating /boot/syslinux/syslinux.cfg"
-  if [ "$luksroot" = "1" ]; then
-    echo "sed -i \"/APPEND\ root=/c\    APPEND root=/dev/mapper/root cryptdevice=$realrootdev:root rw\" /mnt/boot/syslinux/syslinux.cfg"
-    sed -i "/APPEND\ root=/c\    APPEND root=/dev/mapper/root cryptdevice=$realrootdev:root\ rw" /mnt/boot/syslinux/syslinux.cfg
-  else
-    echo "sed -i \"/APPEND\ root=/c\    APPEND root=$rootdev rw\" /mnt/boot/syslinux/syslinux.cfg"
-    sed -i "/APPEND\ root=/c\    APPEND root=$rootdev\ rw" /mnt/boot/syslinux/syslinux.cfg
-  fi
-  
-  pressanykey
-}
-archsyslinuxinstallbootloader(){
-  clear
-  if [ "$efimode" == "1" ]||[ "$efimode" == "2" ]; then
-    archchroot syslinuxbootloaderefiinstall $bootdev
-  else
-    archchroot syslinuxbootloaderinstall $bootdev
-  fi
-  pressanykey
-}
-
-archsyslinuxinstallbootloaderchroot(){
-  if [ ! "$1" = "none" ]; then
-    echo "syslinux-install_update -i -a -m"
-    syslinux-install_update -i -a -m
-  fi
-  exit
-}
-
-archsyslinuxinstallbootloaderefichroot(){
-  if [ ! "$1" = "none" ]; then
-    echo "cp -r /usr/lib/syslinux/efi64/* /boot/syslinux"
-    cp -r /usr/lib/syslinux/efi64/* /boot/syslinux
-    if [ "${1::8}" == "/dev/nvm" ]; then
-      echo "efibootmgr --create --disk ${1::(-2)} --part ${1:(-1)} --loader /syslinux/syslinux.efi --label "Syslinux" --verbose"
-      efibootmgr --create --disk ${1::(-2)} --part ${1:(-1)} --loader /syslinux/syslinux.efi --label "Syslinux" --verbose
-    else
-      echo "efibootmgr --create --disk ${1::8} --part ${1:(-1)} --loader /syslinux/syslinux.efi --label "Syslinux" --verbose"
-      efibootmgr --create --disk ${1::8} --part ${1:(-1)} --loader /syslinux/syslinux.efi --label "Syslinux" --verbose
-    fi
-    isvbox=$(lspci | grep "VirtualBox G")
-    if [ "$isvbox" ]; then
-      echo "VirtualBox detected, creating startup.nsh..."
-      echo "\syslinux\syslinux.efi" > /boot/startup.nsh
-    fi
-  fi
-  exit
-}
-
-archbootloadersystemdbmenu(){
-  if [ "$1" = "" ]; then
-    nextblitem="."
-  else
-    nextblitem=$1
-  fi
-  options=()
-  options+=("${txtinstall//%1/systemd-boot}" "bootctl install")
-  options+=("${txtedit//%1/loader.conf}" "($txtoptional)")
-  options+=("${txtedit//%1/entries}" "($txtoptional)")
-  sel=$(whiptail --backtitle "$apptitle" --title "$txtbootloadersystemdmenu" --menu "" --cancel-button "$txtback" --default-item "$nextblitem" 0 0 0 \
-    "${options[@]}" \
-    3>&1 1>&2 2>&3)
-  if [ "$?" = "0" ]; then
-    case $sel in
-      "${txtinstall//%1/systemd-boot}")
-        archsystemdinstall
-        nextblitem="${txtinstall//%1/loader.conf}"
-      ;;
-      "${txtedit//%1/loader.conf}")
-        $EDITOR /mnt/boot/loader/loader.conf
-        nextblitem="${txtedit//%1/entries}"
-      ;;
-      "${txtedit//%1/entries}")
-        $EDITOR /mnt/boot/loader/entries/*
-        nextblitem="${txtedit//%1/entries}"
-      ;;
-    esac
-    archbootloadersystemdbmenu "$nextblitem"
-  fi
-}
-
-archsystemdinstall(){
-  clear
-  archchroot systemdbootloaderinstall $realrootdev
-  
-  partuuid=$(blkid -s PARTUUID -o value $realrootdev)
-  parttype=$(blkid -s TYPE -o value $rootdev)
-  
-  echo "cp /mnt/usr/share/systemd/bootctl/arch.conf /mnt/boot/loader/entries"
-  echo "echo \"timeout 2\" >> /mnt/boot/loader/loader.conf"
-  echo "cp /mnt/usr/share/systemd/bootctl/loader.conf /mnt/boot/loader"
-  if [ "$luksroot" = "1" ]; then
-    cryptuuid=$(blkid -s UUID -o value $realrootdev)
-    echo "sed -i \"s/PARTUUID=XXXX/\\/dev\\/mapper\\/root/\" /mnt/boot/loader/entries/arch.conf"
-    echo "sed -i \"s/XXXX/$parttype/\" /mnt/boot/loader/entries/arch.conf"
-    echo "sed -i \"s/root=/cryptdevice=UUID=$cryptuuid:root root=/\" /mnt/boot/loader/entries/arch.conf"
-  else
-    echo "sed -i \"s/PARTUUID=XXXX/PARTUUID=$partuuid/\" /mnt/boot/loader/entries/arch.conf"
-    echo "sed -i \"s/XXXX/$parttype/\" /mnt/boot/loader/entries/arch.conf"
-  fi
-  echo "cp /mnt/boot/loader/entries/arch.conf /mnt/boot/loader/entries/arch-fallback.conf"
-  echo "sed -i \"s/Arch Linux/Arch Linux Fallback/\" /mnt/boot/loader/entries/arch-fallback.conf"
-  echo "sed -i \"s/initramfs-linux/initramfs-linux-fallback/\" /mnt/boot/loader/entries/arch-fallback.conf"
-  
-  cp /mnt/usr/share/systemd/bootctl/loader.conf /mnt/boot/loader
-  echo "timeout 2" >> /mnt/boot/loader/loader.conf
-  cp /mnt/usr/share/systemd/bootctl/arch.conf /mnt/boot/loader/entries
-  
-  
-  if [ "$luksroot" = "1" ]; then
-    sed -i "s/PARTUUID=XXXX/\/dev\/mapper\/root/" /mnt/boot/loader/entries/arch.conf
-    sed -i "s/XXXX/$parttype/" /mnt/boot/loader/entries/arch.conf
-    sed -i "s/root=/cryptdevice=UUID=$cryptuuid:root root=/" /mnt/boot/loader/entries/arch.conf
-  else
-    sed -i "s/PARTUUID=XXXX/PARTUUID=$partuuid/" /mnt/boot/loader/entries/arch.conf
-    sed -i "s/XXXX/$parttype/" /mnt/boot/loader/entries/arch.conf
-  fi
-  
-  cp /mnt/boot/loader/entries/arch.conf /mnt/boot/loader/entries/arch-fallback.conf
-  sed -i "s/Arch Linux/Arch Linux Fallback/" /mnt/boot/loader/entries/arch-fallback.conf
-  sed -i "s/initramfs-linux/initramfs-linux-fallback/" /mnt/boot/loader/entries/arch-fallback.conf
-  
-  pressanykey
-}
-
-archsystemdinstallchroot(){
-  echo "bootctl --path=/boot install"
-  bootctl --path=/boot install
-  isvbox=$(lspci | grep "VirtualBox G")
-  if [ "$isvbox" ]; then
-    echo "VirtualBox detected, creating startup.nsh..."
-    echo "\EFI\systemd\systemd-bootx64.efi" > /boot/startup.nsh
-  fi
-}
-
-archbootloaderrefindmenu(){
-  if [ "$1" = "" ]; then
-    nextblitem="."
-  else
-    nextblitem=$1
-  fi
-  options=()
-  options+=("${txtinstall//%1/refind}" "pacstrap refind-efi")
-  options+=("${txtedit//%1/refind_linux.conf}" "($txtoptional)")
-  sel=$(whiptail --backtitle "$apptitle" --title "$txtbootloaderrefindmenu" --menu "" --cancel-button "$txtback" --default-item "$nextblitem" 0 0 0 \
-    "${options[@]}" \
-    3>&1 1>&2 2>&3)
-  if [ "$?" = "0" ]; then
-    case $sel in
-      "${txtinstall//%1/refind}")
-        archrefindinstall
-        nextblitem="${txtedit//%1/refind_linux.conf}"
-      ;;
-      "${txtedit//%1/refind_linux.conf}")
-        $EDITOR /mnt/boot/refind_linux.conf
-        nextblitem="${txtedit//%1/refind_linux.conf}"
-      ;;
-    esac
-    archbootloaderrefindmenu "$nextblitem"
-  fi
-
-}
-
-archrefindinstall(){
-  clear
-  
-  echo "pacstrap /mnt refind-efi"
-  echo "archchroot refindbootloaderinstall $realrootdev"
-  echo "echo \"\\\"Arch Linux         \\\" \\\"root=UUID=$rootuuid rw add_efi_memmap\\\"\" > /mnt/boot/refind_linux.conf"
-  echo "echo \"\\\"Arch Linux Fallback\\\" \\\"root=UUID=$rootuuid rw add_efi_memmap initrd=/initramfs-linux-fallback.img\\\"\" >> /mnt/boot/refind_linux.conf"
-  echo "echo \"\\\"Arch Linux Terminal\\\" \\\"root=UUID=$rootuuid rw add_efi_memmap systemd.unit=multi-user.target\\\"\" >> /mnt/boot/refind_linux.conf"
-  
-  pacstrap /mnt refind-efi
-  archchroot refindbootloaderinstall $realrootdev
-  rootuuid=$(blkid -s UUID -o value $realrootdev)
-  echo "\"Arch Linux         \" \"root=UUID=$rootuuid rw add_efi_memmap\"" > /mnt/boot/refind_linux.conf
-  echo "\"Arch Linux Fallback\" \"root=UUID=$rootuuid rw add_efi_memmap initrd=/initramfs-linux-fallback.img\"" >> /mnt/boot/refind_linux.conf
-  echo "\"Arch Linux Terminal\" \"root=UUID=$rootuuid rw add_efi_memmap systemd.unit=multi-user.target\"" >> /mnt/boot/refind_linux.conf
-  pressanykey
-}
-
-archrefindinstallchroot(){
-  #--usedefault /dev/sdXY --alldrivers
-  echo "refind-install"
-  refind-install
-  isvbox=$(lspci | grep "VirtualBox G")
-  if [ "$isvbox" ]; then
-    echo "VirtualBox detected, creating startup.nsh..."
-    echo "\EFI\refind\refind_x64.efi" > /boot/startup.nsh
-  fi
-}
-
-# ----------------------------------------------------------------------------------------
-# ----------------------------------------------------------------------------------------
 # GLOBAL FUNCTIONS
 # ----------------------------------------------------------------------------------------
 arch_chroot(){
@@ -1835,8 +1662,9 @@ if [ "$1" = "-chroot" ]; then
   eval $2 $3
 else
 # normal program start
-  apptitle="Arch Linux Installer - Version: 0.1 (LGPLv3)"
   applanguage="english"
+  locale=en_US.UTF-8
+  usingkeymap=us
 
   # load language strings
   load_language
