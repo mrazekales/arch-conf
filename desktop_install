@@ -31,7 +31,6 @@ main_menu(){
   txtmainmenutitle="Main Menu"
   txtaurhelper="AUR helper/base-devel"
   txtdisplaymanager="Display Manager"
-  txtwindowmanager="Window Manager"
   txtdesktopenvironment="Desktop Environment"
   txtpowermanager="Power Manager"
   txtnetworkmanager="Network Manager"
@@ -47,7 +46,6 @@ main_menu(){
   options=()
   options+=("$txtaurhelper" "yay")
   options+=("$txtdisplaymanager" "")
-  options+=("$txtwindowmanager" "")
   options+=("$txtdesktopenvironment" "")
   options+=("" "")
   options+=("$txtpowermanager" "")
@@ -64,9 +62,6 @@ main_menu(){
       ;;
       "$txtdisplaymanager")
         nextitem="$txtdisplaymanager"
-      ;;
-      "$txtwindowmanager")
-        nextitem="$txtwindowmanager"
       ;;
       "$txtdesktopenvironment")
         nextitem="$txtdesktopenvironment"
