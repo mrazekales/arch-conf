@@ -997,9 +997,9 @@ grub_menu(){
   txtrungrubmakeconfig="Run grub-mkconfig ?"
   txtgrubluksdetected="Encrypted root partion !\n\nAdd cryptdevice= to GRUB_CMDLINE_LINUX in /etc/default/grub ?"
 
-  txtinstallgrub = "Install grub"
-  txteditgrub = "Edit grub"
-  txtinstallbootloader = "Install bootloader"
+  txtinstallgrub="Install grub"
+  txteditgrub="Edit grub"
+  txtinstallbootloader="Install bootloader"
 
   if [ "$1" = "" ]; then
     nextblitem="."
