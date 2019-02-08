@@ -1007,9 +1007,9 @@ grub_menu(){
     nextblitem=$1
   fi
   options=()
-  options+=("${txtinstallgrub}" "pacstrap grub (efibootmgr), grub-mkconfig")
-  options+=("${txteditgrub}" "($txtoptional)")
-  options+=("${txtinstallbootloader}" "grub-install")
+  options+=("$txtinstallgrub" "pacstrap grub (efibootmgr), grub-mkconfig")
+  options+=("$txteditgrub" "($txtoptional)")
+  options+=("$txtinstallbootloader" "grub-install")
   sel=$(whiptail --backtitle "$apptitle" --title "$txtbootloadergrubmenu" --menu "" --cancel-button "$txtback" --default-item "$nextblitem" 0 0 0 \
     "${options[@]}" \
     3>&1 1>&2 2>&3)
@@ -1019,7 +1019,7 @@ grub_menu(){
         grub_install
         nextblitem="${txtinstall//%1/bootloader}"
       ;;
-      "${txteditgrub}")
+      "$txteditgrub")
         choose_editor
         $EDITOR /mnt/etc/default/grub
         if (whiptail --backtitle "$apptitle" --title "${txtedit//%1/grub}" --yesno "$txtrungrubmakeconfig" 0 0) then
@@ -1029,7 +1029,7 @@ grub_menu(){
         fi
         nextblitem="${txtinstall//%1/bootloader}"
       ;;
-      "${txtinstallbootloader}")
+      "$txtinstallbootloader")
         grub_installbootloader
         nextblitem="${txtinstall//%1/bootloader}"
       ;;
