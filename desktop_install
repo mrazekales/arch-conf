@@ -44,7 +44,7 @@ main_menu(){
     nextitem=$1
   fi
   options=()
-  options+=("$txtaurhelper" "yay")
+  options+=("$txtaurhelper" "  yay")
   options+=("$txtdisplaymanager" "")
   options+=("$txtdesktopenvironment" "")
   options+=("" "")
