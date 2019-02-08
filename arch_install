@@ -126,7 +126,7 @@ rank_mirrors(){
       fi
     done
   fi
-
+  clear
   yes | pacman -Sy pacman-contrib
   cp /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.backup
 
