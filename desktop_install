@@ -141,7 +141,7 @@ create_swapfile(){
   clear
   echo "SWAP FILE: $swapsize M"
   echo "fallocate -l $swapsizeM /swapfile"
-  fallocate -l $swapsizeM /swapfile
+  fallocate -l ${swapsize//%1/M} /swapfile
   echo "chmod 600 /swapfile"
   chmod 600 /swapfile
   echo "mkswap /swapfile"
