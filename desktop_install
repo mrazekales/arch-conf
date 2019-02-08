@@ -138,10 +138,10 @@ create_swapfile(){
   else
     swapsize=$(($ramsize/500))"M"
   fi
-
+  clear
   echo "SWAP FILE: $swapsize M"
-  echo "fallocate -l {$swapsize}M /swapfile"
-  fallocate -l ${swapsize}M /swapfile
+  echo "fallocate -l $swapsizeM /swapfile"
+  fallocate -l $swapsizeM /swapfile
   echo "chmod 600 /swapfile"
   chmod 600 /swapfile
   echo "mkswap /swapfile"
