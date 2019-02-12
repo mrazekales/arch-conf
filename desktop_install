@@ -174,7 +174,19 @@ install_lightdm(){
 
 install_ly(){
   clear
-  echo "install ly"
+  echo "Installing Dependencies"
+  echo " make pam xorg xorg-init xorg-xauth mcookie"
+  yes | sudo pacman -S make pam xorg-xinit xorg-xauth mcookie 
+
+  git clone --recurse-submodules https://github.com/cylgom/ly.git
+  cd ly
+  make
+  sudo make install
+
+  sudo systemctl disable lightdm
+  sudo systemctl enable ly.service
+
+  displaymanager="ly"
   pressanykey
 }
 
