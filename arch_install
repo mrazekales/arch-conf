@@ -1304,7 +1304,7 @@ set_hostname(){
     echo "echo '127.0.0.1     localhost' > /mnt/etc/hosts"
     echo "127.0.0.1     localhost" > /mnt/etc/hosts
 
-    echo "echo '::1	        localhost' > /mnt/etc/hosts"
+    echo "echo '::1	          localhost' > /mnt/etc/hosts"
     echo "::1	          localhost" > /mnt/etc/hosts
 
     echo "echo '127.0.1.1     $hostname.localdomain   $hostname' > /mnt/etc/hosts"
@@ -1466,7 +1466,7 @@ create_userchroot(){
   clear
   echo "useradd -m -s /bin/bash $1"
   useradd -m -s /bin/bash $1
-  echo "usermod -aG wheel,storage,audio,video $1"
+  echo "usermod -aG wheel,storage,audio,video,power $1"
   usermod -aG wheel,storage,audio,video $1
   echo "passwd $1"
   passwd $1
