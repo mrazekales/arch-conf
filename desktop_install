@@ -93,9 +93,12 @@ install_yay(){
   echo "Installing git"
   yes | pacman -S git
   
-  clear
+  
   users_list=(`cat /etc/passwd | grep "/home" | cut -d: -f1`);
-
+  echo "@user_list"
+  pressanykey
+  
+  clear
   options=()
   options+=("Create new user" "")
   options+=("" "")
@@ -302,7 +305,7 @@ rebootpc(){
 echo "git libnew will be installed"
 pressanykey
 
-pacman -S git libnewt
+yes | pacman -S git libnewt
 
 main_menu
 exit 0
