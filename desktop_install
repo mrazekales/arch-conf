@@ -47,7 +47,7 @@ main_menu(){
   if [ "$?" = "0" ]; then
     case $sel in
       "AUR helper")
-      install_yay
+        helper_menu
         nextitem="AUR helper"
       ;;
       "Display Manager")
@@ -75,8 +75,31 @@ main_menu(){
 }
 # ----------------------------------------------------------------------------------------
 # ----------------------------------------------------------------------------------------
-# BASE_DEV/AUR HELPER -YAY
+# BASE_DEV/AUR HELPER
 # ----------------------------------------------------------------------------------------
+helper_menu(){
+  if [ "$1" = "" ]; then
+    nextitem="."
+  else
+    nextitem=$1
+  fi
+  options=()
+  options+=("yay" "")
+  sel=$(whiptail --backtitle "$apptitle" --title "Display Manager" --menu "" --cancel-button "$txtexit" --default-item "$nextitem" 0 0 0 \
+    "${options[@]}" \
+    3>&1 1>&2 2>&3)
+  if [ "$?" = "0" ]; then
+    case $sel in
+      "yay")
+        install_yay
+      ;;
+    esac
+    main_menu "$nextitem"
+  else
+    clear
+  fi
+}
+
 install_yay(){
   clear
   echo "Installing 'base-devel'"
