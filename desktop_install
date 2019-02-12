@@ -23,7 +23,7 @@ txtoptional="(Optional)"
 txtdone="Done"
 
 helper=""
-displaymanager="
+displaymanager=""
 desktopenv=""
 powermanager=""
 networkmanager=""
@@ -154,19 +154,19 @@ dm_menu(){
         install_ly
       ;;
     esac
-  else
-    clear
   fi
 }
 
 install_lightdm(){
   clear
   echo "install LightDM"
+  pressanykey
 }
 
 install_ly(){
   clear
   echo "install ly"
+  pressanykey
 }
 
 # ----------------------------------------------------------------------------------------
