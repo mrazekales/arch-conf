@@ -44,37 +44,37 @@ main_menu(){
     nextitem=$1
   fi
   options=()
-  options+=("$txtaurhelper" "  yay")
-  options+=("$txtdisplaymanager" "")
-  options+=("$txtdesktopenvironment" "")
+  options+=("AUR helper" "")
+  options+=("Display Manager" "")
+  options+=("Desktop Environment" "")
   options+=("" "")
-  options+=("$txtpowermanager" "")
-  options+=("$txtnetworkmanager" "")
-  options+=("$txtswapfile" "")
+  options+=("Power Manager" "")
+  options+=("Network Manager" "")
+  options+=("Swapfile" "")
   sel=$(whiptail --backtitle "$apptitle" --title "$txtmainmenutitle" --menu "" --cancel-button "$txtexit" --default-item "$nextitem" 0 0 0 \
     "${options[@]}" \
     3>&1 1>&2 2>&3)
   if [ "$?" = "0" ]; then
     case $sel in
-      "$txtaurhelper")
+      "AUR helper")
       install_yay
-        nextitem="$txtaurhelper"
+        nextitem="AUR helper"
       ;;
-      "$txtdisplaymanager")
-        nextitem="$txtdisplaymanager"
+      "Display Manager")
+        nextitem="Display Manager"
       ;;
-      "$txtdesktopenvironment")
-        nextitem="$txtdesktopenvironment"
+      "Desktop Environment")
+        nextitem="Desktop Environment"
       ;;
-      "$txtpowermanager")
-        nextitem="$txtpowermanager"
+      "Power Manager")
+        nextitem="Power Manager"
       ;;
-      "$txtnetworkmanager")
-        nextitem="$txtnetworkmanager"
+      "Network Manager")
+        nextitem="Network Manager"
       ;;
-      "$txtswapfile")
+      "Swapfile")
         create_swapfile
-        nextitem="$txtswapfile"
+        nextitem="Swapfile"
       ;;
     esac
     main_menu "$nextitem"
@@ -93,22 +93,67 @@ install_yay(){
   echo "Installing git"
   yes | pacman -S git
 
+  users_list=(`cat /etc/passwd | grep "/home" | cut -d: -f1`);
+
+  clear
+  options=()
+  options+=("Create new user" "")
+  options+=("" "")
+  for user in $userlist; do
+    options+=("$user" "")
+  done
+  seluser=$(whiptail --backtitle "$apptitle" --title "Choose user" --menu "User must have SUDO privileges" 0 0 0 \
+    "${options[@]}" \
+    3>&1 1>&2 2>&3)
+  if [[ $seluser == "Create new user" ]]; then
+    seluser=$(whiptail --backtitle "$apptitle" --title "$txtcreatenewuser" --inputbox "" 0 0 "newhomeuser" 3>&1 1>&2 2>&3)
+    create_new_user $seluser  
+  fi
+  install_yay_as $seluser
+  pressanykey
+}
+
+install_yay_as(){
+  clear
+  sudo -u $1 bash <<EOF
   echo "git clone https://aur.archlinux.org/yay.git"
   git clone https://aur.archlinux.org/yay.git
-
   echo "cd yay"
   cd yay
-
   echo "makepkg -si"
   makepkg -si
-
   echo "cd .."
   cd ..
-
   echo "rm -r yay"
   rm -r yay
+  echo "$txtdone" 
+  EOF
+  pressanykey
+}
 
-  echo "$txtdone"
+create_new_user(){
+  clear
+  if $1; then    
+    echo "useradd -m -s /bin/bash $1"
+    useradd -m -s /bin/bash $1
+    echo "usermod -aG wheel,storage,audio,video,power $1"
+    usermod -aG wheel,storage,audio,video,power $1
+    echo "passwd $1"
+    passwd $1
+
+    pressanykey
+
+    echo "Setting up SUDO"
+
+    yes | pacman -S sudo
+    echo "Creating sudoers.backup"
+    cp -v /etc/sudoers /etc/sudoers.backup
+    echo "Uncommenting %wheel ALL=(ALL) ALL"
+    sed -i '/%wheel ALL=(ALL) ALL/s/^#//' /etc/sudoers
+    echo "'Defaults rootpw' >> /etc/sudoers"
+    echo 'Defaults rootpw' >> /etc/sudoers
+    #echo 'Defaults targetpw' >> /etc/sudoers 
+  fi
   pressanykey
 }
 
@@ -254,8 +299,11 @@ rebootpc(){
 # ----------------------------------------------------------------------------------------
 
 # main menu start
-echo "Program will start"
+echo "git libnew will be installed"
 pressanykey
+
+pacman -S git libnewt
+
 main_menu
 exit 0
 
