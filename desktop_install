@@ -49,7 +49,7 @@ main_menu(){
   options+=("Network Manager" "$networkmanager")
   options+=("Swapfile" "$swapfile")
   
-  if [ "$swapon" = "ON" ]; then
+  if [ "$swapfile" = "ON" ]; then
     options+=("         RemoveSwapfile" "")
   fi
   
