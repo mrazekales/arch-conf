@@ -34,7 +34,7 @@ main_menu(){
     nextitem=$1
   fi
   options=()
-  options+=("AUR helper" "yay")
+  options+=("AUR helper" "")
   options+=("Display Manager" "")
   options+=("Desktop Environment" "")
   options+=("" "")
