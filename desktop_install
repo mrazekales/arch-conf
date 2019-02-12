@@ -312,7 +312,7 @@ rebootpc(){
 # ----------------------------------------------------------------------------------------
 
 # main menu start
-echo "git libnew will be installed"
+#echo "git libnew will be installed"
 pressanykey
 
 yes | pacman -S git libnewt
