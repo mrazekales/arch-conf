@@ -91,7 +91,7 @@ helper_menu(){
     nextitem=$1
   fi
   options=()
-  options+=("yay")
+  options+=("yay" "")
   sel=$(whiptail --backtitle "$apptitle" --title "Display Manager" --menu "" --cancel-button "$txtexit" --default-item "$nextitem" 0 0 0 \
     "${options[@]}" \
     3>&1 1>&2 2>&3)
@@ -140,8 +140,8 @@ dm_menu(){
     nextitem=$1
   fi
   options=()
-  options+=("LightDM")
-  options+=("ly")
+  options+=("LightDM" "")
+  options+=("ly" "")
   sel=$(whiptail --backtitle "$apptitle" --title "Display Manager" --menu "" --cancel-button "$txtexit" --default-item "$nextitem" 0 0 0 \
     "${options[@]}" \
     3>&1 1>&2 2>&3)
