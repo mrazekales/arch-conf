@@ -241,7 +241,7 @@ clear
   echo "rm -f /swapfile"
   sudo rm -f /swapfile
   echo "sed -i '/swapfile swap swap defaults 0 0' /etc/fstab"
-  sudo -c "sed -i '/swapfile swap swap defaults 0 0/d' /etc/fstab"
+  sudo sh -c "sed -i '/swapfile swap swap defaults 0 0/d' /etc/fstab"
   #sudo sed -i '/swapfile swap swap defaults 0 0/d' /etc/fstab
   swapfile="OFF"
   pressanykey
