@@ -160,7 +160,7 @@ dm_menu(){
       "LightDM")
         install_lightdm
       ;;
-      "$txtwindowmanager")
+      "ly")
         install_ly
       ;;
     esac
