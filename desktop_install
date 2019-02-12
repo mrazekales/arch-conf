@@ -51,6 +51,7 @@ main_menu(){
         nextitem="AUR helper"
       ;;
       "Display Manager")
+        dm_menu
         nextitem="Display Manager"
       ;;
       "Desktop Environment")
