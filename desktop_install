@@ -27,16 +27,6 @@ txtdone="Done"
 # MAIN MENU
 # ----------------------------------------------------------------------------------------
 main_menu(){
-  # whiptail strings
-  txtmainmenutitle="Main Menu"
-  txtaurhelper="AUR helper/base-devel"
-  txtdisplaymanager="Display Manager"
-  txtdesktopenvironment="Desktop Environment"
-  txtpowermanager="Power Manager"
-  txtnetworkmanager="Network Manager"
-  txtswapfile="Create Swap File"
-
-  txtreboot="Reboot"
 
   if [ "$1" = "" ]; then
     nextitem="."
@@ -51,7 +41,7 @@ main_menu(){
   options+=("Power Manager" "")
   options+=("Network Manager" "")
   options+=("Swapfile" "")
-  sel=$(whiptail --backtitle "$apptitle" --title "$txtmainmenutitle" --menu "" --cancel-button "$txtexit" --default-item "$nextitem" 0 0 0 \
+  sel=$(whiptail --backtitle "$apptitle" --title "Main Menu" --menu "" --cancel-button "$txtexit" --default-item "$nextitem" 0 0 0 \
     "${options[@]}" \
     3>&1 1>&2 2>&3)
   if [ "$?" = "0" ]; then
@@ -88,7 +78,7 @@ main_menu(){
 # ----------------------------------------------------------------------------------------
 install_yay(){
   echo "Installing 'base-devel'"
-  yes | pacman -S base-devel
+  all | pacman -S base-devel
   
   echo "Installing git"
   yes | pacman -S git
