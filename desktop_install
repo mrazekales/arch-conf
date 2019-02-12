@@ -101,7 +101,6 @@ helper_menu(){
         install_yay
       ;;
     esac
-    main_menu "$nextitem"
   else
     clear
   fi
@@ -155,7 +154,6 @@ dm_menu(){
         install_ly
       ;;
     esac
-    main_menu "$nextitem"
   else
     clear
   fi
