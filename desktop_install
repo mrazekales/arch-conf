@@ -131,9 +131,13 @@ dm_menu(){
 }
 
 install_lightdm(){
+  clear
+  echo "install LightDM"
 }
 
 install_ly(){
+  clear
+  echo "install ly"
 }
 
 # ----------------------------------------------------------------------------------------
