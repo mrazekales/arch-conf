@@ -1467,7 +1467,7 @@ create_userchroot(){
   echo "useradd -m -s /bin/bash $1"
   useradd -m -s /bin/bash $1
   echo "usermod -aG wheel,storage,audio,video,power $1"
-  usermod -aG wheel,storage,audio,video $1
+  usermod -aG wheel,storage,audio,video,power $1
   echo "passwd $1"
   passwd $1
 
@@ -1476,8 +1476,10 @@ create_userchroot(){
   echo "Setting up SUDO"
 
   yes | pacman -S sudo
-  echo "%wheel ALL=(ALL) ALL' >> /etc/sudoers"
-  echo '%wheel ALL=(ALL) ALL' >> /etc/sudoers
+  echo "Creating sudoers.backup"
+  cp -v /etc/sudoers /etc/sudoers.backup
+  echo "Uncommenting %wheel ALL=(ALL) ALL"
+  sed -i '/%wheel ALL=(ALL) ALL/s/^#//' /etc/sudoers
   echo "'Defaults rootpw' >> /etc/sudoers"
   echo 'Defaults rootpw' >> /etc/sudoers
   #echo 'Defaults targetpw' >> /etc/sudoers
