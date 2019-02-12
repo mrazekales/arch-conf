@@ -201,7 +201,7 @@ create_swapfile(){
   swapon /swapfile
   echo "'/swapfile swap swap defaults 0 0' >> /etc/fstab"
   echo "/swapfile swap swap defaults 0 0" >> /etc/fstab
-  $swapfile="ON"
+  swapfile="ON"
   pressanykey
 }
 
@@ -312,7 +312,7 @@ rebootpc(){
 # ----------------------------------------------------------------------------------------
 
 # main menu start
-#echo "git libnew will be installed"
+echo "git libnew will be installed"
 pressanykey
 
 yes | pacman -S git libnewt
