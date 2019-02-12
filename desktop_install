@@ -227,8 +227,9 @@ create_swapfile(){
   sudo mkswap /swapfile
   echo "swapon /swapfile"
   sudo swapon /swapfile
-  echo "'/swapfile swap swap defaults 0 0' >> /etc/fstab"
-  sudo echo "/swapfile swap swap defaults 0 0" >> /etc/fstab
+  #echo "'/swapfile swap swap defaults 0 0' >> /etc/fstab"
+  #sudo echo "/swapfile swap swap defaults 0 0" >> /etc/fstab
+  echo '/swapfile swap swap defaults 0 0' | sudo tee --append /etc/fstab
   swapfile="ON"
   pressanykey
 }
@@ -240,8 +241,9 @@ clear
   echo "rm -f /swapfile"
   sudo rm -f /swapfile
   echo "sed -i '/swapfile swap swap defaults 0 0' /etc/fstab"
-  sudo sed -i '/swapfile swap swap defaults 0 0/d' /etc/fstab
-  dwapfile="OFF"
+  sudo -c "sed -i '/swapfile swap swap defaults 0 0/d' /etc/fstab"
+  #sudo sed -i '/swapfile swap swap defaults 0 0/d' /etc/fstab
+  swapfile="OFF"
   pressanykey
 }
 
