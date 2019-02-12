@@ -104,7 +104,7 @@ install_yay(){
 # SWAP FILE
 # ----------------------------------------------------------------------------------------
 create_swapfile(){
-
+  clear
   if [ -e /swapfile ]; then
     echo "Removing old swapfile ..."
     remove_swapfile
@@ -120,7 +120,6 @@ create_swapfile(){
   else
     swapsize=$(($ramsize/500))"M"
   fi
-  clear
   echo "SWAP FILE: $swapsize M"
   echo "fallocate -l ${swapsize//%1/M} /swapfile"
   fallocate -l ${swapsize//%1/M} /swapfile
@@ -130,18 +129,19 @@ create_swapfile(){
   mkswap /swapfile
   echo "swapon /swapfile"
   swapon /swapfile
-  echo "'/swapfile none swap defaults 0 0' >> /etc/fstab"
-  echo "/swapfile none swap defaults 0 0" >> /etc/fstab
+  echo "'/swapfile swap swap defaults 0 0' >> /etc/fstab"
+  echo "/swapfile swap swap defaults 0 0" >> /etc/fstab
   pressanykey
 }
 
 remove_swapfile(){
+clear
   echo "swapoff -a"
   swapoff -a
   echo "rm -f /swapfile"
   rm -f /swapfile
-  echo "sed -i '/pattern to match/d' ./etc/fstab"
-  sed -i '//swapfile none swap defaults 0 0/d' ./etc/fstab
+  echo "sed -i '/swapfile swap swap defaults 0 0' /etc/fstab"
+  sed -i '//swapfile swap swap defaults 0 0/d' /etc/fstab
   pressanykey
 }
 
