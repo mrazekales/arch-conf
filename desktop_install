@@ -115,7 +115,7 @@ install_yay(){
 
 install_yay_as(){
   clear
-  sudo -u $1 bash << EOF
+  su - $1 <<'EOF'
   echo "git clone https://aur.archlinux.org/yay.git"
   git clone https://aur.archlinux.org/yay.git
   echo "cd yay"
