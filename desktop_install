@@ -85,7 +85,7 @@ install_yay(){
   
   
   users_list=(`cat /etc/passwd | grep "/home" | cut -d: -f1`);
-  echo "@user_list"
+  echo "$user_list"
   pressanykey
   
   clear
