@@ -118,11 +118,11 @@ helper_menu(){
 install_yay(){
   clear
   echo "Installing 'base-devel'"
-  pacman -S base-devel
+  sudo pacman -S base-devel
   echo "all"
   
   echo "Installing git"
-  yes | pacman -S git
+  yes | sudo pacman -S git
   
   echo "git clone https://aur.archlinux.org/yay.git"
   git clone https://aur.archlinux.org/yay.git
@@ -201,15 +201,15 @@ create_swapfile(){
   fi
   echo "SWAP FILE: $swapsize M"
   echo "fallocate -l ${swapsize//%1/M} /swapfile"
-  fallocate -l ${swapsize//%1/M} /swapfile
+  sudo fallocate -l ${swapsize//%1/M} /swapfile
   echo "chmod 600 /swapfile"
-  chmod 600 /swapfile
+  sudo chmod 600 /swapfile
   echo "mkswap /swapfile"
-  mkswap /swapfile
+  sudo mkswap /swapfile
   echo "swapon /swapfile"
-  swapon /swapfile
+  sudo swapon /swapfile
   echo "'/swapfile swap swap defaults 0 0' >> /etc/fstab"
-  echo "/swapfile swap swap defaults 0 0" >> /etc/fstab
+  sudo echo "/swapfile swap swap defaults 0 0" >> /etc/fstab
   swapfile="ON"
   pressanykey
 }
@@ -217,11 +217,11 @@ create_swapfile(){
 remove_swapfile(){
 clear
   echo "swapoff -a"
-  swapoff -a
+  sudo swapoff -a
   echo "rm -f /swapfile"
-  rm -f /swapfile
+  sudo rm -f /swapfile
   echo "sed -i '/swapfile swap swap defaults 0 0' /etc/fstab"
-  sed -i '/swapfile swap swap defaults 0 0/d' /etc/fstab
+  sudo sed -i '/swapfile swap swap defaults 0 0/d' /etc/fstab
   dwapfile="OFF"
   pressanykey
 }
@@ -240,7 +240,7 @@ clear
 
 install_networkmanager(){
   echo "Installing networkmanager network-manager-applet"
-  yes | pacman -S networkmanager nm-applet 
+  yes | sudo pacman -S networkmanager nm-applet 
 
   echo "Disable dhcpcd and netctl"
   systemctl disable dhcpcd
@@ -277,13 +277,13 @@ install_connman(){
   systemctl disable netctl-auto
 
   systemctl enable connman.service
-  systemctl start connman.service
+  sudo systemctl start connman.service
   pressanykey
 }
 
 install_bluez(){
   echo "Installing bluez bluez-utils"
-  yes | pacman -S bluez bluez-utils 
+  yes | sudo pacman -S bluez bluez-utils 
   pressanykey
 }
 
@@ -325,7 +325,7 @@ rebootpc(){
 echo "git libnew will be installed"
 pressanykey
 
-yes | pacman -S git libnewt
+yes | sudo pacman -S git libnewt
 
 main_menu
 exit 0
