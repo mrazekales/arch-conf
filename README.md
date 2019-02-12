@@ -23,10 +23,10 @@ $ sh arch_install
 ```
 
 ### Install and config Desktop Environment
-1. Boot Installed Arch and login as root
+1. Boot Installed Arch and login as non-root user with sudo privileges.
 2. Clone script repository
 ```bash
-$ pacman -S git
+$ sudo pacman -S git
 $ git clone git://github.com/mrazekales/myarch-installer.git
 ```
 3. Run Script
