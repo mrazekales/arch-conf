@@ -78,7 +78,8 @@ main_menu(){
 # ----------------------------------------------------------------------------------------
 install_yay(){
   echo "Installing 'base-devel'"
-  all | pacman -S base-devel
+  pacman -S base-devel
+  echo "all"
   
   echo "Installing git"
   yes | pacman -S git
