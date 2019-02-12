@@ -135,6 +135,7 @@ install_yay(){
   echo "rm -r yay"
   rm -r yay
   echo "$txtdone" 
+  helper="yay"
   pressanykey
 }
 
