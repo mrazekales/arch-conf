@@ -92,14 +92,14 @@ install_yay(){
   
   echo "Installing git"
   yes | pacman -S git
-
+  
+  clear
   users_list=(`cat /etc/passwd | grep "/home" | cut -d: -f1`);
 
-  clear
   options=()
   options+=("Create new user" "")
   options+=("" "")
-  for user in $userlist; do
+  for user in $user_list; do
     options+=("$user" "")
   done
   seluser=$(whiptail --backtitle "$apptitle" --title "Choose user" --menu "User must have SUDO privileges" 0 0 0 \
