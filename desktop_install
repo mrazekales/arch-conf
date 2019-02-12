@@ -115,7 +115,7 @@ install_yay(){
 
 install_yay_as(){
   clear
-  su - $1 <<'EOF'
+  su - $1 
   echo "git clone https://aur.archlinux.org/yay.git"
   git clone https://aur.archlinux.org/yay.git
   echo "cd yay"
@@ -127,8 +127,8 @@ install_yay_as(){
   echo "rm -r yay"
   rm -r yay
   echo "$txtdone" 
-  EOF
   pressanykey
+  su - root
 }
 
 create_new_user(){
