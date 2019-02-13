@@ -271,17 +271,17 @@ de_menu(){
 }
 
 install_i3(){
+  echo "Installing i3 dmenu"
   yes | sudo pacman -S i3 dmenu
-  
-  config_xinitrc "i3"
+  pressanykey
 }
 
 load_i3_conf(){
   echo "cp /etc/lightdm/lightdm.conf /etc/lightdm/lightdm.conf.backup"
   sudo cp /etc/lightdm/lightdm.conf /etc/lightdm/lightdm.conf.backup
 
-  echo "cp config-files/lightdm/lightdm.conf /etc/lightdm/lightdm.conf"
-  sudo cp config-files/lightdm/lightdm.conf /etc/lightdm/lightdm.conf
+  echo "cp config-files/i3/config /home/$USER/.config/i3/config"
+  sudo cp config-files/i3/config /home/$USER/.config/i3/config
 
   echo "i3 config loaded"
   pressanykey
