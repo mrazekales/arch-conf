@@ -193,9 +193,6 @@ install_lightdm(){
     else
       sudo sh -c "sed -i '/greeter-session=/c\greeter-session=$sel' /etc/lightdm/lightdm.conf"
     fi
-    main_menu "$nextitem"
-  else
-    clear
   fi
 
   sudo systemctl enable lightdm.service
