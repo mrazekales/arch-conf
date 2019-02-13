@@ -50,7 +50,7 @@ main_menu(){
   options+=("Swapfile" "$swapfile")
   
   if [ "$swapfile" = "ON" ]; then
-    options+=("         RemoveSwapfile" "")
+    options+=("         Remove Swapfile" "")
   fi
   
   sel=$(whiptail --backtitle "$apptitle" --title "Main Menu" --menu "" --cancel-button "$txtexit" --default-item "$nextitem" 0 0 0 \
@@ -79,7 +79,7 @@ main_menu(){
         create_swapfile
         nextitem="Swapfile"
       ;;
-      "         RemoveSwapfile")
+      "         Remove Swapfile")
         remove_swapfile
         nextitem="Swapfile"
       ;;
@@ -170,8 +170,34 @@ dm_menu(){
 install_lightdm(){
   clear
   echo "install LightDM"
-  
-  
+
+  yes | sudo pacman -S lightdm lightdm-gtk-greeter
+  yay -S lightdm-slick-greeter
+
+  if [ "$1" = "" ]; then
+    nextitem="."
+  else
+    nextitem=$1
+  fi
+
+  options=()
+  options+=("lightdm-gtk-greeter" "")
+  options+=("lightdm-slick-greeter" "")
+  options+=("load config" "")
+  sel=$(whiptail --backtitle "$apptitle" --title "Set LightDM greeter" --menu "" --cancel-button "$txtexit" --default-item "$nextitem" 0 0 0 \
+    "${options[@]}" \
+    3>&1 1>&2 2>&3)
+  if [ "$?" = "0" ]; then
+    if [ "$sel" = "load config" ]; then
+      load_lightdm_conf
+    else
+      sudo sh -c "sed -i '/greeter-session=/c\greeter-session=$sel' /etc/lightdm/lightdm.conf"
+    fi
+    main_menu "$nextitem"
+  else
+    clear
+  fi
+
   sudo systemctl enable lightdm.service
   sudo systemctl diable ly.service
 
