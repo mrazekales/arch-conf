@@ -168,6 +168,7 @@ dm_menu(){
 }
 
 install_lightdm(){
+
   clear
   echo "install LightDM"
 
@@ -183,22 +184,36 @@ install_lightdm(){
   options=()
   options+=("lightdm-gtk-greeter" "")
   options+=("lightdm-slick-greeter" "")
-  options+=("load config" "")
+  options+=("load config file" "")
   sel=$(whiptail --backtitle "$apptitle" --title "Set LightDM greeter" --menu "" --cancel-button "$txtexit" --default-item "$nextitem" 0 0 0 \
     "${options[@]}" \
     3>&1 1>&2 2>&3)
   if [ "$?" = "0" ]; then
-    if [ "$sel" = "load config" ]; then
+    if [ "$sel" = "load config file" ]; then
       load_lightdm_conf
     else
       sudo sh -c "sed -i '/greeter-session=/c\greeter-session=$sel' /etc/lightdm/lightdm.conf"
     fi
+    main_menu "$nextitem"
+  else
+    clear
   fi
-
+  clear
   sudo systemctl enable lightdm.service
   sudo systemctl diable ly.service
 
   displaymanager="LightDM"
+  pressanykey
+}
+
+load_lightdm_conf(){
+  echo "cp /etc/lightdm/lightdm.conf /etc/lightdm/lightdm.conf.backup"
+  sudo cp /etc/lightdm/lightdm.conf /etc/lightdm/lightdm.conf.backup
+
+  echo "cp config-files/lightdm/lightdm.conf /etc/lightdm/lightdm.conf"
+  sudo cp config-files/lightdm/lightdm.conf /etc/lightdm/lightdm.conf
+
+  echo "LightDM config Set"
   pressanykey
 }
 
@@ -217,6 +232,17 @@ install_ly(){
   sudo systemctl enable ly.service
 
   displaymanager="ly"
+  pressanykey
+}
+
+load_ly_conf(){
+  echo "cp /etc/ly/config.ini /etc/ly/config.ini.backup"
+  sudo cp /etc/ly/config.ini /etc/ly/config.ini.backup
+
+  echo "cp config-files/ly/config.ini /etc/ly/config.ini"
+  sudo cp config-files/ly/config.ini /etc/ly/config.ini
+
+  echo "ly config Set"
   pressanykey
 }
 
