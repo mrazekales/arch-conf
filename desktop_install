@@ -273,7 +273,7 @@ de_menu(){
 
 install_i3(){
   echo "Installing i3 dmenu"
-  yes | sudo pacman -S i3 dmenu xterm
+  sudo pacman --noconfirm -S i3 dmenu xterm
   pressanykey
 }
 
