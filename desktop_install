@@ -225,7 +225,7 @@ install_ly(){
 
   sudo systemctl disable lightdm
   sudo systemctl enable ly.service
-  sudo systemctl getty@tty2.service
+  sudo systemctl disable getty@tty2.service
 
   displaymanager="ly"
   pressanykey
@@ -290,13 +290,6 @@ load_i3_conf(){
 install_gnome(){
   echo "gnome"
 }
-
-config_xinitrc(){
-    #create a xinitrc file in home user directory
-    cp -fv /etc/X11/xinit/xinitrc /home/$USER/.xinitrc
-    echo -e "exec $1" >> /home/$USER/.xinitrc
-    chown -R $USER:users /home/$USER/.xinitrc
-  }
 
 # ----------------------------------------------------------------------------------------
 # ----------------------------------------------------------------------------------------
