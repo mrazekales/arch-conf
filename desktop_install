@@ -225,6 +225,7 @@ install_ly(){
 
   sudo systemctl disable lightdm
   sudo systemctl enable ly.service
+  sudo systemctl getty@tty2.service
 
   displaymanager="ly"
   pressanykey
