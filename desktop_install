@@ -173,7 +173,7 @@ install_lightdm(){
   echo "install LightDM"
 
   yes | sudo pacman -S lightdm lightdm-gtk-greeter
-  yay -S lightdm-slick-greeter
+  yay -S lightdm-slick-greeter lightdm-pantheon-greeter lightdm-unity-greeter
 
   if [ "$1" = "" ]; then
     nextitem="."
@@ -184,6 +184,8 @@ install_lightdm(){
   options=()
   options+=("lightdm-gtk-greeter" "")
   options+=("lightdm-slick-greeter" "")
+  options+=("lightdm-pantheon-greeter" "")
+  options+=("lightdm-unity-greeter" "")
   options+=("load config file" "")
   sel=$(whiptail --backtitle "$apptitle" --title "Set LightDM greeter" --menu "" --cancel-button "$txtexit" --default-item "$nextitem" 0 0 0 \
     "${options[@]}" \
@@ -194,7 +196,6 @@ install_lightdm(){
     else
       sudo sh -c "sed -i '/greeter-session=/c\greeter-session=$sel' /etc/lightdm/lightdm.conf"
     fi
-    main_menu "$nextitem"
   else
     clear
   fi
@@ -219,14 +220,8 @@ load_lightdm_conf(){
 
 install_ly(){
   clear
-  echo "Installing Dependencies"
-  echo " make pam xorg xorg-init xorg-xauth mcookie"
-  yes | sudo pacman -S make pam xorg-xinit xorg-xauth mcookie 
-
-  git clone --recurse-submodules https://github.com/cylgom/ly.git
-  cd ly
-  make
-  sudo make install
+  echo "Installing ly"
+  yay -S ly-git
 
   sudo systemctl disable lightdm
   sudo systemctl enable ly.service
@@ -245,6 +240,62 @@ load_ly_conf(){
   echo "ly config Set"
   pressanykey
 }
+
+# ----------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------
+# DESKTOP ENVIRONMENT
+# ----------------------------------------------------------------------------------------
+de_menu(){
+  if [ "$1" = "" ]; then
+    nextitem="."
+  else
+    nextitem=$1
+  fi
+  options=()
+  options+=("i3" "")
+  options+=("Gnome" "")
+  sel=$(whiptail --backtitle "$apptitle" --title "Desktop Environment/Window Manager" --menu "" --cancel-button "$txtexit" --default-item "$nextitem" 0 0 0 \
+    "${options[@]}" \
+    3>&1 1>&2 2>&3)
+  if [ "$?" = "0" ]; then
+    case $sel in
+      "i3")
+        install_i3
+      ;;
+      "Gnome")
+        install_gnome
+      ;;
+    esac
+  fi
+}
+
+install_i3(){
+  yes | sudo pacman -S i3 dmenu
+  
+  config_xinitrc "i3"
+}
+
+load_i3_conf(){
+  echo "cp /etc/lightdm/lightdm.conf /etc/lightdm/lightdm.conf.backup"
+  sudo cp /etc/lightdm/lightdm.conf /etc/lightdm/lightdm.conf.backup
+
+  echo "cp config-files/lightdm/lightdm.conf /etc/lightdm/lightdm.conf"
+  sudo cp config-files/lightdm/lightdm.conf /etc/lightdm/lightdm.conf
+
+  echo "i3 config loaded"
+  pressanykey
+}
+
+install_gnome(){
+
+}
+
+config_xinitrc(){
+    #create a xinitrc file in home user directory
+    cp -fv /etc/X11/xinit/xinitrc /home/$USER/.xinitrc
+    echo -e "exec $1" >> /home/$USER/.xinitrc
+    chown -R $USER:users /home/$USER/.xinitrc
+  }
 
 # ----------------------------------------------------------------------------------------
 # ----------------------------------------------------------------------------------------
