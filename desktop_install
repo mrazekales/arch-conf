@@ -174,7 +174,7 @@ install_lightdm(){
   echo "install LightDM"
 
   sudo pacman --noconfirm -S lightdm lightdm-gtk-greeter
-  yay --noconfirm -S lightdm-slick-greeter
+  yay -S lightdm-slick-greeter
 
   if [ "$1" = "" ]; then
     nextitem="."
@@ -217,7 +217,7 @@ load_lightdm_conf(){
 install_ly(){
   clear
   echo "Installing ly"
-  yay --noconfirm -S ly-git
+  yay -S ly-git
 
   sudo systemctl disable lightdm
   sudo systemctl enable ly.service
