@@ -196,8 +196,8 @@ install_lightdm(){
     clear
   fi
   clear
+  sudo systemctl disable ly.service
   sudo systemctl enable lightdm.service
-  sudo systemctl diable ly.service
 
   displaymanager="LightDM"
   pressanykey
