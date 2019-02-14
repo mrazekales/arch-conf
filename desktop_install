@@ -119,7 +119,7 @@ helper_menu(){
 install_yay(){
   clear
   echo "Installing 'base-devel'"
-  sudo pacman --noconfirm -S base-devel
+  sudo pacman --noconfirm -S base-devel git go
   echo "all"
   
   echo "Installing git"
@@ -176,26 +176,6 @@ install_lightdm(){
   sudo pacman --noconfirm -S lightdm lightdm-gtk-greeter
   yay -S lightdm-slick-greeter
 
-  if [ "$1" = "" ]; then
-    nextitem="."
-  else
-    nextitem=$1
-  fi
-
-  options=()
-  options+=("lightdm-gtk-greeter" "")
-  options+=("lightdm-slick-greeter" "")
-  options+=("load config file" "")
-  sel=$(whiptail --backtitle "$apptitle" --title "Set LightDM greeter" --menu "" --cancel-button "$txtexit" --default-item "$nextitem" 0 0 0 \
-    "${options[@]}" \
-    3>&1 1>&2 2>&3)
-  if [ "$?" = "0" ]; then
-    
-    sudo sh -c "sed -i '/greeter-session=/c\greeter-session=$sel' /etc/lightdm/lightdm.conf"
-  else
-    clear
-  fi
-  clear
   sudo systemctl disable ly.service
   sudo systemctl enable lightdm.service
 
@@ -217,6 +197,7 @@ load_lightdm_conf(){
 install_ly(){
   clear
   echo "Installing ly"
+  sudo pacman --noconfirm -S xorg-server xorg-xinit
   yay -S ly-git
 
   sudo systemctl disable lightdm
@@ -268,7 +249,7 @@ de_menu(){
 
 install_i3(){
   echo "Installing i3 dmenu"
-  sudo pacman --noconfirm -S i3 dmenu xterm
+  sudo pacman --noconfirm -S i3wm dmenu xterm
   pressanykey
 }
 
