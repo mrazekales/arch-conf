@@ -55,51 +55,20 @@ $ sh xiaomi_ntb_pro_setup
 
 
 
-**Window Manager:**   i3
+**Desktop Environments/WindowManagers:**   Gnome, i3
 
-**Display Manager:**  LightDM
+**Display Managers:**  LightDM, ly
 
-**File Manager:**     PcmanFM, Ranger
+**File Managers**: pcmanFM, Thunar, Nautilus, Ranger(terminal)
 
-**Terminal:**         Termite, Xterm
+**Web Browser**: chromium, chromw, firefox
 
-**Text Editor:**      Gedit, vsCode
+**Terminals**: termite, xterm, tilix
 
-**Web Browser:**      Chromium
+**Text Editors**: gedit, vscode, vim
 
-**Gui Package Manager:**  Pamac
+**GUI Package manager**: pamac, octopi
 
-**Other apps:** Htop, Lxapperance, Nitrogen
+**Other apps:** htop, lxapperance, nitrogen
 
 
-### Display Manager
-- LightDM
-- SLiM
-
-### File Manager
-- PcmanFM
-- Thunar
-- Nautilus
-- Ranger(terminal)
-
-### Terminal
-- Termite
-- Xterm
-- Tilix
-
-### Text Editor
-- gedit
-- vsCode
-
-### Web Browser
-- Chromium
-- Chrome
-
-### Package manager GUI
-- Pamac
-- Octopi
-
-### Other
-- Htop
-- Lxapperance
-- Nitrogen
