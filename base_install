@@ -46,7 +46,6 @@ main_menu(){
   options=()
   options+=("$txtrankmirrors" "$txtoptional")
   options+=("$txtkeymap" "$usingkeymap")
-  options+=("$txtlanguage" "$applanguage")
   options+=("" "")
   options+=("$txtmakepartitions" "")
   options+=("$txtselectpartitions" "")
@@ -1635,12 +1634,9 @@ if [ "$1" = "-chroot" ]; then
   eval $2 $3
 else
 # normal program start
-  applanguage="english"
   locale=en_US.UTF-8
   usingkeymap=us
 
-  # load language strings
-  load_language
   # load keymap
   loadkeys $usingkeymap
 
