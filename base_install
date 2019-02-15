@@ -914,7 +914,6 @@ install_menu(){
 
   txtarchinstallmenu="Arch Install Menu"
   txtbasedev="Install Devel Packages"
-  txtinstalldev="Do you want to install 'base-dev' packages?"
 
   if [ "$1" = "" ]; then
     nextitem="$txtinstallarchlinux"
@@ -954,16 +953,10 @@ install_menu(){
 # ----------------------------------------------------------------------------------------
 # INSTALL ARCH LINUX
 # ----------------------------------------------------------------------------------------
-install_base(){
-  if (whiptail --backtitle "$apptitle" --title "$txtbasedev" --yesno "$txtinstalldev" --defaultno 0 0) then
-    clear
-    echo "pacstrap /mnt base base-dev"        
-    pacstrap /mnt base
-  else
-    clear
-    echo "pacstrap /mnt base"        
-    pacstrap /mnt base
-  fi
+install_base(){ 
+  clear
+  echo "pacstrap /mnt base"        
+  pacstrap /mnt base
   pressanykey
 }
 
