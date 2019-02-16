@@ -24,7 +24,6 @@ txtformating="Formatting partition %1 as"
 
 rankedmirrors="Optional"
 partitioningdone=""
-selectiondone=""
 formatingdone=""
 usingkeymap=us
 locale=en_US.UTF-8
@@ -45,7 +44,6 @@ main_menu(){
   options+=("Keymap" "$usingkeymap")
   options+=("" "")
   options+=("Disk Partitioning" "$partitioningdone")
-  options+=("Partitions Selection" "$selectiondone")
   options+=("Partitions Formating" "$formatingdone")
   options+=("" "")
   options+=("Mount and Install" "$caninstall")
@@ -67,19 +65,26 @@ main_menu(){
       ;;
       "Disk Partitioning")
         partitioning_menu
-        nextitem="Partitions Selection"
-      ;;
-      "Partitions Selection")
         select_partitions
         nextitem="Partitions Formating"
       ;;
       "Partitions Formating")
-        format_partitions
+        if [ "$partitioningdone" = "done" ]; then
+          format_partitions
+        else
+          echo -e "First, you must create partitions in 'Disk Partitioning'"
+          pressanykey
+        fi
         nextitem="Mount and Install"
       ;;
       "Mount and Install")
-        mount_partitions
-        nextitem="$txtreboot"
+        if [ "$formatdone" = "done" ]; then
+          mount_partitions
+        else
+          echo -e "First, you must formate partitions in 'Partitions Formating'"
+          pressanykey
+        fi
+        nextitem="Reboot"
       ;;
       "Reboot")
         rebootpc
@@ -607,9 +612,9 @@ select_partitions(){
     fi
   fi
   if [ ! $rootdev = ""] && [! $bootdev = ""]; then
-      selectdone="done"
+      partitioningdone="done"
     else
-      slectdone=""
+      partitioningdone=""
     fi
 }
 
@@ -630,7 +635,8 @@ format_partitions(){
     fi
     if [ ! "$swapdev" = "" ]; then
       format_swap swap $swapdev
-    fi   
+    fi 
+    caninstall="ready"
   fi
 }
 
