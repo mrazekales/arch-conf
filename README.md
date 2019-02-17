@@ -34,7 +34,7 @@ $ git clone git://github.com/mrazekales/myarch-installer.git
 $ sh desktop_install
 ```
 
-### Xiaomi Notebook Pro Setup
+### xiaomi_ntb_pro_setup script
 1. Boot Installed Arch and login as root
 2. Clone script repository
 ```bash
