@@ -1,4 +1,4 @@
-# myArch Setup
+# myArch 
 This repository provides scripts for installing base Arch Linux system, Desktop Environment and some configurations for Xiaomi Notebook Pro. 
 
 **Use at your own risk.**
