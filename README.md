@@ -8,7 +8,7 @@ This repository provides scripts for installing base Arch Linux system, Desktop 
 * desktop_installer - desktop environment and configuration installer
 * xiaomi_ntb_pro_setup - some setup for Xiaomi Pro notebook
 
-### Install ARCH base system
+### base_install script
 
 1. Boot with [Arch live ISO](https://www.archlinux.org/download/)
 2. Install `git` and `clone` script repository
@@ -22,7 +22,8 @@ $ cd myarch-installer
 $ sh arch_install 
 ```
 
-### Install and config Desktop Environment
+### desktop_install script
+
 1. Boot Installed Arch and login as root
 2. Clone script repository
 ```bash
