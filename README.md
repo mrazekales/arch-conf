@@ -4,8 +4,8 @@ This repository provides scripts for installing base Arch Linux system, Desktop 
 **Use at your own risk.**
 
 **Scripts:**
-* base_installer - basic Arch system installer
-* desktop_installer - desktop environment and configuration installer
+* base_install - basic Arch system installer
+* desktop_install - desktop environment and configuration installer
 * xiaomi_ntb_pro_setup - some setup for Xiaomi Pro notebook
 
 ### base_install script
