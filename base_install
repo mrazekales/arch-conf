@@ -1596,6 +1596,7 @@ set_keymap(){
 }
 
 pressanykey(){
+  echo -e ""
   read -n1 -p "Press any key to continue..."
 }
 
