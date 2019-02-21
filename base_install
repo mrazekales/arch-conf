@@ -872,42 +872,34 @@ unmount_partitions(){
 # INSTALL MENU
 # ----------------------------------------------------------------------------------------
 install_menu(){
-  # whiptail strings
-  txtinstallmenu="Install Menu"
-  txtinstallarchlinux="Install Arch Linux   "
-  txtbootloader="Install Bootloader"
-  txtconfigarchlinux="Config Arch Linux"
-  txtunmount="Unmount"
-
-  txtarchinstallmenu="Arch Install Menu"
-  txtbasedev="Install Devel Packages"
-
+  baseinstalled="pacstrap"
+  bootloaderinstalled=""
   if [ "$1" = "" ]; then
-    nextitem="$txtinstallarchlinux"
+    nextitem="Install Arch Linux"
   else
     nextitem=$1
   fi
   options=()
-  options+=("$txtinstallarchlinux" "(pacstrap)")
-  options+=("$txtbootloader" "")
+  options+=("Install Arch Linux" " [$baseinstalled]")
+  options+=("Install Bootloader" " [$bootloaderinstalled]")
   options+=("" "")
-  options+=("$txtconfigarchlinux" "")
-  sel=$(whiptail --backtitle "$apptitle" --title "$txtinstallmenu" --menu "" --cancel-button "$txtunmount" --default-item "$nextitem" 0 0 0 \
+  options+=("Config Arch Linux" "")
+  sel=$(whiptail --backtitle "$apptitle" --title "Install Menu" --menu "" --cancel-button "Unmount" --default-item "$nextitem" 0 0 0 \
     "${options[@]}" \
     3>&1 1>&2 2>&3)
   if [ "$?" = "0" ]; then
     case $sel in
-      "$txtinstallarchlinux")
+      "Install Arch Linux")
         install_base
-        nextitem="$txtbootloader"
+        nextitem="Install Bootloader"
       ;;
-      "$txtbootloader")
+      "Install Bootloader")
         install_bootloader_menu
-        nextitem="$txtconfigarchlinux"
+        nextitem="Config Arch Linux"
       ;;
-      "$txtconfigarchlinux")
+      "Config Arch Linux")
         conf_menu
-        nextitem="$txtconfigarchlinux"
+        nextitem="Config Arch Linux"
       ;;
     esac
     install_menu "$nextitem"
@@ -932,12 +924,9 @@ install_base(){
 # INSTALL BOOTLOADER
 # ----------------------------------------------------------------------------------------
 install_bootloader_menu(){
-  # whiptail strings
-  txtbootloadermenu="Choose your bootloader"
-
   options=()
   options+=("grub" "")
-  sel=$(whiptail --backtitle "$apptitle" --title "$txtbootloadermenu" --menu "" --cancel-button "Back" 0 0 0 \
+  sel=$(whiptail --backtitle "$apptitle" --title "Choose your bootloader" --menu "" --cancel-button "Back" 0 0 0 \
     "${options[@]}" \
     3>&1 1>&2 2>&3)
   if [ "$?" = "0" ]; then
@@ -952,60 +941,55 @@ install_bootloader_menu(){
 # GRUB MENU/INSTALL
 # ----------------------------------------------------------------------------------------
 grub_menu(){
-  # whiptail strings
-  txtbootloadergrubmenu="Grub Install Menu"
-  txtrungrubmakeconfig="Run grub-mkconfig ?"
-  txtgrubluksdetected="Encrypted root partion !\n\nAdd cryptdevice= to GRUB_CMDLINE_LINUX in /etc/default/grub ?"
-
-  txtinstallgrub="Install grub"
-  txteditgrub="Edit grub"
-  txtinstallbootloader="Install bootloader"
-
   if [ "$1" = "" ]; then
     nextblitem="."
   else
     nextblitem=$1
   fi
   options=()
-  options+=("$txtinstallgrub" "pacstrap grub (efibootmgr), grub-mkconfig")
-  options+=("$txteditgrub" "(Optional)")
-  options+=("$txtinstallbootloader" "grub-install")
-  sel=$(whiptail --backtitle "$apptitle" --title "$txtbootloadergrubmenu" --menu "" --cancel-button "Back" --default-item "$nextblitem" 0 0 0 \
+  options+=("Install grub" "pacstrap grub (efibootmgr), grub-mkconfig")
+  options+=("Edit grub" "(Optional)")
+  options+=("Install bootloader" "grub-install")
+  sel=$(whiptail --backtitle "$apptitle" --title Grub Install Menu" --menu "" --cancel-button "Back" --default-item "$nextblitem" 0 0 0 \
     "${options[@]}" \
     3>&1 1>&2 2>&3)
   if [ "$?" = "0" ]; then
     case $sel in
-      "${txtinstallgrub}")
+      "Install grub")
         grub_install
         nextblitem="${txtinstall//%1/bootloader}"
       ;;
-      "$txteditgrub")
+      "Edit grub")
         choose_editor
         $EDITOR /mnt/etc/default/grub
-        if (whiptail --backtitle "$apptitle" --title "${txtedit//%1/grub}" --yesno "$txtrungrubmakeconfig" 0 0) then
+        if (whiptail --backtitle "$apptitle" --title "${txtedit//%1/grub}" --yesno "Run grub-mkconfig ?" 0 0) then
           clear
           arch_chroot grub_installchroot
           pressanykey
         fi
         nextblitem="${txtinstall//%1/bootloader}"
       ;;
-      "$txtinstallbootloader")
+      "Install bootloader")
         grub_installbootloader
         nextblitem="${txtinstall//%1/bootloader}"
+        bootloaderinstalled="grub"
       ;;
     esac
     grub_menu "$nextblitem"
   fi
+   
 }
 
 grub_install(){
+  txtgrubluksdetected="Encrypted root partion !\n\nAdd cryptdevice= to GRUB_CMDLINE_LINUX in /etc/default/grub ?"
+  
   clear
   echo "pacstrap /mnt grub"
   pacstrap /mnt grub
   pressanykey
   
   if [ "$efi" == "1" ]; then
-    if (whiptail --backtitle "$apptitle" --title "${txtinstall//%1/efibootmgr}" --yesno "$txtefibootmgr" --defaultno 0 0) then
+    if (whiptail --backtitle "$apptitle" --title "Install efibootmgr" --yesno "Install efibootmgr ?" --defaultno 0 0) then
       clear
       echo "pacstrap /mnt efibootmgr"
       pacstrap /mnt efibootmgr
@@ -1014,7 +998,7 @@ grub_install(){
   fi
   
   if [ "$luksroot" = "1" ]; then
-    if (whiptail --backtitle "$apptitle" --title "${txtinstall//%1/grub}" --yesno "$txtgrubluksdetected" 0 0) then
+    if (whiptail --backtitle "$apptitle" --title "Install grub" --yesno "$txtgrubluksdetected" 0 0) then
       clear
       echo "sed -i /GRUB_CMDLINE_LINUX=/c\GRUB_CMDLINE_LINUX=\\\"cryptdevice=/dev/disk/by-uuid/$luksrootuuid:root\\\" /mnt/etc/default/grub"
       sed -i /GRUB_CMDLINE_LINUX=/c\GRUB_CMDLINE_LINUX=\"cryptdevice=/dev/disk/by-uuid/$luksrootuuid:root\" /mnt/etc/default/grub
@@ -1042,7 +1026,7 @@ grub_installbootloader(){
   for item in $items; do
     options+=("$item" "")
   done
-  device=$(whiptail --backtitle "$apptitle" --title "${txtinstall//%1/bootloader}" --menu "" 0 0 0 \
+  device=$(whiptail --backtitle "$apptitle" --title "Install bootloader" --menu "" 0 0 0 \
     "${options[@]}" \
     3>&1 1>&2 2>&3)
   if [ "$?" = "0" ]; then
@@ -1056,7 +1040,7 @@ grub_installbootloader(){
       options+=("EFI" "")
       options+=("BIOS+EFI" "")
     fi
-    sel=$(whiptail --backtitle "$apptitle" --title "${txtinstall//%1/bootloader}" --menu "" --cancel-button "Back" 0 0 0 \
+    sel=$(whiptail --backtitle "$apptitle" --title "Install bootloader" --menu "" --cancel-button "Back" 0 0 0 \
       "${options[@]}" \
       3>&1 1>&2 2>&3)
     if [ "$?" = "0" ]; then
@@ -1122,10 +1106,10 @@ conf_menu(){
     nextitem=$1
   fi
   options=()
-  options+=("Set Computer Name" "/etc/hostname")
-  options+=("Set Keymap" "/etc/vconsole.conf")
-  options+=("Set Locale" "/etc/locale.conf, /etc/locale.gen")
-  options+=("Set Time" "/etc/localtime")
+  options+=("Set Computer Name" " /etc/hostname")
+  options+=("Set Keymap" " /etc/vconsole.conf")
+  options+=("Set Locale" " /etc/locale.conf, /etc/locale.gen")
+  options+=("Set Time" " /etc/localtime")
   options+=("Set root password" "")
   if [ ! "$swapdev" = "" ]; then
       options+=("Create swapfile" "")
@@ -1135,17 +1119,17 @@ conf_menu(){
     options+=("generate crypttab" "")
   fi
   if [ "$luksroot" = "1" ]; then
-    options+=("generate mkinitcpio.conf-luks" "(encrypt hooks)")
+    options+=("generate mkinitcpio.conf-luks" " (encrypt hooks)")
   fi
   if [ "$isnvme" = "1" ]; then
-    options+=("generate mkinitcpio.conf-nvme" "(nvme module)")
+    options+=("generate mkinitcpio.conf-nvme" " (nvme module)")
   fi
-  options+=("enable dhcpcd" "systemctl enable dhcpd")
+  options+=("enable dhcpcd" " systemctl enable dhcpd")
   options+=("" "")
-  options+=("edit fstab" "(Optional)")
-  options+=("edit crypttab" "(Optional)")
-  options+=("edit mkinitcpio.conf" "(Optional)")
-  options+=("edit mirrorlist" "(Optional)")
+  options+=("edit fstab" " (Optional)")
+  options+=("edit crypttab" " (Optional)")
+  options+=("edit mkinitcpio.conf" " (Optional)")
+  options+=("edit mirrorlist" " (Optional)")
   sel=$(whiptail --backtitle "$apptitle" --title "Configuration menu" --menu "" --cancel-button "Back" --default-item "$nextitem" 0 0 0 \
     "${options[@]}" \
     3>&1 1>&2 2>&3)
