@@ -84,7 +84,7 @@ main_menu(){
         if [ "$formatingdone" = "done" ]; then
           mount_partitions
         else
-          if (whiptail --backtitle "$apptitle" --title "Formating" --yesno "First, you must formate partitions in 'Partitions Formating'. \n Are you sure that partitions are formated ?" --defaultno 0 0) then
+          if (whiptail --backtitle "$apptitle" --title "Formating" --yesno "First, you must formate partitions in 'Partitions Formating'. \n      Are you sure that partitions are formated ?" --defaultno 0 0) then
             select_partitions
             if [[ ! "$bootdev" = "" && ! "$rootdev" = "" ]]; then
               mount_partitions
