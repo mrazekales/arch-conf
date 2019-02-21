@@ -231,8 +231,8 @@ partitioning_menu(){
         nextitem="$txteditparts (cgdisk)"
       ;;
     esac
+    select_partitions
   fi
-  select_partitions
   pressanykey
 }
 
