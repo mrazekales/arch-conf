@@ -1594,11 +1594,11 @@ set_keymap(){
 }
 
 pressanykey(){
-  read -n1 -p "\nPress any key to continue..."
+  read -n1 -p "Press any key to continue..."
 }
 
 rebootpc(){
-  if (whiptail --backtitle "$apptitle" --title "$txtreboot" --yesno "$txtreboot ?" --defaultno 0 0) then
+  if (whiptail --backtitle "$apptitle" --title "Reboot" --yesno "Reboot?" --defaultno 0 0) then
     clear
     reboot
   fi
