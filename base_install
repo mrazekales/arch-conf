@@ -23,8 +23,8 @@ txtselectformat="Select partition format for %1 :"
 txtformating="Formatting partition %1 as"
 
 rankedmirrors="optional"
-partitioningdone=" "
-formatingdone=" "
+partitioningdone=""
+formatingdone=""
 usingkeymap=us
 locale=en_US.UTF-8
 caninstall="not ready"
@@ -65,7 +65,6 @@ main_menu(){
       ;;
       "Disk Partitioning")
         partitioning_menu
-        select_partitions
         nextitem="Partitions Formating"
       ;;
       "Partitions Formating")
