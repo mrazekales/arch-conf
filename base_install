@@ -610,10 +610,10 @@ select_partitions(){
     fi
   fi
   if [ ! $rootdev = ""] && [! $bootdev = ""]; then
-      partitioningdone="done"
-    else
-      partitioningdone=""
-    fi
+    partitioningdone="done"
+  else
+    partitioningdone=""
+  fi
 }
 
 # ----------------------------------------------------------------------------------------
