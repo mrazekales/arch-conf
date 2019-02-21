@@ -1433,7 +1433,7 @@ create_swapfilechroot(){
   swapon /swapfile
   #echo "'/swapfile swap swap defaults 0 0' >> /etc/fstab"
   #sudo echo "/swapfile swap swap defaults 0 0" >> /etc/fstab
-  echo '/swapfile swap swap defaults 0 0' | sudo tee --append /etc/fstab
+  echo '/swapfile swap swap defaults 0 0' | tee --append /etc/fstab
   pressanykey
 }
 
