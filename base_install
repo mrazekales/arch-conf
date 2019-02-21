@@ -22,7 +22,7 @@ txtselecteddevices="Selected devices :"
 txtselectformat="Select partition format for %1 :"
 txtformating="Formatting partition %1 as"
 
-rankedmirrors="Optional"
+rankedmirrors="optional"
 partitioningdone=" "
 formatingdone=" "
 usingkeymap=us
@@ -148,7 +148,7 @@ rank_mirrors(){
   rankmirrors -n 6 /etc/pacman.d/mirrorlist.tmp > /etc/pacman.d/mirrorlist
   rm /etc/pacman.d/mirrorlist.tmp
   chmod +r /etc/pacman.d/mirrorlist
-  rankedmirrors=selcountry
+  rankedmirrors=$selcountry
   
   pressanykey
 }
