@@ -39,6 +39,9 @@ main_menu(){
   else
     nextitem=$1
   fi
+  if [[ "$partitioningdone" = "done" && "$formatingdone" = "done" ]]; then
+    caninstall="ready"
+  fi
   options=()
   options+=("Rank Mirrors" " [$rankedmirrors]")
   options+=("Keymap" " [$usingkeymap]")
@@ -633,7 +636,6 @@ format_partitions(){
     if [ ! "$swapdev" = "" ]; then
       format_swap swap $swapdev
     fi 
-    caninstall="ready"
   fi
 }
 
