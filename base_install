@@ -1109,14 +1109,16 @@ conf_menu(){
     nextitem=$1
   fi
   options=()
+  if [ "$swapdev" = "" ]; then
+      options+=("create Swapfile" "")
+      options+=("remove Swapfile" "")
+      options+=("" "")
+  fi
   options+=("set Computer Name" " /etc/hostname")
   options+=("set Keymap" " /etc/vconsole.conf")
   options+=("set Locale" " /etc/locale.conf, /etc/locale.gen")
   options+=("set Time" " /etc/localtime")
   options+=("set root password" "")
-  if [ "$swapdev" = "" ]; then
-      options+=("create Swapfile" "")
-  fi
   options+=("generate fstab" "")
   if [ "$luksdrive" = "1" ]; then
     options+=("generate crypttab" "")
@@ -1138,6 +1140,14 @@ conf_menu(){
     3>&1 1>&2 2>&3)
   if [ "$?" = "0" ]; then
     case $sel in
+      "create Swapfile")
+        create_swapfile
+        nextitem="create Swapfile"
+      ;;
+      "remove Swapfile")
+        remove_swapfile
+        nextitem="remove Swapfile"
+      ;;
       "set Computer Name")
         set_hostname
         nextitem="Set Computer Name"
@@ -1157,10 +1167,6 @@ conf_menu(){
       "set root password")
         set_rootpassword
         nextitem="Set root password"
-      ;;
-      "create Swapfile")
-        create_swapfile
-        nextitem="create Swapfile"
       ;;
       "generate fstab")
         genfstab_menu
@@ -1422,17 +1428,17 @@ create_swapfilechroot(){
   else
     swapsize=$(($ramsize/500))"M"
   fi
-  echo "SWAP FILE: $swapsize M"
-  echo "fallocate -l ${swapsize//%1/M} /swapfile"
+  echo "SWAPFILE SIZE: $swapsize M"
+  echo "Creating...  ${swapsize//%1/M} /swapfile"
   fallocate -l ${swapsize//%1/M} /swapfile
-  echo "chmod 600 /swapfile"
   chmod 600 /swapfile
   echo "mkswap /swapfile"
   mkswap /swapfile
-  echo "swapon /swapfile"
+  echo "SWAPON /swapfile"
   swapon /swapfile
   #echo "'/swapfile swap swap defaults 0 0' >> /etc/fstab"
   #sudo echo "/swapfile swap swap defaults 0 0" >> /etc/fstab
+  echo -e "Adding '/swapfile swap swap defaults 0 0' to /etc/fstab"
   echo '/swapfile swap swap defaults 0 0' | tee --append /etc/fstab
   pressanykey
 }
@@ -1441,12 +1447,11 @@ remove_swapfile(){
 clear
   echo "swapoff -a"
   swapoff -a
-  echo "rm -f /swapfile"
+  echo "Removing /swapfile..."
   rm -f /swapfile
-  echo "sed -i '/swapfile swap swap defaults 0 0' /etc/fstab"
+  echo "Removing '/swapfile swap swap defaults 0 0' from /etc/fstab"
   sh -c "sed -i '/swapfile swap swap defaults 0 0/d' /etc/fstab"
   #sudo sed -i '/swapfile swap swap defaults 0 0/d' /etc/fstab
-  swapfile="OFF"
   pressanykey
 }
 
