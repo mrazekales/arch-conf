@@ -179,6 +179,7 @@ partitioning_menu(){
     options+=("auto (gpt,efi,noswap)" "")
     options+=("auto (gpt,bios+efi,noswap)" "")
   fi
+  options+=("" "")
   options+=("manual (fdisk)" "")
   options+=("manual (cfdisk)" "")
   options+=("manual (cgdisk)" "")
@@ -187,45 +188,45 @@ partitioning_menu(){
     3>&1 1>&2 2>&3)
   if [ "$?" = "0" ]; then
     case $sel in
-      "$txtautoparts (dos)")
+      "auto (dos)")
         partition_dos
         nextitem="$txtautoparts (dos)"
       ;;
-      "$txtautoparts (gpt)")
+      "auto (gpt)")
         partition_gpt
         nextitem="$txtautoparts (gpt)"
       ;;
-      "$txtautoparts (dos,noswap)")
+      "auto (dos,noswap)")
         partition_dosnoswap
         nextitem="$txtautoparts (dos,noswap)"
       ;;
-      "$txtautoparts (gpt,noswap)")
+      "auto (gpt,noswap)")
         partition_gptnoswap
         nextitem="$txtautoparts (gpt.noswap)"
       ;;
     # ---------------------------------------------
-      "$txtautoparts (gpt,efi)")
+      "auto (gpt,efi)")
         partition_efi
         nextitem="$txtautoparts (gpt,efi)"
       ;;
-      "$txtautoparts (gpt,efi,noswap)")
+      "auto (gpt,efi,noswap)")
         partition_efinoswap
         nextitem="$txtautoparts (gpt,bios+efi,noswap)"
       ;;
-      "$txtautoparts (gpt,bios+efi,noswap)")
+      "auto (gpt,bios+efi,noswap)")
         partition_efiusb
         nextitem="$txtautoparts (gpt,bios+efi,noswap)"
       ;;
     # ---------------------------------------------
-      "$txteditparts (fdisk)")
+      "manual (fdisk)")
         partition_fdisk
         nextitem="$txteditparts (fdisk)"
       ;;
-      "$txteditparts (cfdisk)")
+      "manual (cfdisk)")
         partition_cfdisk
         nextitem="$txteditparts (cfdisk)"
       ;;
-      "$txteditparts (cgdisk)")
+      "manual (cgdisk)")
        partition_cgdisk
         nextitem="$txteditparts (cgdisk)"
       ;;
