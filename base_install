@@ -40,8 +40,8 @@ main_menu(){
     nextitem=$1
   fi
   options=()
-  options+=("Rank Mirrors" "[$rankedmirrors]")
-  options+=("Keymap" "[$usingkeymap]")
+  options+=("Rank Mirrors" "[ $rankedmirrors ]")
+  options+=("Keymap" "[ $usingkeymap ]")
   options+=("" "")
   options+=("Disk Partitioning" "[$partitioningdone]")
   options+=("Partitions Formating" "[$formatingdone]")
