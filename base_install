@@ -1106,13 +1106,13 @@ conf_menu(){
     nextitem=$1
   fi
   options=()
-  options+=("Set Computer Name" " /etc/hostname")
-  options+=("Set Keymap" " /etc/vconsole.conf")
-  options+=("Set Locale" " /etc/locale.conf, /etc/locale.gen")
-  options+=("Set Time" " /etc/localtime")
-  options+=("Set root password" "")
-  if [ ! "$swapdev" = "" ]; then
-      options+=("Create swapfile" "")
+  options+=("set Computer Name" " /etc/hostname")
+  options+=("set Keymap" " /etc/vconsole.conf")
+  options+=("set Locale" " /etc/locale.conf, /etc/locale.gen")
+  options+=("set Time" " /etc/localtime")
+  options+=("set root password" "")
+  if [ "$swapdev" = "" ]; then
+      options+=("create Swapfile" "")
   fi
   options+=("generate fstab" "")
   if [ "$luksdrive" = "1" ]; then
@@ -1126,36 +1126,36 @@ conf_menu(){
   fi
   options+=("enable dhcpcd" " systemctl enable dhcpd")
   options+=("" "")
-  options+=("edit fstab" " (Optional)")
-  options+=("edit crypttab" " (Optional)")
-  options+=("edit mkinitcpio.conf" " (Optional)")
-  options+=("edit mirrorlist" " (Optional)")
+  options+=("edit fstab" " (optional)")
+  options+=("edit crypttab" " (optional)")
+  options+=("edit mkinitcpio.conf" " (optional)")
+  options+=("edit mirrorlist" " (optional)")
   sel=$(whiptail --backtitle "$apptitle" --title "Configuration menu" --menu "" --cancel-button "Back" --default-item "$nextitem" 0 0 0 \
     "${options[@]}" \
     3>&1 1>&2 2>&3)
   if [ "$?" = "0" ]; then
     case $sel in
-      "Set Computer Name")
+      "set Computer Name")
         set_hostname
         nextitem="Set Computer Name"
       ;;
-      "Set Keymap")
+      "set Keymap")
         change_keymap
         nextitem="Set Keymap"
       ;;
-      "Set Locale")
+      "set Locale")
         set_locale
         nextitem="Set Locale"
       ;;
-      "Set Time")
+      "set Time")
         set_time
         nextitem="Set Time"
       ;;
-      "Set root password")
+      "set root password")
         set_rootpassword
         nextitem="Set root password"
       ;;
-      "Create swapfile")
+      "create Swapfile")
         create_swapfile
         nextitem="Create swapfile"
       ;;
