@@ -609,7 +609,7 @@ select_partitions(){
       isnvme=1
     fi
   fi
-  if [ ! $rootdev = ""] && [! $bootdev = ""]; then
+  if [[ ! $rootdev = "" && ! $bootdev = "" ]]; then
     partitioningdone="done"
   else
     partitioningdone=""
