@@ -1159,7 +1159,7 @@ conf_menu(){
         create_swapfile
         nextitem="Create swapfile"
       ;;
-      "generate fstab}")
+      "generate fstab")
         genfstab_menu
         if [ "$luksdrive" = "1" ]; then
           nextitem="generate crypttab"
