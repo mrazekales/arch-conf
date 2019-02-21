@@ -80,7 +80,7 @@ main_menu(){
         nextitem="Mount and Install"
       ;;
       "Mount and Install")
-        if [ "$formatdone" = "done" ]; then
+        if [ "$formatingdone" = "done" ]; then
           mount_partitions
         else
           echo -e "First, you must formate partitions in 'Partitions Formating'"
