@@ -1610,14 +1610,14 @@ else
 
   # check if efi is available
   if [ -d "/sys/firmware/efi/efivars" ]; then
-      efi=1
-      echo -e ""
-      echo -e "EFI Available: YES"
-    else
-      efi=0
-      echo -e ""
-      echo -e "EFI Available: NO"
-    fi
+    efi=1
+    echo -e ""
+    echo -e "EFI Available: YES"
+  else
+    efi=0
+    echo -e ""
+    echo -e "EFI Available: NO"
+  fi
 
   # main menu start
   pressanykey
