@@ -1594,7 +1594,7 @@ set_keymap(){
 }
 
 pressanykey(){
-  read -n1 -p "Press any key to continue..."
+  read -n1 -p "\nPress any key to continue..."
 }
 
 rebootpc(){
