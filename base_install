@@ -950,7 +950,7 @@ grub_menu(){
   options+=("Install grub" "pacstrap grub (efibootmgr), grub-mkconfig")
   options+=("Edit grub" "(Optional)")
   options+=("Install bootloader" "grub-install")
-  sel=$(whiptail --backtitle "$apptitle" --title Grub Install Menu" --menu "" --cancel-button "Back" --default-item "$nextblitem" 0 0 0 \
+  sel=$(whiptail --backtitle "$apptitle" --title "Grub Install Menu" --menu "" --cancel-button "Back" --default-item "$nextblitem" 0 0 0 \
     "${options[@]}" \
     3>&1 1>&2 2>&3)
   if [ "$?" = "0" ]; then
