@@ -1160,7 +1160,7 @@ conf_menu(){
       ;;
       "create Swapfile")
         create_swapfile
-        nextitem="Create swapfile"
+        nextitem="create Swapfile"
       ;;
       "generate fstab")
         genfstab_menu
@@ -1424,13 +1424,13 @@ create_swapfilechroot(){
   fi
   echo "SWAP FILE: $swapsize M"
   echo "fallocate -l ${swapsize//%1/M} /swapfile"
-  sudo fallocate -l ${swapsize//%1/M} /swapfile
+  fallocate -l ${swapsize//%1/M} /swapfile
   echo "chmod 600 /swapfile"
-  sudo chmod 600 /swapfile
+  chmod 600 /swapfile
   echo "mkswap /swapfile"
-  sudo mkswap /swapfile
+  mkswap /swapfile
   echo "swapon /swapfile"
-  sudo swapon /swapfile
+  swapon /swapfile
   #echo "'/swapfile swap swap defaults 0 0' >> /etc/fstab"
   #sudo echo "/swapfile swap swap defaults 0 0" >> /etc/fstab
   echo '/swapfile swap swap defaults 0 0' | sudo tee --append /etc/fstab
@@ -1440,11 +1440,11 @@ create_swapfilechroot(){
 remove_swapfile(){
 clear
   echo "swapoff -a"
-  sudo swapoff -a
+  swapoff -a
   echo "rm -f /swapfile"
-  sudo rm -f /swapfile
+  rm -f /swapfile
   echo "sed -i '/swapfile swap swap defaults 0 0' /etc/fstab"
-  sudo sh -c "sed -i '/swapfile swap swap defaults 0 0/d' /etc/fstab"
+  sh -c "sed -i '/swapfile swap swap defaults 0 0/d' /etc/fstab"
   #sudo sed -i '/swapfile swap swap defaults 0 0/d' /etc/fstab
   swapfile="OFF"
   pressanykey
