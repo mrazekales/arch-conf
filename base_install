@@ -84,9 +84,12 @@ main_menu(){
         if [ "$formatingdone" = "done" ]; then
           mount_partitions
         else
-          clear
-          echo -e "First, you must formate partitions in 'Partitions Formating'"
-          pressanykey
+          if (whiptail --backtitle "$apptitle" --title "Formating" --yesno "First, you must formate partitions in 'Partitions Formating'. \n Are you sure that partitions are formated ?" --defaultno 0 0) then
+            select_partitions
+            if [[ ! "$bootdev" = "" && ! "$rootdev" = "" ]]; then
+              mount_partitions
+            fi
+          fi
         fi
         nextitem="Reboot"
       ;;
