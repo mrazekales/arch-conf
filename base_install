@@ -230,11 +230,8 @@ partitioning_menu(){
         nextitem="$txteditparts (cgdisk)"
       ;;
     esac
-    diskpartmenu "$nextitem"
   fi
-  if [ ! $rootdev = ""] && [! $bootdev = ""]; then
-    else
-    fi
+  select_partitions
   pressanykey
 }
 
