@@ -16,10 +16,10 @@ This repository provides scripts for installing base Arch Linux system, Desktop 
 $ pacman -Sy git
 $ git clone git://github.com/mrazekales/myarch-installer.git
 ```
-3. Run `bas_install` stcript
+3. Run `base_install` stcript
 ```bash
 $ cd myarch-installer
-$ sh arch_install 
+$ sh base_install 
 ```
 
 ### desktop_install script
