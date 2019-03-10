@@ -11,10 +11,9 @@ This repository provides scripts for installing base Arch Linux system, Desktop 
 ### base_install script
 
 1. Boot with [Arch live ISO](https://www.archlinux.org/download/)
-2. Install `git` and `clone` script repository
+2. Download repository using `wget`
 ```bash
-$ pacman -Sy git
-$ git clone git://github.com/mrazekales/myarch-installer.git
+$ wget https://github.com/mrazekales/myArch-installer/tarball/master -O - | tar xz
 ```
 3. Run `base_install` stcript
 ```bash
